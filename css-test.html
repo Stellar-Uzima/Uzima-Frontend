@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div class="min-h-screen bg-gradient-to-br from-emerald-50 to-teal-100 p-8">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-4xl font-bold text-emerald-800 mb-8 text-center">
+                CSS Test - Stellar Uzima
+            </h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Card 1</h2>
+                    <p class="text-gray-600">This is a test card to verify CSS is working.</p>
+                    <button class="mt-4 bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 transition-colors">
+                        Test Button
+                    </button>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Card 2</h2>
+                    <p class="text-gray-600">Another test card with different styling.</p>
+                    <div class="mt-4 flex space-x-2">
+                        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">Tag 1</span>
+                        <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">Tag 2</span>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Card 3</h2>
+                    <p class="text-gray-600">Final test card to ensure grid layout works.</p>
+                    <div class="mt-4 w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-emerald-600 h-2 rounded-full" style="width: 75%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center">
+                <p class="text-lg text-gray-700">
+                    If you can see this page with proper styling, your CSS is working correctly!
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
