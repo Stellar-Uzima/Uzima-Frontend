@@ -1,0 +1,31 @@
+{
+  "brand": {
+    "title": "Stellar Uzima",
+    "tagline": "Afya • Ubuntu • Uvumbuzi"
+  },
+  "nav": {
+    "home": "Nyumbani",
+    "telemedicine": "Telemedicine",
+    "traditionalMedicine": "Dawa za Asili",
+    "medicalRecords": "Rekodi za Matibabu",
+    "education": "Elimu",
+    "community": "Jamii"
+  },
+  "actions": {
+    "create": "Unda"
+  },
+  "status": {
+    "online": "Mtandaoni",
+    "offline": "Nje ya mtandao"
+  },
+  "language": {
+    "en": "English",
+    "fr": "Français",
+    "sw": "Kiswahili"
+  },
+  "user": {
+    "profile": "Wasifu",
+    "settings": "Mipangilio",
+    "logout": "Ondoka"
+  }
+}

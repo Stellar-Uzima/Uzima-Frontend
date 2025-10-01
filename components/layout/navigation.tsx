@@ -27,20 +27,37 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { useTranslations, useLocale } from "next-intl";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
+  const t = useTranslations('nav');
+  const ta = useTranslations('actions');
+  const ts = useTranslations('status');
+  const tb = useTranslations('brand');
+  const tl = useTranslations('language');
+  const tu = useTranslations('user');
+  const locale = useLocale();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const basePath = (() => {
+    const parts = (pathname || '/').split('/').filter(Boolean);
+    // parts[0] is the locale; remove it
+    const rest = parts.slice(1).join('/');
+    return rest ? `/${rest}` : '';
+  })();
 
   const navItems = [
-    { href: "/", label: "Home" },
-
-    { href: "/telemedicine", label: "Telemedicine" },
-    { href: "/traditional-medicine", label: "Traditional Medicine" },
-    { href: "/medical-records", label: "Medical Records" },
-    { href: "/education", label: "Education" },
-    { href: "/community", label: "Community" },
+    { href: `/${locale}/`, label: t('home') },
+    { href: `/${locale}/telemedicine`, label: t('telemedicine') },
+    { href: `/${locale}/traditional-medicine`, label: t('traditionalMedicine') },
+    { href: `/${locale}/medical-records`, label: t('medicalRecords') },
+    { href: `/${locale}/education`, label: t('education') },
+    { href: `/${locale}/community`, label: t('community') },
   ];
 
   return (
@@ -62,10 +79,10 @@ export function Navigation() {
             </motion.div>
             <div>
               <h1 className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                Stellar Uzima
+                {tb('title')}
               </h1>
               <p className="text-xs text-emerald-600 hidden sm:block">
-                Healthcare • Ubuntu • Innovation
+                {tb('tagline')}
               </p>
             </div>
           </Link>
@@ -99,7 +116,7 @@ export function Navigation() {
                 <WifiOff className="w-4 h-4" />
               )}
               <span className="text-sm font-medium">
-                {isOnline ? "Online" : "Offline"}
+                {isOnline ? ts('online') : ts('offline')}
               </span>
             </div>
 
@@ -108,16 +125,13 @@ export function Navigation() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="hidden sm:flex">
                   <Globe className="w-4 h-4 mr-2" />
-                  EN
+                  {String(locale).toUpperCase()}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem>🇬🇧 English</DropdownMenuItem>
-                <DropdownMenuItem>🇫🇷 Français</DropdownMenuItem>
-                <DropdownMenuItem>🇰🇪 Kiswahili</DropdownMenuItem>
-                <DropdownMenuItem>🇳🇬 Hausa</DropdownMenuItem>
-                <DropdownMenuItem>🇿🇦 isiZulu</DropdownMenuItem>
-                <DropdownMenuItem>🇲🇱 Bambara</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push(`/en${basePath}`)}>🇬🇧 {tl('en')}</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push(`/fr${basePath}`)}>🇫🇷 {tl('fr')}</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push(`/sw${basePath}`)}>🇰🇪 {tl('sw')}</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
@@ -141,7 +155,7 @@ export function Navigation() {
             <Link href="/create">
               <Button className="hidden sm:flex bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600">
                 <Plus className="w-4 h-4 mr-2" />
-                Create
+                {ta('create')}
               </Button>
             </Link>
 
@@ -178,16 +192,16 @@ export function Navigation() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <User className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
+                  <span>{tu('profile')}</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Settings className="mr-2 h-4 w-4" />
-                  <span>Settings</span>
+                  <span>{tu('settings')}</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
+                  <span>{tu('logout')}</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -237,7 +251,7 @@ export function Navigation() {
                 <Link href="/create">
                   <Button className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600">
                     <Plus className="w-4 h-4 mr-2" />
-                    Create
+                    {ta('create')}
                   </Button>
                 </Link>
               </div>

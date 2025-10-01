@@ -1,0 +1,31 @@
+{
+  "brand": {
+    "title": "Stellar Uzima",
+    "tagline": "Santé • Ubuntu • Innovation"
+  },
+  "nav": {
+    "home": "Accueil",
+    "telemedicine": "Télémédecine",
+    "traditionalMedicine": "Médecine Traditionnelle",
+    "medicalRecords": "Dossiers Médicaux",
+    "education": "Éducation",
+    "community": "Communauté"
+  },
+  "actions": {
+    "create": "Créer"
+  },
+  "status": {
+    "online": "En ligne",
+    "offline": "Hors ligne"
+  },
+  "language": {
+    "en": "English",
+    "fr": "Français",
+    "sw": "Kiswahili"
+  },
+  "user": {
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "logout": "Se déconnecter"
+  }
+}
