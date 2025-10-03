@@ -28,10 +28,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import Image from "next/image";
+import { useNetworkStatus } from "@/hooks/useNetworkStatus";
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isOnline, setIsOnline] = useState(true);
+  const isOnline = useNetworkStatus();
 
   const navItems = [
     { href: "/", label: "Home" },
