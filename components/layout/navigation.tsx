@@ -27,21 +27,37 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { useTranslations, useLocale } from "next-intl";
+import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import { useNetworkStatus } from "@/hooks/useNetworkStatus";
 
 export function Navigation() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isOnline = useNetworkStatus();
+  const [isOnline, setIsOnline] = useState(true);
+  const t = useTranslations("nav");
+  const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const switchLocale = (newLocale: string) => {
+    const currentPath = pathname || "/";
+    const prefix = `/${locale}`;
+    let rest = currentPath.startsWith(prefix)
+      ? currentPath.slice(prefix.length)
+      : currentPath;
+    if (rest === "") rest = "/";
+    const target = `/${newLocale}${rest === "/" ? "" : rest}`;
+    router.replace(target);
+  };
 
   const navItems = [
-    { href: "/", label: "Home" },
-
-    { href: "/telemedicine", label: "Telemedicine" },
-    { href: "/traditional-medicine", label: "Traditional Medicine" },
-    { href: "/medical-records", label: "Medical Records" },
-    { href: "/education", label: "Education" },
-    { href: "/community", label: "Community" },
+    { href: `/${locale}` as string, label: t("home") },
+    { href: `/${locale}/telemedicine` as string, label: t("telemedicine") },
+    { href: `/${locale}/traditional-medicine` as string, label: t("traditional") },
+    { href: `/${locale}/medical-records` as string, label: t("records") },
+    { href: `/${locale}/education` as string, label: t("education") },
+    { href: `/${locale}/community` as string, label: t("community") },
   ];
 
   return (
@@ -49,7 +65,7 @@ export function Navigation() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3">
+          <Link href={`/${locale}`} className="flex items-center space-x-3">
             <motion.div
               animate={{ rotate: 360 }}
               transition={{
@@ -66,7 +82,7 @@ export function Navigation() {
                 Stellar Uzima
               </h1>
               <p className="text-xs text-emerald-600 hidden sm:block">
-                Healthcare • Ubuntu • Innovation
+                {"Healthcare • Ubuntu • Innovation"}
               </p>
             </div>
           </Link>
@@ -100,7 +116,7 @@ export function Navigation() {
                 <WifiOff className="w-4 h-4" />
               )}
               <span className="text-sm font-medium">
-                {isOnline ? "Online" : "Offline"}
+                {isOnline ? t("online") : t("offline")}
               </span>
             </div>
 
@@ -109,16 +125,13 @@ export function Navigation() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="hidden sm:flex">
                   <Globe className="w-4 h-4 mr-2" />
-                  EN
+                  {locale.toUpperCase()}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem>🇬🇧 English</DropdownMenuItem>
-                <DropdownMenuItem>🇫🇷 Français</DropdownMenuItem>
-                <DropdownMenuItem>🇰🇪 Kiswahili</DropdownMenuItem>
-                <DropdownMenuItem>🇳🇬 Hausa</DropdownMenuItem>
-                <DropdownMenuItem>🇿🇦 isiZulu</DropdownMenuItem>
-                <DropdownMenuItem>🇲🇱 Bambara</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => switchLocale("en")}>🇬🇧 English</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => switchLocale("fr")}>🇫🇷 Français</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => switchLocale("sw")}>🇰🇪 Kiswahili</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
@@ -139,10 +152,10 @@ export function Navigation() {
             </div>
 
             {/* Create Button */}
-            <Link href="/create">
+            <Link href={`/${locale}/create`}>
               <Button className="hidden sm:flex bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600">
                 <Plus className="w-4 h-4 mr-2" />
-                Create
+                {t("create")}
               </Button>
             </Link>
 
@@ -235,10 +248,10 @@ export function Navigation() {
                     2,847 XLM
                   </span>
                 </div>
-                <Link href="/create">
+                <Link href={`/${locale}/create`}>
                   <Button className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600">
                     <Plus className="w-4 h-4 mr-2" />
-                    Create
+                    {t("create")}
                   </Button>
                 </Link>
               </div>

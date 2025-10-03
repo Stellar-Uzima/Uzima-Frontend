@@ -11,39 +11,11 @@ export const metadata: Metadata = {
   title: "Stellar Uzima - Healthcare for Africa",
   description:
     "Bridging traditional African healing with modern medicine through blockchain technology. Accessible healthcare, education, and community support.",
-  keywords: [
-    "healthcare",
-    "africa",
-    "telemedicine",
-    "traditional medicine",
-    "stellar",
-    "blockchain",
-    "offline-first",
-    "community health",
-  ],
-  authors: [{ name: "Stellar Uzima Team" }],
-  creator: "Stellar Uzima",
-  publisher: "Stellar Uzima",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
   manifest: "/manifest.json",
   themeColor: "#10b981",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-  },
-    generator: 'v0.dev'
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
