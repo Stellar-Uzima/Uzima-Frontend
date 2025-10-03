@@ -1,0 +1,17 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "telemedicine": "Télémédecine",
+    "traditional": "Médecine traditionnelle",
+    "records": "Dossiers médicaux",
+    "education": "Éducation",
+    "community": "Communauté",
+    "create": "Créer",
+    "online": "En ligne",
+    "offline": "Hors ligne",
+    "notifications": "Notifications",
+    "balance": "Solde XLM",
+    "logout": "Se déconnecter",
+    "language": "Langue"
+  }
+}
