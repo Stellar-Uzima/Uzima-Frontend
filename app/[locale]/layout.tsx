@@ -1,7 +1,7 @@
 import type React from 'react';
 import {NextIntlClientProvider} from 'next-intl';
 import {notFound} from 'next/navigation';
-import {locales} from '@/i18n';
+import {isSupportedLocale} from '@/i18n';
 import '../globals.css';
 
 export default async function LocaleLayout({
@@ -9,20 +9,13 @@ export default async function LocaleLayout({
   params
 }: {
   children: React.ReactNode;
-  params: {locale: string};
+  params: Promise<{locale: string}>;
 }) {
-  const {locale} = params;
-  if (!locales.includes(locale as any)) notFound();
-
-  let messages: Record<string, any> | undefined;
-  try {
-    messages = (await import(`@/messages/${locale}.json`)).default;
-  } catch (e) {
-    notFound();
-  }
+  const {locale} = await params;
+  if (!isSupportedLocale(locale)) notFound();
 
   return (
-    <NextIntlClientProvider locale={locale} messages={messages}>
+    <NextIntlClientProvider locale={locale}>
       {children}
     </NextIntlClientProvider>
   );
