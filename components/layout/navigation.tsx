@@ -30,9 +30,10 @@ import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
+import { useNetworkStatus } from "@/hooks/useNetworkStatus";
 
 export function Navigation() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const isOnline = useNetworkStatus();
   const [isOnline, setIsOnline] = useState(true);
   const t = useTranslations("nav");
   const locale = useLocale();
