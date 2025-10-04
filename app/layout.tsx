@@ -1,21 +1,28 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
-import { Providers } from "./providers"
-import { Toaster } from "@/components/ui/toaster"
+import type React from "react";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { Providers } from "./providers";
+import { Toaster } from "@/components/ui/toaster";
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Stellar Uzima - Healthcare for Africa",
   description:
     "Bridging traditional African healing with modern medicine through blockchain technology. Accessible healthcare, education, and community support.",
   manifest: "/manifest.json",
-  themeColor: "#10b981",
-}
+};
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export const viewport = {
+  themeColor: "#10b981",
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <head>
@@ -32,5 +39,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </Providers>
       </body>
     </html>
-  )
+  );
 }

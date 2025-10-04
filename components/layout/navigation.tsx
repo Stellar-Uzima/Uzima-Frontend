@@ -16,7 +16,7 @@ import {
   Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,12 +34,13 @@ import { useNetworkStatus } from "@/hooks/useNetworkStatus";
 
 export function Navigation() {
   const isOnline = useNetworkStatus();
-  const [isOnline, setIsOnline] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // ✅ fixed
   const t = useTranslations("nav");
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
 
+  // ✅ reload route with locale messages
   const switchLocale = (newLocale: string) => {
     const currentPath = pathname || "/";
     const prefix = `/${locale}`;
@@ -48,16 +49,16 @@ export function Navigation() {
       : currentPath;
     if (rest === "") rest = "/";
     const target = `/${newLocale}${rest === "/" ? "" : rest}`;
-    router.replace(target);
+    router.push(target); // ✅ use push, not replace
   };
 
   const navItems = [
-    { href: `/${locale}` as string, label: t("home") },
-    { href: `/${locale}/telemedicine` as string, label: t("telemedicine") },
-    { href: `/${locale}/traditional-medicine` as string, label: t("traditional") },
-    { href: `/${locale}/medical-records` as string, label: t("records") },
-    { href: `/${locale}/education` as string, label: t("education") },
-    { href: `/${locale}/community` as string, label: t("community") },
+    { href: `/${locale}`, label: t("home") },
+    { href: `/${locale}/telemedicine`, label: t("telemedicine") },
+    { href: `/${locale}/traditional-medicine`, label: t("traditional") },
+    { href: `/${locale}/medical-records`, label: t("records") },
+    { href: `/${locale}/education`, label: t("education") },
+    { href: `/${locale}/community`, label: t("community") },
   ];
 
   return (
@@ -70,7 +71,7 @@ export function Navigation() {
               animate={{ rotate: 360 }}
               transition={{
                 duration: 2,
-                repeat: Number.POSITIVE_INFINITY,
+                repeat: Infinity,
                 ease: "linear",
               }}
               className="text-2xl"
@@ -82,27 +83,34 @@ export function Navigation() {
                 Stellar Uzima
               </h1>
               <p className="text-xs text-emerald-600 hidden sm:block">
-                {"Healthcare • Ubuntu • Innovation"}
+                Healthcare • Ubuntu • Innovation
               </p>
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-gray-600 hover:text-emerald-600 transition-colors font-medium"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navItems.map((item) => {
+              const active = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`font-medium transition-colors ${
+                    active
+                      ? "text-emerald-700 border-b-2 border-emerald-500 pb-1"
+                      : "text-gray-600 hover:text-emerald-600"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
           </nav>
 
-          {/* Right Side Actions */}
+          {/* Right Side */}
           <div className="flex items-center space-x-4">
-            {/* Connection Status */}
+            {/* Online/Offline */}
             <div
               className={`hidden sm:flex items-center space-x-2 px-3 py-1 rounded-full ${
                 isOnline
@@ -120,7 +128,7 @@ export function Navigation() {
               </span>
             </div>
 
-            {/* Language Selector */}
+            {/* Language Switcher */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="hidden sm:flex">
@@ -129,21 +137,27 @@ export function Navigation() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => switchLocale("en")}>🇬🇧 English</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => switchLocale("fr")}>🇫🇷 Français</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => switchLocale("sw")}>🇰🇪 Kiswahili</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => switchLocale("en")}>
+                  🇬🇧 English
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => switchLocale("fr")}>
+                  🇫🇷 Français
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => switchLocale("sw")}>
+                  🇰🇪 Kiswahili
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
             {/* Notifications */}
             <Button variant="ghost" size="sm" className="relative">
               <Bell className="w-5 h-5" />
-              <Badge className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center p-0 bg-red-500 text-white text-xs">
+              <Badge className="absolute -top-1 -right-1 bg-red-500 text-white text-xs">
                 3
               </Badge>
             </Button>
 
-            {/* XLM Balance */}
+            {/* Balance */}
             <div className="hidden sm:flex items-center space-x-2 bg-yellow-100 px-3 py-1 rounded-full">
               <Star className="w-4 h-4 text-yellow-600" />
               <span className="text-sm font-medium text-yellow-700">
@@ -162,10 +176,7 @@ export function Navigation() {
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="relative h-8 w-8 rounded-full"
-                >
+                <Button variant="ghost" className="h-8 w-8 rounded-full">
                   <Avatar className="h-8 w-8">
                     <Image
                       src="/placeholder.svg"
@@ -206,12 +217,12 @@ export function Navigation() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Toggle */}
             <Button
               variant="ghost"
               size="sm"
               className="lg:hidden"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              onClick={() => setIsMenuOpen((prev) => !prev)}
             >
               {isMenuOpen ? (
                 <X className="w-5 h-5" />
@@ -222,7 +233,7 @@ export function Navigation() {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Menu */}
         {isMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
@@ -235,26 +246,16 @@ export function Navigation() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-gray-600 hover:text-emerald-600 transition-colors font-medium px-2 py-1"
+                  className={`px-2 py-1 font-medium ${
+                    pathname === item.href
+                      ? "text-emerald-700 border-l-4 border-emerald-500 pl-2"
+                      : "text-gray-600 hover:text-emerald-600"
+                  }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.label}
                 </Link>
               ))}
-              <div className="flex items-center justify-between pt-4 border-t border-emerald-200">
-                <div className="flex items-center space-x-2 bg-yellow-100 px-3 py-1 rounded-full">
-                  <Star className="w-4 h-4 text-yellow-600" />
-                  <span className="text-sm font-medium text-yellow-700">
-                    2,847 XLM
-                  </span>
-                </div>
-                <Link href={`/${locale}/create`}>
-                  <Button className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600">
-                    <Plus className="w-4 h-4 mr-2" />
-                    {t("create")}
-                  </Button>
-                </Link>
-              </div>
             </nav>
           </motion.div>
         )}
