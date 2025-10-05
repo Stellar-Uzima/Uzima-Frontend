@@ -63,7 +63,7 @@ Stellar Uzima is a comprehensive healthcare platform designed specifically for A
 
 ### Installation
 
-\`\`\`bash
+```bash
 # Clone the repository
 git clone https://github.com/your-org/stellar-uzima-frontend.git
 cd stellar-uzima-frontend
@@ -75,17 +75,21 @@ npm install
 npm run dev
 
 # Open http://localhost:3000
-\`\`\`
+```
 
 ### Environment Setup
 
-Create a `.env.local` file:
+Environment variables are used to configure various aspects of the application.
+Sensitive variables (without the `NEXT_PUBLIC_` prefix) are only accessible on the server, while variables prefixed with `NEXT_PUBLIC_` are exposed to the browser.
 
-\`\`\`env
-NEXT_PUBLIC_API_URL=http://localhost:5000/api
-NEXT_PUBLIC_STELLAR_NETWORK=testnet
-NEXT_PUBLIC_APP_ENV=development
-\`\`\`
+To set up your environment variables, create a `.env.local` file in the root of the project.
+You can use the `.env.example` file as a reference for the required variables:
+
+```bash
+cp .env.example .env.local
+```
+
+Then, open `.env.local` and fill in the appropriate values.
 
 ## 🏗️ Architecture
 
@@ -101,7 +105,7 @@ NEXT_PUBLIC_APP_ENV=development
 
 ### Project Structure
 
-\`\`\`
+```
 stellar-uzima-frontend/
 ├── app/                    # Next.js App Router pages
 │   ├── (auth)/            # Authentication pages
@@ -118,7 +122,7 @@ stellar-uzima-frontend/
 ├── lib/                  # Utility functions
 ├── public/               # Static assets
 └── styles/               # Global styles
-\`\`\`
+```
 
 ## 🌟 Features Deep Dive
 
@@ -211,7 +215,7 @@ The platform is built on the African philosophy of Ubuntu - "I am because we are
 
 ### Available Scripts
 
-\`\`\`bash
+```bash
 # Development
 npm run dev          # Start development server
 npm run build        # Build for production
@@ -223,7 +227,7 @@ npm run type-check   # TypeScript type checking
 npm run test         # Run tests
 npm run test:watch   # Run tests in watch mode
 npm run test:coverage # Generate coverage report
-\`\`\`
+```
 
 ### Code Quality
 
@@ -245,32 +249,25 @@ npm run test:coverage # Generate coverage report
 
 ### Vercel (Recommended)
 
-\`\`\`bash
+```bash
 # Deploy to Vercel
 npm run build
 vercel --prod
-\`\`\`
+```
 
 ### Docker
 
-\`\`\`bash
+```bash
 # Build Docker image
 docker build -t stellar-uzima-frontend .
 
 # Run container
 docker run -p 3000:3000 stellar-uzima-frontend
-\`\`\`
+```
 
 ### Environment Variables
 
-Production environment variables:
-
-\`\`\`env
-NEXT_PUBLIC_API_URL=https://api.stellaruzima.com
-NEXT_PUBLIC_STELLAR_NETWORK=mainnet
-NEXT_PUBLIC_APP_ENV=production
-NEXT_PUBLIC_ANALYTICS_ID=your-analytics-id
-\`\`\`
+Production environment variables should be configured directly in your deployment environment (e.g., Vercel, Docker). Refer to `.env.example` for a list of required variables.
 
 ## 🤝 Contributing
 
