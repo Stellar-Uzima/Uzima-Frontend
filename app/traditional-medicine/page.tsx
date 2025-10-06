@@ -162,6 +162,8 @@ const communityHealers: CommunityHealer[] = [
   },
 ]
 
+export const dynamic = 'force-dynamic'
+
 export default function TraditionalMedicinePage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedTreatment, setSelectedTreatment] = useState<TraditionalTreatment | null>(null)

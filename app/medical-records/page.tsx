@@ -111,6 +111,8 @@ const mockRecords: MedicalRecord[] = [
   },
 ]
 
+export const dynamic = 'force-dynamic'
+
 export default function MedicalRecordsPage() {
   const [isOnline, setIsOnline] = useState(true)
   const [records, setRecords] = useState<MedicalRecord[]>(mockRecords)

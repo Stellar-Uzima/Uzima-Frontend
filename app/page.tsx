@@ -32,6 +32,8 @@ import { Footer } from "@/components/layout/footer";
 import Image from "next/image";
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 
+export const dynamic = 'force-dynamic'
+
 const healthEmojis = [
   "🏥",
   "💊",
