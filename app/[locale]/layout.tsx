@@ -4,6 +4,8 @@ import {notFound} from 'next/navigation';
 import {isSupportedLocale} from '@/i18n';
 import '../globals.css';
 
+export const dynamic = 'force-dynamic';
+
 export default async function LocaleLayout({
   children,
   params

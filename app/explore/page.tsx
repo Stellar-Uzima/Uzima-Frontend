@@ -202,6 +202,8 @@ const LANGUAGES = [
 
 const ITEMS_PER_PAGE = 6;
 
+export const dynamic = 'force-dynamic'
+
 export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");

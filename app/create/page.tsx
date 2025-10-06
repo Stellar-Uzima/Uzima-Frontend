@@ -27,6 +27,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Link from "next/link"
 import { Navigation } from "@/components/layout/navigation"
 
+export const dynamic = 'force-dynamic'
+
 const categories = [
   "General Medicine",
   "Traditional Medicine",

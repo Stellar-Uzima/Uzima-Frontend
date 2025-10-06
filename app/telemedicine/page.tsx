@@ -171,6 +171,8 @@ const specialtyIcons = {
   Orthopedics: Bone,
 }
 
+export const dynamic = 'force-dynamic'
+
 export default function TelemedicinePage() {
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
