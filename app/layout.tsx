@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/toaster";
+import { MotionConfig } from "framer-motion";
 
 export const dynamic = 'force-dynamic';
 
@@ -35,10 +36,12 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Stellar Uzima" />
       </head>
       <body className={inter.className}>
+        <MotionConfig reducedMotion="user">
         <Providers>
           {children}
           <Toaster />
-        </Providers>
+        </Providers> 
+        </MotionConfig>
       </body>
     </html>
   );
