@@ -101,13 +101,17 @@ const config = {
   },
   // Safelist for dynamic classes to prevent purging
   safelist: [
+    // Icon colors used in Quick Actions (line 252)
     'text-blue-500',
     'text-green-500',
     'text-red-500',
     'text-purple-500',
+    // Icon colors used in Stats section (line 279)
     'text-emerald-500',
     'text-rose-500',
     'text-yellow-500',
+    // Hover states for icons
+    'group-hover:scale-110',
   ],
 }
 

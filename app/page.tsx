@@ -238,26 +238,36 @@ export default function HomePage() {
                 color: "purple",
                 description: "Learn & grow",
               },
-            ].map((action, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Link href={action.href}>
-                  <Card className="bg-white/60 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group">
-                    <CardContent className="p-6 text-center">
-                      <action.icon
-                        className={`w-12 h-12 mx-auto mb-3 text-${action.color}-500 group-hover:scale-110 transition-transform`}
-                      />
-                      <h3 className="font-semibold text-gray-800 mb-1">{action.label}</h3>
-                      <p className="text-sm text-gray-600">{action.description}</p>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </motion.div>
-            ))}
+            ].map((action, index) => {
+              // Map color strings to actual Tailwind classes
+              const colorClasses = {
+                blue: 'text-blue-500',
+                green: 'text-green-500',
+                red: 'text-red-500',
+                purple: 'text-purple-500',
+              }
+              
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <Link href={action.href}>
+                    <Card className="bg-white/60 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group">
+                      <CardContent className="p-6 text-center">
+                        <action.icon
+                          className={`w-12 h-12 mx-auto mb-3 ${colorClasses[action.color as keyof typeof colorClasses]} group-hover:scale-110 transition-transform`}
+                        />
+                        <h3 className="font-semibold text-gray-800 mb-1">{action.label}</h3>
+                        <p className="text-sm text-gray-600">{action.description}</p>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </motion.div>
+              )
+            })}
           </div>
 
           {/* Stats */}
@@ -267,22 +277,32 @@ export default function HomePage() {
               { icon: Heart, label: "Patient Stories", value: "8,923", color: "rose" },
               { icon: Stethoscope, label: "Medical Articles", value: "15,672", color: "blue" },
               { icon: TrendingUp, label: "XLM Distributed", value: "284,592", color: "yellow" },
-            ].map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Card className="bg-white/60 backdrop-blur-sm border-0 shadow-lg">
-                  <CardContent className="p-6 text-center">
-                    <stat.icon className={`w-8 h-8 mx-auto mb-2 text-${stat.color}-500`} />
-                    <div className="text-2xl font-bold text-gray-800">{stat.value}</div>
-                    <div className="text-sm text-gray-600">{stat.label}</div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+            ].map((stat, index) => {
+              // Map color strings to actual Tailwind classes
+              const colorClasses = {
+                emerald: 'text-emerald-500',
+                rose: 'text-rose-500',
+                blue: 'text-blue-500',
+                yellow: 'text-yellow-500',
+              }
+              
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <Card className="bg-white/60 backdrop-blur-sm border-0 shadow-lg">
+                    <CardContent className="p-6 text-center">
+                      <stat.icon className={`w-8 h-8 mx-auto mb-2 ${colorClasses[stat.color as keyof typeof colorClasses]}`} />
+                      <div className="text-2xl font-bold text-gray-800">{stat.value}</div>
+                      <div className="text-sm text-gray-600">{stat.label}</div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )
+            })}
           </div>
         </div>
       </section>
