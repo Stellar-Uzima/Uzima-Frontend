@@ -28,12 +28,13 @@ const RecordForm: React.FC = () => {
 
     await saveRecordOffline(fullRecord);
     alert('Record saved offline!');
-    setRecord({ patientName: '', diagnosis: '', treatment: '', date: new Date().toISOString().split('T')[0], filePath: '' });
+    setRecord({ patientName: '', diagnosis: '', treatment: '', date: '', filePath: '' });
   };
 
   useEffect(() => {
-    window.addEventListener('online', syncRecords);
-    return () => window.removeEventListener('online', syncRecords);
+    const handleOnline = () => syncRecords();
+    window.addEventListener('online', handleOnline);
+    return () => window.removeEventListener('online', handleOnline);
   }, []);
 
   return (
@@ -74,7 +75,7 @@ const RecordForm: React.FC = () => {
         value={record.filePath}
         onChange={handleChange}
       />
-      <button type="submit">Save Record</button>
+      <button>Save Record</button>
     </form>
   );
 };
