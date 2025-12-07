@@ -16,7 +16,7 @@ import {
   Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,20 +27,38 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { useTranslations, useLocale } from "next-intl";
+import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
+import { useNetworkStatus } from "@/hooks/useNetworkStatus";
 
 export function Navigation() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isOnline, setIsOnline] = useState(true);
+  const isOnline = useNetworkStatus();
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // ✅ fixed
+  const t = useTranslations("nav");
+  const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // ✅ reload route with locale messages
+  const switchLocale = (newLocale: string) => {
+    const currentPath = pathname || "/";
+    const prefix = `/${locale}`;
+    let rest = currentPath.startsWith(prefix)
+      ? currentPath.slice(prefix.length)
+      : currentPath;
+    if (rest === "") rest = "/";
+    const target = `/${newLocale}${rest === "/" ? "" : rest}`;
+    router.push(target); // ✅ use push, not replace
+  };
 
   const navItems = [
-    { href: "/", label: "Home" },
-
-    { href: "/telemedicine", label: "Telemedicine" },
-    { href: "/traditional-medicine", label: "Traditional Medicine" },
-    { href: "/medical-records", label: "Medical Records" },
-    { href: "/education", label: "Education" },
-    { href: "/community", label: "Community" },
+    { href: `/${locale}`, label: t("home") },
+    { href: `/${locale}/telemedicine`, label: t("telemedicine") },
+    { href: `/${locale}/traditional-medicine`, label: t("traditional") },
+    { href: `/${locale}/medical-records`, label: t("records") },
+    { href: `/${locale}/education`, label: t("education") },
+    { href: `/${locale}/community`, label: t("community") },
   ];
 
   return (
@@ -48,12 +66,12 @@ export function Navigation() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3">
+          <Link href={`/${locale}`} className="flex items-center space-x-3">
             <motion.div
               animate={{ rotate: 360 }}
               transition={{
                 duration: 2,
-                repeat: Number.POSITIVE_INFINITY,
+                repeat: Infinity,
                 ease: "linear",
               }}
               className="text-2xl"
@@ -83,7 +101,7 @@ export function Navigation() {
             ))}
           </nav>
 
-          {/* Right Side Actions */}
+          {/* Right Side */}
           <div className="flex items-center space-x-4">
             {/* Connection Status */}
             <div 
@@ -101,11 +119,11 @@ export function Navigation() {
                 <WifiOff className="w-4 h-4" aria-hidden="true" />
               )}
               <span className="text-sm font-medium">
-                {isOnline ? "Online" : "Offline"}
+                {isOnline ? t("online") : t("offline")}
               </span>
             </div>
 
-            {/* Language Selector */}
+            {/* Language Switcher */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="hidden sm:flex" aria-label="Select language">
@@ -131,7 +149,7 @@ export function Navigation() {
               </Badge>
             </Button>
 
-            {/* XLM Balance */}
+            {/* Balance */}
             <div className="hidden sm:flex items-center space-x-2 bg-yellow-100 px-3 py-1 rounded-full">
               <Star className="w-4 h-4 text-yellow-600" />
               <span className="text-sm font-medium text-yellow-700">
@@ -140,10 +158,10 @@ export function Navigation() {
             </div>
 
             {/* Create Button */}
-            <Link href="/create">
+            <Link href={`/${locale}/create`}>
               <Button className="hidden sm:flex bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600">
                 <Plus className="w-4 h-4 mr-2" />
-                Create
+                {t("create")}
               </Button>
             </Link>
 
@@ -195,7 +213,7 @@ export function Navigation() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Toggle */}
             <Button
               variant="ghost"
               size="sm"
@@ -215,7 +233,7 @@ export function Navigation() {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Menu */}
         {isMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
@@ -231,26 +249,16 @@ export function Navigation() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-gray-600 hover:text-emerald-600 transition-colors font-medium px-2 py-1"
+                  className={`px-2 py-1 font-medium ${
+                    pathname === item.href
+                      ? "text-emerald-700 border-l-4 border-emerald-500 pl-2"
+                      : "text-gray-600 hover:text-emerald-600"
+                  }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.label}
                 </Link>
               ))}
-              <div className="flex items-center justify-between pt-4 border-t border-emerald-200">
-                <div className="flex items-center space-x-2 bg-yellow-100 px-3 py-1 rounded-full">
-                  <Star className="w-4 h-4 text-yellow-600" />
-                  <span className="text-sm font-medium text-yellow-700">
-                    2,847 XLM
-                  </span>
-                </div>
-                <Link href="/create">
-                  <Button className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Create
-                  </Button>
-                </Link>
-              </div>
             </nav>
           </motion.div>
         )}

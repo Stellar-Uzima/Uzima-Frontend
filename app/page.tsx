@@ -30,6 +30,9 @@ import Link from "next/link";
 import { Navigation } from "@/components/layout/navigation";
 import { Footer } from "@/components/layout/footer";
 import Image from "next/image";
+import { useNetworkStatus } from '@/hooks/useNetworkStatus';
+
+export const dynamic = 'force-dynamic'
 
 const healthEmojis = [
   "🏥",
@@ -139,7 +142,7 @@ const featuredPosts = [
 export default function HomePage() {
   const [currentEmoji, setCurrentEmoji] = useState(0);
   const [currentSlang, setCurrentSlang] = useState(0);
-  const [isOnline, setIsOnline] = useState(true);
+  const isOnline = useNetworkStatus();
   const [posts, setPosts] = useState(featuredPosts);
 
   const colorMap: Record<string, string> = {
@@ -161,18 +164,9 @@ export default function HomePage() {
       setCurrentSlang((prev) => (prev + 1) % healthSlang.length);
     }, 4000);
 
-    // Network status detection
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
-
     return () => {
       clearInterval(emojiInterval);
       clearInterval(slangInterval);
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
     };
   }, []);
 
