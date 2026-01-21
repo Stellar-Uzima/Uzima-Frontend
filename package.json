@@ -9,6 +9,7 @@
     "lint": "next lint",
     "type-check": "tsc --noEmit",
     "test": "echo \"Error: no test yet\" && exit 0",
+    "analyze": "cross-env ANALYZE=true next build",
     "analyze": "cross-env ANALYZE=true next build"
   },
   "dependencies": {

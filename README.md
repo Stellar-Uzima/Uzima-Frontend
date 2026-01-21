@@ -1,54 +1,30 @@
-<<<<<<< HEAD
-# Stellar Uzima Healthcare Platform
+Stellar Uzima Healthcare Platform
+🚀 MIGRATION IN PROGRESS TO V2! > We're upgrading to a completely new architecture for Drip Open Source. See MIGRATION-V2.md for details.
 
-> 🚀 **MIGRATION IN PROGRESS TO V2!**
->
-> We're upgrading to a completely new architecture for Drip Open Source.
-> See [MIGRATION-V2.md](MIGRATION-V2.md) for details.
-
----
-
-## 🎯 About Stellar Uzima
+🎯 About Stellar Uzima
 =======
 Stellar Uzima Healthcare Platform
 🚀 MIGRATION IN PROGRESS TO V2! > We're upgrading to a completely new architecture for Drip Open Source. See MIGRATION-V2.md for details.
 >>>>>>> 2eb5e6a (fix: remove invalid image domain and add bundle analyzer)
-
 🎯 About Stellar Uzima
 A healthcare knowledge-sharing platform that rewards users with Stellar (XLM) tokens for quality medical content.
 
 <<<<<<< HEAD
-### Key Features
-
-- 💊 Medical professionals and patients share knowledge
-- 💰 Earn XLM tokens, convert to USDT
-- ⭐ Quality content gets better rewards
-- 🔒 Secure authentication and rate limiting
-- 📈 Modular, scalable architecture
-=======
 Key Features
+
 💊 Medical professionals and patients share knowledge
->>>>>>> 2eb5e6a (fix: remove invalid image domain and add bundle analyzer)
 
 💰 Earn XLM tokens, convert to USDT
 
 ⭐ Quality content gets better rewards
 
-<<<<<<< HEAD
-### 🆕 V2 (Active Development - v2-redesign branch)
-
-```
-frontend-v2/          # New Next.js frontend
-├── app/             # Next.js app directory
-├── components/      # React components
-├── hooks/           # Custom React hooks
-├── lib/             # Utilities and configs
-├── public/          # Static assets
-├── styles/          # Global styles
-=======
 🔒 Secure authentication and rate limiting
 
 📈 Modular, scalable architecture
+=======
+Key Features
+💊 Medical professionals and patients share knowledge
+>>>>>>> 2eb5e6a (fix: remove invalid image domain and add bundle analyzer)
 
 📂 Current Project Structure
 🆕 V2 (Active Development - v2-redesign branch)
@@ -59,45 +35,27 @@ frontend-v2/          # New Next.js frontend
 ├── lib/             # Utilities and configs
 ├── public/          # Static assets
 ├── styles/          # Global styles
->>>>>>> 2eb5e6a (fix: remove invalid image domain and add bundle analyzer)
 └── ...
 To run V2:
 
 Bash
+To run V2:
 
-<<<<<<< HEAD
-**To run V2:**
+Bash
 
-```bash
-=======
->>>>>>> 2eb5e6a (fix: remove invalid image domain and add bundle analyzer)
 cd frontend-v2
 npm install
 npm run dev
 📦 V1 (Legacy)
 Root directory contains V1 code (main branch)
 
-<<<<<<< HEAD
-### 📦 V1 (Legacy)
-
-- Root directory contains V1 code (main branch)
-- Fully backed up in `archive/v1` branch
-- See `CONTRIBUTORS-V1.md` for all V1 contributors
-=======
 Fully backed up in archive/v1 branch
->>>>>>> 2eb5e6a (fix: remove invalid image domain and add bundle analyzer)
 
 See CONTRIBUTORS-V1.md for all V1 contributors
 
 🚀 Quick Start (V2)
 Bash
 
-<<<<<<< HEAD
-## 🚀 Quick Start (V2)
-
-```bash
-=======
->>>>>>> 2eb5e6a (fix: remove invalid image domain and add bundle analyzer)
 # Clone the repository
 git clone https://github.com/Stellar-Uzima/Uzima-Frontend.git
 cd Uzima-Frontend
@@ -117,71 +75,23 @@ Framework: Next.js 14+ (App Router)
 
 Language: TypeScript
 
-<<<<<<< HEAD
-## 🔐 Environment Variables
-
-This project uses environment variables to configure public and server-only settings.
-
-### Important Notes (Next.js)
-
-- Variables prefixed with `NEXT_PUBLIC_` are **exposed to the browser**.
-- **Sensitive values (secrets) must NOT use `NEXT_PUBLIC_`**.
-- Server-only variables are only accessible in server-side code (API routes, server actions, etc.).
-
-### Setup
-
-1. Copy the example file:
-   ```bash
-   cp .env.example .env.local
-   ```
-
-## 🏗️ Tech Stack
-
-### V2
-
-- **Framework**: Next.js 14+ (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **UI Components**: shadcn/ui
-- **Blockchain**: Stellar SDK
-
-### V1 (Legacy)
-
-- Next.js
-- TypeScript
-- Tailwind CSS
-=======
 Styling: Tailwind CSS
 
 UI Components: shadcn/ui
 
 Blockchain: Stellar SDK
->>>>>>> 2eb5e6a (fix: remove invalid image domain and add bundle analyzer)
 
 V1 (Legacy)
 Next.js
 
 TypeScript
 
-<<<<<<< HEAD
-We're transitioning to **Drip Open Source**!
-=======
 Tailwind CSS
->>>>>>> 2eb5e6a (fix: remove invalid image domain and add bundle analyzer)
 
 📊 Bundle Analysis
 To analyze the size of the JavaScript bundles and identify large dependencies (useful for optimizing for low-bandwidth users), run:
 
-<<<<<<< HEAD
-### Development Workflow
-
-1. Fork the repository
-2. Create a feature branch from `v2-redesign`
-3. Make your changes in `frontend-v2/`
-4. Submit a pull request
-=======
 Bash
->>>>>>> 2eb5e6a (fix: remove invalid image domain and add bundle analyzer)
 
 npm run analyze
 # or
@@ -212,8 +122,15 @@ V1 Contributors: See CONTRIBUTORS-V1.md for all the amazing people who built our
 Your contributions during Hacktoberfest helped shape this project. Thank you! 🎉
 
 📜 License
+📜 License
 [Your License Here]
 
+🔗 Links
+GitHub: https://github.com/Stellar-Uzima/Uzima-Frontend
+
+Inspired by: https://wazimahealth.com/services/
+
+Stellar: https://stellar.org
 🔗 Links
 GitHub: https://github.com/Stellar-Uzima/Uzima-Frontend
 
@@ -231,7 +148,18 @@ Stellar: https://stellar.org
 ⏳ V2 Testing Phase
 
 ⏳ Full Migration
+📊 Project Status
+✅ V1 Completed (Hacktoberfest)
 
+✅ V1 Archived
+
+🔄 V2 In Development (Drip Open Source)
+
+⏳ V2 Testing Phase
+
+⏳ Full Migration
+
+💡 About Drip Open Source
 💡 About Drip Open Source
 This project is being prepared for Drip Open Source, which provides better rewards and recognition for quality contributions.
 
