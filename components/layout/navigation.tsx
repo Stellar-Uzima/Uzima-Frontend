@@ -88,30 +88,25 @@ export function Navigation() {
             </div>
           </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            {navItems.map((item) => {
-              const active = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`font-medium transition-colors ${
-                    active
-                      ? "text-emerald-700 border-b-2 border-emerald-500 pb-1"
-                      : "text-gray-600 hover:text-emerald-600"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center space-x-8" aria-label="Primary">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-gray-600 hover:text-emerald-600 transition-colors font-medium"
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
 
           {/* Right Side */}
           <div className="flex items-center space-x-4">
-            {/* Online/Offline */}
-            <div
+            {/* Connection Status */}
+            <div 
+              role="status"
+              aria-live="polite"
               className={`hidden sm:flex items-center space-x-2 px-3 py-1 rounded-full ${
                 isOnline
                   ? "bg-green-100 text-green-700"
@@ -119,9 +114,9 @@ export function Navigation() {
               }`}
             >
               {isOnline ? (
-                <Wifi className="w-4 h-4" />
+                <Wifi className="w-4 h-4" aria-hidden="true" />
               ) : (
-                <WifiOff className="w-4 h-4" />
+                <WifiOff className="w-4 h-4" aria-hidden="true" />
               )}
               <span className="text-sm font-medium">
                 {isOnline ? t("online") : t("offline")}
@@ -131,28 +126,25 @@ export function Navigation() {
             {/* Language Switcher */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="hidden sm:flex">
-                  <Globe className="w-4 h-4 mr-2" />
-                  {locale.toUpperCase()}
+                <Button variant="ghost" size="sm" className="hidden sm:flex" aria-label="Select language">
+                  <Globe className="w-4 h-4 mr-2" aria-hidden="true" />
+                  EN
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => switchLocale("en")}>
-                  🇬🇧 English
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => switchLocale("fr")}>
-                  🇫🇷 Français
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => switchLocale("sw")}>
-                  🇰🇪 Kiswahili
-                </DropdownMenuItem>
+                <DropdownMenuItem role="menuitem">🇬🇧 English</DropdownMenuItem>
+                <DropdownMenuItem role="menuitem">🇫🇷 Français</DropdownMenuItem>
+                <DropdownMenuItem role="menuitem">🇰🇪 Kiswahili</DropdownMenuItem>
+                <DropdownMenuItem role="menuitem">🇳🇬 Hausa</DropdownMenuItem>
+                <DropdownMenuItem role="menuitem">🇿🇦 isiZulu</DropdownMenuItem>
+                <DropdownMenuItem role="menuitem">🇲🇱 Bambara</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
             {/* Notifications */}
-            <Button variant="ghost" size="sm" className="relative">
-              <Bell className="w-5 h-5" />
-              <Badge className="absolute -top-1 -right-1 bg-red-500 text-white text-xs">
+            <Button variant="ghost" size="sm" className="relative" aria-label="View notifications">
+              <Bell className="w-5 h-5" aria-hidden="true" />
+              <Badge className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center p-0 bg-red-500 text-white text-xs" role="status">
                 3
               </Badge>
             </Button>
@@ -176,7 +168,11 @@ export function Navigation() {
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 rounded-full">
+                <Button
+                  variant="ghost"
+                  className="relative h-8 w-8 rounded-full"
+                  aria-label="User account menu"
+                >
                   <Avatar className="h-8 w-8">
                     <Image
                       src="/placeholder.svg"
@@ -222,12 +218,16 @@ export function Navigation() {
               variant="ghost"
               size="sm"
               className="lg:hidden"
-              onClick={() => setIsMenuOpen((prev) => !prev)}
+              onClick={() => setIsMenuOpen(!isMenuOpen)} 
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMenuOpen}
+              aria-controls="mobile-navigation"
+
             >
               {isMenuOpen ? (
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5" aria-hidden="true" />
               ) : (
-                <Menu className="w-5 h-5" />
+                <Menu className="w-5 h-5" aria-hidden="true" />
               )}
             </Button>
           </div>
@@ -239,7 +239,10 @@ export function Navigation() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden border-t border-emerald-200 py-4"
+            className="lg:hidden border-t border-emerald-200 py-4" 
+            id="mobile-navigation"
+            role="navigation"
+            aria-label="Mobile primary"
           >
             <nav className="flex flex-col space-y-4">
               {navItems.map((item) => (

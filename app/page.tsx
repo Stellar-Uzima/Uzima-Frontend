@@ -145,6 +145,16 @@ export default function HomePage() {
   const isOnline = useNetworkStatus();
   const [posts, setPosts] = useState(featuredPosts);
 
+  const colorMap: Record<string, string> = {
+    blue: "text-blue-500",
+    green: "text-green-500",
+    red: "text-red-500",
+    purple: "text-purple-500",
+    emerald: "text-emerald-500",
+    rose: "text-rose-500",
+    yellow: "text-yellow-500",
+  };
+
   useEffect(() => {
     const emojiInterval = setInterval(() => {
       setCurrentEmoji((prev) => (prev + 1) % healthEmojis.length);
@@ -271,7 +281,7 @@ export default function HomePage() {
                   <Card className="bg-white/60 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group">
                     <CardContent className="p-6 text-center">
                       <action.icon
-                        className={`w-12 h-12 mx-auto mb-3 text-${action.color}-500 group-hover:scale-110 transition-transform`}
+                        className={`w-12 h-12 mx-auto mb-3 ${colorMap[action.color]} group-hover:scale-110 transition-transform`}
                       />
                       <h3 className="font-semibold text-gray-800 mb-1">
                         {action.label}
@@ -323,7 +333,7 @@ export default function HomePage() {
                 <Card className="bg-white/60 backdrop-blur-sm border-0 shadow-lg">
                   <CardContent className="p-6 text-center">
                     <stat.icon
-                      className={`w-8 h-8 mx-auto mb-2 text-${stat.color}-500`}
+                      className={`w-8 h-8 mx-auto mb-2 ${colorMap[stat.color]}`}
                     />
                     <div className="text-2xl font-bold text-gray-800">
                       {stat.value}
@@ -420,12 +430,9 @@ export default function HomePage() {
                     <div className="flex items-start justify-between">
                       <div className="flex items-center space-x-3">
                         <Avatar>
-                          <Image
+                          <AvatarImage
                             src={post.avatar || "/placeholder.svg"}
                             alt={post.author}
-                            width={40}
-                            height={40}
-                            className="rounded-full"
                           />
                           <AvatarFallback>
                             {post.author
