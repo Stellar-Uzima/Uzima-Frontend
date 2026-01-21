@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Stellar Uzima Healthcare Platform
 
 > 🚀 **MIGRATION IN PROGRESS TO V2!**
@@ -8,9 +9,15 @@
 ---
 
 ## 🎯 About Stellar Uzima
+=======
+Stellar Uzima Healthcare Platform
+🚀 MIGRATION IN PROGRESS TO V2! > We're upgrading to a completely new architecture for Drip Open Source. See MIGRATION-V2.md for details.
+>>>>>>> 2eb5e6a (fix: remove invalid image domain and add bundle analyzer)
 
+🎯 About Stellar Uzima
 A healthcare knowledge-sharing platform that rewards users with Stellar (XLM) tokens for quality medical content.
 
+<<<<<<< HEAD
 ### Key Features
 
 - 💊 Medical professionals and patients share knowledge
@@ -18,11 +25,16 @@ A healthcare knowledge-sharing platform that rewards users with Stellar (XLM) to
 - ⭐ Quality content gets better rewards
 - 🔒 Secure authentication and rate limiting
 - 📈 Modular, scalable architecture
+=======
+Key Features
+💊 Medical professionals and patients share knowledge
+>>>>>>> 2eb5e6a (fix: remove invalid image domain and add bundle analyzer)
 
----
+💰 Earn XLM tokens, convert to USDT
 
-## 📂 Current Project Structure
+⭐ Quality content gets better rewards
 
+<<<<<<< HEAD
 ### 🆕 V2 (Active Development - v2-redesign branch)
 
 ```
@@ -33,28 +45,59 @@ frontend-v2/          # New Next.js frontend
 ├── lib/             # Utilities and configs
 ├── public/          # Static assets
 ├── styles/          # Global styles
-└── ...
-```
+=======
+🔒 Secure authentication and rate limiting
 
+📈 Modular, scalable architecture
+
+📂 Current Project Structure
+🆕 V2 (Active Development - v2-redesign branch)
+frontend-v2/          # New Next.js frontend
+├── app/             # Next.js app directory
+├── components/      # React components
+├── hooks/           # Custom React hooks
+├── lib/             # Utilities and configs
+├── public/          # Static assets
+├── styles/          # Global styles
+>>>>>>> 2eb5e6a (fix: remove invalid image domain and add bundle analyzer)
+└── ...
+To run V2:
+
+Bash
+
+<<<<<<< HEAD
 **To run V2:**
 
 ```bash
+=======
+>>>>>>> 2eb5e6a (fix: remove invalid image domain and add bundle analyzer)
 cd frontend-v2
 npm install
 npm run dev
-```
+📦 V1 (Legacy)
+Root directory contains V1 code (main branch)
 
+<<<<<<< HEAD
 ### 📦 V1 (Legacy)
 
 - Root directory contains V1 code (main branch)
 - Fully backed up in `archive/v1` branch
 - See `CONTRIBUTORS-V1.md` for all V1 contributors
+=======
+Fully backed up in archive/v1 branch
+>>>>>>> 2eb5e6a (fix: remove invalid image domain and add bundle analyzer)
 
----
+See CONTRIBUTORS-V1.md for all V1 contributors
 
+🚀 Quick Start (V2)
+Bash
+
+<<<<<<< HEAD
 ## 🚀 Quick Start (V2)
 
 ```bash
+=======
+>>>>>>> 2eb5e6a (fix: remove invalid image domain and add bundle analyzer)
 # Clone the repository
 git clone https://github.com/Stellar-Uzima/Uzima-Frontend.git
 cd Uzima-Frontend
@@ -66,12 +109,15 @@ git checkout v2-redesign
 cd frontend-v2
 npm install
 npm run dev
-```
+Open http://localhost:3000 to see the app.
 
-Open [http://localhost:3000](http://localhost:3000) to see the app.
+🏗️ Tech Stack
+V2
+Framework: Next.js 14+ (App Router)
 
----
+Language: TypeScript
 
+<<<<<<< HEAD
 ## 🔐 Environment Variables
 
 This project uses environment variables to configure public and server-only settings.
@@ -104,60 +150,89 @@ This project uses environment variables to configure public and server-only sett
 - Next.js
 - TypeScript
 - Tailwind CSS
+=======
+Styling: Tailwind CSS
 
----
+UI Components: shadcn/ui
 
-## 🤝 Contributing
+Blockchain: Stellar SDK
+>>>>>>> 2eb5e6a (fix: remove invalid image domain and add bundle analyzer)
 
+V1 (Legacy)
+Next.js
+
+TypeScript
+
+<<<<<<< HEAD
 We're transitioning to **Drip Open Source**!
+=======
+Tailwind CSS
+>>>>>>> 2eb5e6a (fix: remove invalid image domain and add bundle analyzer)
 
-- Check out [MIGRATION-V2.md](MIGRATION-V2.md) to understand the changes
-- New contribution guidelines coming soon
-- For now, focus contributions on the `frontend-v2/` directory in the `v2-redesign` branch
+📊 Bundle Analysis
+To analyze the size of the JavaScript bundles and identify large dependencies (useful for optimizing for low-bandwidth users), run:
 
+<<<<<<< HEAD
 ### Development Workflow
 
 1. Fork the repository
 2. Create a feature branch from `v2-redesign`
 3. Make your changes in `frontend-v2/`
 4. Submit a pull request
+=======
+Bash
+>>>>>>> 2eb5e6a (fix: remove invalid image domain and add bundle analyzer)
 
----
+npm run analyze
+# or
+yarn analyze
+This will open a visual heatmap of your client and server bundles in your browser.
 
-## 🙏 Acknowledgments
+🤝 Contributing
+We're transitioning to Drip Open Source!
 
-**V1 Contributors**: See [CONTRIBUTORS-V1.md](CONTRIBUTORS-V1.md) for all the amazing people who built our foundation during Hacktoberfest!
+Check out MIGRATION-V2.md to understand the changes
+
+New contribution guidelines coming soon
+
+For now, focus contributions on the frontend-v2/ directory in the v2-redesign branch
+
+Development Workflow
+Fork the repository
+
+Create a feature branch from v2-redesign
+
+Make your changes in frontend-v2/
+
+Submit a pull request
+
+🙏 Acknowledgments
+V1 Contributors: See CONTRIBUTORS-V1.md for all the amazing people who built our foundation during Hacktoberfest!
 
 Your contributions during Hacktoberfest helped shape this project. Thank you! 🎉
 
----
-
-## 📜 License
-
+📜 License
 [Your License Here]
 
----
+🔗 Links
+GitHub: https://github.com/Stellar-Uzima/Uzima-Frontend
 
-## 🔗 Links
+Inspired by: https://wazimahealth.com/services/
 
-- **GitHub**: https://github.com/Stellar-Uzima/Uzima-Frontend
-- **Inspired by**: https://wazimahealth.com/services/
-- **Stellar**: https://stellar.org
+Stellar: https://stellar.org
 
----
+📊 Project Status
+✅ V1 Completed (Hacktoberfest)
 
-## 📊 Project Status
+✅ V1 Archived
 
-- ✅ V1 Completed (Hacktoberfest)
-- ✅ V1 Archived
-- 🔄 V2 In Development (Drip Open Source)
-- ⏳ V2 Testing Phase
-- ⏳ Full Migration
+🔄 V2 In Development (Drip Open Source)
 
----
+⏳ V2 Testing Phase
 
-## 💡 About Drip Open Source
+⏳ Full Migration
 
+💡 About Drip Open Source
 This project is being prepared for Drip Open Source, which provides better rewards and recognition for quality contributions.
 
 Stay tuned for more updates!
