@@ -161,8 +161,7 @@ const upcomingAppointments: Appointment[] = [
     avatar: "/placeholder.svg?height=40&width=40",
   },
 ]
-
-const specialtyIcons = {
+const _specialtyIcons = {
   "General Medicine": Stethoscope,
   Pediatrics: Baby,
   "Mental Health": Brain,
@@ -707,7 +706,7 @@ export default function TelemedicinePage() {
                       <ul className="text-sm text-yellow-700 space-y-1">
                         <li>• Severe chest pain or difficulty breathing</li>
                         <li>• Loss of consciousness or severe head injury</li>
-                        <li>• Severe bleeding that won't stop</li>
+                        <li>• Severe bleeding that won&apos;t stop</li>
                         <li>• Signs of stroke (face drooping, arm weakness, speech difficulty)</li>
                         <li>• Severe allergic reactions</li>
                       </ul>

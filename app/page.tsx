@@ -25,7 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
 import { Navigation } from "@/components/layout/navigation";
 import { Footer } from "@/components/layout/footer";
@@ -143,7 +143,7 @@ export default function HomePage() {
   const [currentEmoji, setCurrentEmoji] = useState(0);
   const [currentSlang, setCurrentSlang] = useState(0);
   const isOnline = useNetworkStatus();
-  const [posts, setPosts] = useState(featuredPosts);
+  const [posts, _setPosts] = useState(featuredPosts);
 
   useEffect(() => {
     const emojiInterval = setInterval(() => {

@@ -14,12 +14,14 @@ type ToasterToast = ToastProps & {
   action?: ToastActionElement
 }
 
-const actionTypes = {
+const _actionTypes = {
   ADD_TOAST: "ADD_TOAST",
   UPDATE_TOAST: "UPDATE_TOAST",
   DISMISS_TOAST: "DISMISS_TOAST",
   REMOVE_TOAST: "REMOVE_TOAST",
 } as const
+
+type ActionType = typeof _actionTypes
 
 let count = 0
 
@@ -28,7 +30,7 @@ function genId() {
   return count.toString()
 }
 
-type ActionType = typeof actionTypes
+// type ActionType = typeof actionTypes
 
 type Action =
   | {
