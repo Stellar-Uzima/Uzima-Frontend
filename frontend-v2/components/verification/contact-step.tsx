@@ -86,7 +86,7 @@ export function ContactStep({ form }: ContactStepProps) {
               <FormControl>
                 <Input
                   type="tel"
-                  placeholder="+254 7XX XXX XXX"
+                  placeholder="+254712345678"
                   {...field}
                 />
               </FormControl>

@@ -81,11 +81,10 @@ export const contactSchema = z.object({
     .email('Please enter a valid email address'),
   phone: z
     .string()
-    .min(10, 'Phone number must be at least 10 characters')
-    .max(20, 'Phone number must not exceed 20 characters')
+    .min(1, 'Phone number is required')
     .regex(
-      /^\+?[0-9\s-()]+$/,
-      'Please enter a valid phone number with country code'
+      /^\+[1-9]\d{7,14}$/,
+      'Enter a valid phone number with country code (e.g. +254712345678)'
     ),
   linkedin: z
     .string()
