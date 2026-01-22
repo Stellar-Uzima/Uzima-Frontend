@@ -933,14 +933,10 @@ export const getImpactStats = () => {
     (sum, story) => sum + story.amountRaised,
     0,
   );
-  const totalHelpers = new Set(
-    stories.flatMap((story) =>
-      Array.from(
-        { length: story.helpersCount },
-        (_, i) => `${story.id}-helper-${i}`,
-      ),
-    ),
-  ).size;
+  const totalHelpers = stories.reduce(
+    (sum, story) => sum + story.helpersCount,
+    0,
+  );
 
   return {
     livesImpacted: totalLivesImpacted,
