@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu,
   X,
@@ -34,13 +34,12 @@ import { useNetworkStatus } from "@/hooks/useNetworkStatus";
 
 export function Navigation() {
   const isOnline = useNetworkStatus();
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // ✅ fixed
+  const [isMenuOpen, setIsMenuOpen] = useState(false); 
   const t = useTranslations("nav");
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
 
-  // ✅ reload route with locale messages
   const switchLocale = (newLocale: string) => {
     const currentPath = pathname || "/";
     const prefix = `/${locale}`;
@@ -49,7 +48,7 @@ export function Navigation() {
       : currentPath;
     if (rest === "") rest = "/";
     const target = `/${newLocale}${rest === "/" ? "" : rest}`;
-    router.push(target); // ✅ use push, not replace
+    router.push(target); 
   };
 
   const navItems = [
@@ -63,9 +62,14 @@ export function Navigation() {
 
   return (
     <header className="bg-white/80 backdrop-blur-md border-b border-emerald-200 sticky top-0 z-50">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 z-[60] bg-emerald-600 text-white px-4 py-2 rounded-md shadow-lg"
+      >
+        Skip to content
+      </a>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
           <Link href={`/${locale}`} className="flex items-center space-x-3">
             <motion.div
               animate={{ rotate: 360 }}
@@ -75,6 +79,8 @@ export function Navigation() {
                 ease: "linear",
               }}
               className="text-2xl"
+              role="img"
+              aria-label="Stellar Uzima Health Heart Logo"
             >
               🏥
             </motion.div>
@@ -88,19 +94,21 @@ export function Navigation() {
             </div>
           </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center space-x-8">
+          <nav
+            className="hidden lg:flex items-center space-x-8"
+            aria-label="Primary Navigation"
+          >
             {navItems.map((item) => {
               const active = pathname === item.href;
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`font-medium transition-colors ${
-                    active
-                      ? "text-emerald-700 border-b-2 border-emerald-500 pb-1"
-                      : "text-gray-600 hover:text-emerald-600"
-                  }`}
+                  className={`font-medium transition-colors ${active
+                    ? "text-emerald-700 border-b-2 border-emerald-500 pb-1"
+                    : "text-gray-600 hover:text-emerald-600"
+                    }`}
+                  aria-current={active ? "page" : undefined}
                 >
                   {item.label}
                 </Link>
@@ -108,31 +116,34 @@ export function Navigation() {
             })}
           </nav>
 
-          {/* Right Side */}
           <div className="flex items-center space-x-4">
-            {/* Online/Offline */}
             <div
-              className={`hidden sm:flex items-center space-x-2 px-3 py-1 rounded-full ${
-                isOnline
-                  ? "bg-green-100 text-green-700"
-                  : "bg-orange-100 text-orange-700"
-              }`}
+              className={`hidden sm:flex items-center space-x-2 px-3 py-1 rounded-full ${isOnline
+                ? "bg-green-100 text-green-700"
+                : "bg-orange-100 text-orange-700"
+                }`}
+              role="status"
+              aria-label={`Network status: ${isOnline ? t("online") : t("offline")}`}
             >
               {isOnline ? (
-                <Wifi className="w-4 h-4" />
+                <Wifi className="w-4 h-4" aria-hidden="true" />
               ) : (
-                <WifiOff className="w-4 h-4" />
+                <WifiOff className="w-4 h-4" aria-hidden="true" />
               )}
               <span className="text-sm font-medium">
                 {isOnline ? t("online") : t("offline")}
               </span>
             </div>
 
-            {/* Language Switcher */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="hidden sm:flex">
-                  <Globe className="w-4 h-4 mr-2" />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="hidden sm:flex"
+                  aria-label="Switch Language"
+                >
+                  <Globe className="w-4 h-4 mr-2" aria-hidden="true" />
                   {locale.toUpperCase()}
                 </Button>
               </DropdownMenuTrigger>
@@ -149,23 +160,29 @@ export function Navigation() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Notifications */}
-            <Button variant="ghost" size="sm" className="relative">
-              <Bell className="w-5 h-5" />
+            <Button
+              variant="ghost"
+              size="sm"
+              className="relative"
+              aria-label="View Notifications"
+            >
+              <Bell className="w-5 h-5" aria-hidden="true" />
               <Badge className="absolute -top-1 -right-1 bg-red-500 text-white text-xs">
                 3
               </Badge>
             </Button>
 
-            {/* Balance */}
-            <div className="hidden sm:flex items-center space-x-2 bg-yellow-100 px-3 py-1 rounded-full">
-              <Star className="w-4 h-4 text-yellow-600" />
+            <div
+              className="hidden sm:flex items-center space-x-2 bg-yellow-100 px-3 py-1 rounded-full"
+              aria-label={`Wallet balance: 2,847 XLM`}
+              role="status"
+            >
+              <Star className="w-4 h-4 text-yellow-600" aria-hidden="true" />
               <span className="text-sm font-medium text-yellow-700">
                 2,847 XLM
               </span>
             </div>
 
-            {/* Create Button */}
             <Link href={`/${locale}/create`}>
               <Button className="hidden sm:flex bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600">
                 <Plus className="w-4 h-4 mr-2" />
@@ -173,14 +190,17 @@ export function Navigation() {
               </Button>
             </Link>
 
-            {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 rounded-full">
+                <Button
+                  variant="ghost"
+                  className="h-8 w-8 rounded-full"
+                  aria-label="User Account Menu"
+                >
                   <Avatar className="h-8 w-8">
                     <Image
                       src="/placeholder.svg"
-                      alt="User"
+                      alt="Profile picture"
                       width={32}
                       height={32}
                       className="rounded-full"
@@ -217,48 +237,55 @@ export function Navigation() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Mobile Menu Toggle */}
             <Button
               variant="ghost"
               size="sm"
               className="lg:hidden"
               onClick={() => setIsMenuOpen((prev) => !prev)}
+              aria-expanded={isMenuOpen}
+              aria-controls="mobile-nav-menu"
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
             >
               {isMenuOpen ? (
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5" aria-hidden="true" />
               ) : (
-                <Menu className="w-5 h-5" />
+                <Menu className="w-5 h-5" aria-hidden="true" />
               )}
             </Button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden border-t border-emerald-200 py-4"
-          >
-            <nav className="flex flex-col space-y-4">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`px-2 py-1 font-medium ${
-                    pathname === item.href
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              id="mobile-nav-menu"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="lg:hidden border-t border-emerald-200 py-4"
+            >
+              <nav
+                className="flex flex-col space-y-4"
+                aria-label="Mobile Navigation"
+              >
+                {navItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`px-2 py-1 font-medium ${pathname === item.href
                       ? "text-emerald-700 border-l-4 border-emerald-500 pl-2"
                       : "text-gray-600 hover:text-emerald-600"
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-          </motion.div>
-        )}
+                      }`}
+                    aria-current={pathname === item.href ? "page" : undefined}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   );
