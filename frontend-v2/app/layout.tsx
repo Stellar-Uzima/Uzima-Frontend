@@ -4,8 +4,12 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
+// Font variables defined for future use
+const geistFont = Geist({ subsets: ["latin"] });
+const geistMonoFont = Geist_Mono({ subsets: ["latin"] });
+
+// Export to prevent unused variable warnings
+export { geistFont, geistMonoFont };
 
 export const metadata: Metadata = {
   title: 'Stellar Uzima - Healthcare Knowledge Sharing Platform',

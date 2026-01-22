@@ -76,8 +76,8 @@ export default function CreatePage() {
   const [tags, setTags] = useState<string[]>([])
   const [newTag, setNewTag] = useState("")
   const [culturalContext, setCulturalContext] = useState("")
-  const [estimatedEarnings, setEstimatedEarnings] = useState(2.5)
-  const [isDraft, setIsDraft] = useState(false)
+  const [estimatedEarnings, _setEstimatedEarnings] = useState(2.5)
+  const [_isDraft, setIsDraft] = useState(false)
 
   const addTag = () => {
     if (newTag && !tags.includes(newTag)) {

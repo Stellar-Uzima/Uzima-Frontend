@@ -32,8 +32,11 @@ const RecordForm: React.FC = () => {
   };
 
   useEffect(() => {
-    window.addEventListener('online', syncRecords);
-    return () => window.removeEventListener('online', syncRecords);
+    const handleOnline = () => {
+      syncRecords();
+    };
+    window.addEventListener('online', handleOnline);
+    return () => window.removeEventListener('online', handleOnline);
   }, []);
 
   return (

@@ -40,7 +40,7 @@ export async function POST(request: Request) {
     const synced = validRecords.map(r => r.txHash)
 
     return NextResponse.json({ synced })
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Invalid JSON payload' }, { status: 400 })
   }
 }
