@@ -47,7 +47,7 @@ export function Header() {
                 <div className="absolute top-full left-0 mt-2 w-48 bg-background border border-border rounded-lg shadow-lg py-2">
                   <Link href="/services/knowledge-sharing" className="block px-4 py-2 hover:bg-muted transition-colors">Knowledge Sharing</Link>
                   <Link href="/services/consultations" className="block px-4 py-2 hover:bg-muted transition-colors">Consultations</Link>
-                  <Link href="/services/rewards" className="block px-4 py-2 hover:bg-muted transition-colors">XLM Rewards</Link>
+                  <Link href="/services/xlm-rewards" className="block px-4 py-2 hover:bg-muted transition-colors">XLM Rewards</Link>
                 </div>
               )}
             </div>
