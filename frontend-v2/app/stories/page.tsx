@@ -42,7 +42,7 @@ export default function StoriesPage() {
       currentPage,
       STORIES_PER_PAGE,
     );
-    return { paginatedStories, totalPages, filteredStories };
+    return { paginatedStories, totalPages };
   }, [activeFilter, currentPage]);
 
   // Reset to page 1 when filter changes
