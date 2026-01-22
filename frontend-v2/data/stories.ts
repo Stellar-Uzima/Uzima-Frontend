@@ -856,7 +856,7 @@ For the third consecutive year, the rains never came to northern Nigeria. Crops 
 - Food prices skyrocketed beyond reach
 - Children showing signs of malnutrition
 
-## Uganda Helpers Response
+## Ubuntu Helpers Response
 
 When community leaders sent out a desperate plea, 58 Ubuntu Helpers responded with emergency drought relief:
 
