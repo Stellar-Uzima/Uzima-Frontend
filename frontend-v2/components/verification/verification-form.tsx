@@ -24,10 +24,6 @@ import { ReviewStep } from './review-step';
 import { SuccessModal } from './success-modal';
 import {
   verificationFormSchema,
-  personalInfoSchema,
-  credentialsSchema,
-  contactSchema,
-  reviewSchema,
   validateFile,
   type VerificationFormData,
 } from './schemas';

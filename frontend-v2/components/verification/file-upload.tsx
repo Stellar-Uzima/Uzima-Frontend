@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { useCallback, useState } from 'react';
+import Image from 'next/image';
 import { UploadCloudIcon, FileIcon, XIcon, AlertCircleIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -191,11 +192,13 @@ export function FileUpload({ value, onChange, error, disabled }: FileUploadProps
         {hasFile ? (
           <div className="flex flex-col items-center gap-3 w-full">
             {state.preview ? (
-              <div className="relative">
-                <img
+              <div className="relative h-32 w-full max-w-xs">
+                <Image
                   src={state.preview}
                   alt="Document preview"
-                  className="max-h-32 max-w-full rounded-md object-contain"
+                  fill
+                  className="rounded-md object-contain"
+                  unoptimized
                 />
               </div>
             ) : (
