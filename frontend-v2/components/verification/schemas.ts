@@ -50,6 +50,20 @@ export const classifyEmail = (email: string): {
   };
 };
 
+/**
+ * Normalize phone number to E.164 format
+ * Removes spaces, dashes, parentheses for storage/validation
+ * Input: "+234 816 545 453" or "+234-816-545-453"
+ * Output: "+234816545453"
+ */
+export const normalizePhoneNumber = (input: string): string => {
+  return input.replace(/[\s\-()]/g, '');
+};
+
+// E.164 phone validation regex
+// Enforces: + prefix, valid country code (1-9), 7-14 digits (8-15 total)
+const E164_PHONE_REGEX = /^\+[1-9]\d{7,14}$/;
+
 // Step 1: Personal Information Schema
 export const personalInfoSchema = z.object({
   fullName: z
@@ -114,9 +128,10 @@ export const contactSchema = z.object({
   phone: z
     .string()
     .min(1, 'Phone number is required')
-    .regex(
-      /^\+[1-9]\d{7,14}$/,
-      'Enter a valid phone number with country code (e.g. +254712345678)'
+    .transform(normalizePhoneNumber)
+    .refine(
+      (phone) => E164_PHONE_REGEX.test(phone),
+      'Use international format: +234816545453 (no spaces or dashes)'
     ),
   linkedin: z
     .string()

@@ -23,6 +23,7 @@ export {
   isInstitutionalEmail,
   isPersonalEmail,
   classifyEmail,
+  normalizePhoneNumber,
   validateFile,
 } from './schemas';
 export type {

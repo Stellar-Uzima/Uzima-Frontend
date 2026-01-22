@@ -90,11 +90,13 @@ export function ContactStep({ form }: ContactStepProps) {
               <FormControl>
                 <Input
                   type="tel"
-                  placeholder="+254712345678"
+                  placeholder="+234816545453"
                   {...field}
                 />
               </FormControl>
-              <FormDescription>Include country code</FormDescription>
+              <FormDescription>
+                Use international format, e.g. +234816545453
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
