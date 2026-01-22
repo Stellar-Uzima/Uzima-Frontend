@@ -19,8 +19,10 @@ export {
   contactSchema,
   reviewSchema,
   verificationFormSchema,
+  getEmailDomain,
   isInstitutionalEmail,
   isPersonalEmail,
+  classifyEmail,
   validateFile,
 } from './schemas';
 export type {

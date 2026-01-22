@@ -105,36 +105,56 @@ export const COUNTRIES = [
   'Other',
 ] as const;
 
-// Institutional email domain whitelist
-export const INSTITUTIONAL_DOMAINS = [
+// Institutional email domain suffixes (suffix-based matching)
+export const INSTITUTIONAL_DOMAIN_SUFFIXES = [
   '.edu',
+  '.edu.ng',
+  '.edu.ke',
+  '.edu.za',
+  '.edu.gh',
+  '.ac.uk',
+  '.ac.ke',
+  '.ac.za',
   '.gov',
-  '.ac.',
-  '.hospital',
-  '.clinic',
-  '.health',
-  '.nhs.',
-  '.med.',
-  '.medical',
-  '.healthcare',
-  '.kenyatta',
-  '.aga-khan',
-  '.who.',
-  '.un.',
-  '.unicef',
+  '.gov.ng',
+  '.gov.ke',
+  '.gov.za',
+  '.nhs.uk',
+] as const;
+
+// Known institutional domains (exact match)
+export const INSTITUTIONAL_DOMAINS = [
+  'who.int',
+  'cdc.gov',
+  'nih.gov',
+  'un.org',
+  'unicef.org',
+  'kenyatta-hospital.org',
+  'aga-khan.org',
+  'muhimbili.ac.tz',
+  'uonbi.ac.ke',
+  'wits.ac.za',
+  'uct.ac.za',
+  'unilag.edu.ng',
 ] as const;
 
 // Personal email domains to warn about
 export const PERSONAL_EMAIL_DOMAINS = [
   'gmail.com',
   'yahoo.com',
+  'yahoo.co.uk',
   'hotmail.com',
   'outlook.com',
+  'live.com',
   'aol.com',
   'icloud.com',
   'mail.com',
   'protonmail.com',
+  'proton.me',
   'zoho.com',
+  'ymail.com',
+  'gmx.com',
+  'inbox.com',
 ] as const;
 
 export interface FileUploadState {

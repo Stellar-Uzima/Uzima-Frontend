@@ -1,21 +1,53 @@
 import { z } from 'zod';
 import { 
+  INSTITUTIONAL_DOMAIN_SUFFIXES,
   INSTITUTIONAL_DOMAINS, 
   PERSONAL_EMAIL_DOMAINS, 
   MAX_FILE_SIZE, 
   ACCEPTED_FILE_TYPES 
 } from './types';
 
-// Helper function to check if email is from institutional domain
-export const isInstitutionalEmail = (email: string): boolean => {
-  const domain = email.toLowerCase().split('@')[1] || '';
-  return INSTITUTIONAL_DOMAINS.some((inst) => domain.includes(inst.toLowerCase()));
+// Extract domain from email
+export const getEmailDomain = (email: string): string => {
+  return email.toLowerCase().split('@')[1] || '';
 };
 
-// Helper function to check if email is from personal domain
+// Check if email is from institutional domain (suffix or exact match)
+export const isInstitutionalEmail = (email: string): boolean => {
+  const domain = getEmailDomain(email);
+  if (!domain) return false;
+  
+  // Check suffix-based matching (e.g., .edu, .gov, .ac.uk)
+  const hasSuffix = INSTITUTIONAL_DOMAIN_SUFFIXES.some((suffix) => 
+    domain.endsWith(suffix)
+  );
+  
+  // Check exact domain match (e.g., who.int, cdc.gov)
+  const hasExactMatch = INSTITUTIONAL_DOMAINS.some((inst) => 
+    domain === inst.toLowerCase()
+  );
+  
+  return hasSuffix || hasExactMatch;
+};
+
+// Check if email is from personal domain
 export const isPersonalEmail = (email: string): boolean => {
-  const domain = email.toLowerCase().split('@')[1] || '';
+  const domain = getEmailDomain(email);
   return PERSONAL_EMAIL_DOMAINS.some((personal) => domain === personal.toLowerCase());
+};
+
+// Classify email for UI feedback
+export const classifyEmail = (email: string): {
+  isInstitutional: boolean;
+  isPersonal: boolean;
+  domain: string;
+} => {
+  const domain = getEmailDomain(email);
+  return {
+    isInstitutional: isInstitutionalEmail(email),
+    isPersonal: isPersonalEmail(email),
+    domain,
+  };
 };
 
 // Step 1: Personal Information Schema

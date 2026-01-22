@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { AlertTriangleIcon, CheckCircleIcon } from 'lucide-react';
 import {
@@ -12,7 +13,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { isInstitutionalEmail, isPersonalEmail } from './schemas';
+import { classifyEmail } from './schemas';
 import type { VerificationFormData } from './schemas';
 
 interface ContactStepProps {
@@ -21,8 +22,11 @@ interface ContactStepProps {
 
 export function ContactStep({ form }: ContactStepProps) {
   const email = form.watch('contact.email');
-  const isInstitutional = email ? isInstitutionalEmail(email) : false;
-  const isPersonal = email ? isPersonalEmail(email) : false;
+  
+  const emailClassification = useMemo(() => {
+    if (!email || !email.includes('@')) return null;
+    return classifyEmail(email);
+  }, [email]);
 
   return (
     <div className="space-y-6">
@@ -55,21 +59,21 @@ export function ContactStep({ form }: ContactStepProps) {
           )}
         />
 
-        {email && email.includes('@') && (
+        {emailClassification && (
           <div className="sm:col-span-2">
-            {isInstitutional && (
+            {emailClassification.isInstitutional && (
               <Alert className="border-green-500/50 bg-green-500/10">
                 <CheckCircleIcon className="size-4 text-green-600" />
                 <AlertDescription className="text-green-700 dark:text-green-400">
-                  Institutional email detected. This will speed up your verification.
+                  Institutional email detected ({emailClassification.domain}). This will speed up your verification.
                 </AlertDescription>
               </Alert>
             )}
-            {isPersonal && (
+            {emailClassification.isPersonal && (
               <Alert className="border-yellow-500/50 bg-yellow-500/10">
                 <AlertTriangleIcon className="size-4 text-yellow-600" />
                 <AlertDescription className="text-yellow-700 dark:text-yellow-400">
-                  Personal email detected. For faster verification, please use an
+                  Personal email detected ({emailClassification.domain}). For faster verification, please use an
                   institutional email if available.
                 </AlertDescription>
               </Alert>
