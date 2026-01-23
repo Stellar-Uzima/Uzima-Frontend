@@ -1,9 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { ShieldCheckIcon, WalletIcon, ArrowLeftIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Check, ChevronRight, Loader2, Wallet } from 'lucide-react';
+import { toast } from 'sonner';
+
 import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 import {
   Card,
   CardContent,
@@ -11,164 +16,207 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Spinner } from '@/components/ui/spinner';
-import { VerificationForm } from '@/components/verification';
+import {
+  Step1Personal,
+  Step2Credentials,
+  Step3Contact,
+  Step4Review,
+} from '@/components/verification/VerificationSteps';
+import {
+  personalInfoSchema,
+  credentialsSchema,
+  contactSchema,
+  reviewSchema,
+} from '@/lib/schemas/verification';
 
-export default function VerifyPage() {
-  const [isWalletConnected, setIsWalletConnected] = useState<boolean | null>(null);
-  const [isConnecting, setIsConnecting] = useState(false);
+const useWallet = () => {
+  const [isConnected, setIsConnected] = useState(false);
+  return { isConnected, connect: () => setIsConnected(true) };
+};
 
-  // Check wallet connection status on mount
+const STEPS = [
+  { id: 1, name: 'Personal Info', schema: personalInfoSchema },
+  { id: 2, name: 'Credentials', schema: credentialsSchema },
+  { id: 3, name: 'Contact', schema: contactSchema },
+  { id: 4, name: 'Review', schema: reviewSchema },
+];
+
+export default function VerificationPage() {
+  const router = useRouter();
+  const { isConnected, connect } = useWallet();
+  const [currentStep, setCurrentStep] = useState(1);
+  const [formData, setFormData] = useState<any>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
   useEffect(() => {
-    // Mock wallet connection check
-    // In real app, this would check for Stellar wallet connection
-    const checkWalletConnection = () => {
-      const walletConnected = localStorage.getItem('wallet-connected') === 'true';
-      setIsWalletConnected(walletConnected);
-    };
+    setIsMounted(true);
+    const saved = localStorage.getItem('verification_draft');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
 
-    // Simulate checking wallet
-    setTimeout(checkWalletConnection, 500);
+        if (parsed.expiryDate) parsed.expiryDate = new Date(parsed.expiryDate);
+        setFormData(parsed);
+      } catch (e) {
+        console.error('Failed to parse draft', e);
+      }
+    }
   }, []);
 
-  // Mock wallet connection
-  const handleConnectWallet = async () => {
-    setIsConnecting(true);
-    
-    try {
-      // Simulate wallet connection delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      
-      // Mock successful connection
-      localStorage.setItem('wallet-connected', 'true');
-      setIsWalletConnected(true);
-    } catch (error) {
-      console.error('Failed to connect wallet:', error);
-    } finally {
-      setIsConnecting(false);
+  useEffect(() => {
+    if (Object.keys(formData).length > 0) {
+      const { file, ...rest } = formData;
+      localStorage.setItem('verification_draft', JSON.stringify(rest));
+    }
+  }, [formData]);
+
+  const currentSchema = STEPS[currentStep - 1].schema;
+
+  const form = useForm({
+    resolver: zodResolver(currentSchema),
+    defaultValues: formData,
+    values: formData,
+    mode: 'onChange',
+  });
+
+  const processStep = (data: any) => {
+    const updatedData = { ...formData, ...data };
+    setFormData(updatedData);
+
+    if (currentStep < 4) {
+      setCurrentStep((prev) => prev + 1);
+      window.scrollTo(0, 0);
+    } else {
+      handleFinalSubmit(updatedData);
     }
   };
 
-  // Loading state
-  if (isWalletConnected === null) {
+  const handleFinalSubmit = async (finalData: any) => {
+    setIsSubmitting(true);
+
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    console.log('Submitting to backend:', finalData);
+
+    localStorage.removeItem('verification_draft');
+
+    toast.success('Application Submitted!', {
+      description: 'We will review your details within 3-5 business days.',
+    });
+
+    setTimeout(() => {
+      router.push('/profile');
+    }, 2000);
+
+    setIsSubmitting(false);
+  };
+
+  const goBack = () => {
+    if (currentStep > 1) setCurrentStep((prev) => prev - 1);
+  };
+
+  if (!isMounted) return null;
+
+  if (!isConnected) {
     return (
-      <main className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex items-center justify-center min-h-[60vh]">
-            <div className="flex flex-col items-center gap-4">
-              <Spinner className="size-8" />
-              <p className="text-muted-foreground">Checking wallet connection...</p>
-            </div>
-          </div>
+      <div className="min-h-[60vh] flex flex-col items-center justify-center p-4 text-center space-y-4">
+        <div className="bg-primary/10 p-4 rounded-full">
+          <Wallet className="w-12 h-12 text-primary" />
         </div>
-      </main>
+        <h1 className="text-2xl font-bold">Connect Wallet Required</h1>
+        <p className="text-muted-foreground max-w-md">
+          To ensure the integrity of our platform, we require a connected
+          Stellar wallet to verify your identity.
+        </p>
+        <Button onClick={connect} size="lg">
+          Connect Wallet to Begin
+        </Button>
+      </div>
     );
   }
 
-  // Wallet not connected - show connection prompt
-  if (!isWalletConnected) {
-    return (
-      <main className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-8">
-          <div className="mb-8">
-            <Link href="/">
-              <Button variant="ghost" size="sm" className="gap-2">
-                <ArrowLeftIcon className="size-4" />
-                Back to Home
-              </Button>
-            </Link>
-          </div>
-
-          <div className="flex items-center justify-center min-h-[60vh]">
-            <Card className="w-full max-w-md text-center">
-              <CardHeader className="space-y-4">
-                <div className="flex justify-center">
-                  <div className="rounded-full bg-primary/10 p-4">
-                    <WalletIcon className="size-12 text-primary" />
-                  </div>
-                </div>
-                <CardTitle className="text-2xl">Connect Your Wallet</CardTitle>
-                <CardDescription className="text-base">
-                  To apply for professional verification, you need to connect your
-                  Stellar wallet first. This helps us verify your identity and
-                  enables secure credential management.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Button
-                  onClick={handleConnectWallet}
-                  disabled={isConnecting}
-                  size="lg"
-                  className="w-full gap-2"
-                >
-                  {isConnecting ? (
-                    <>
-                      <Spinner className="size-4" />
-                      Connecting...
-                    </>
-                  ) : (
-                    <>
-                      <WalletIcon className="size-4" />
-                      Connect Stellar Wallet
-                    </>
-                  )}
-                </Button>
-                <p className="text-xs text-muted-foreground">
-                  Don&apos;t have a wallet?{' '}
-                  <a
-                    href="https://www.stellar.org/learn/the-power-of-stellar"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary underline underline-offset-2 hover:text-primary/80"
-                  >
-                    Learn more about Stellar
-                  </a>
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  // Wallet connected - show verification form
   return (
-    <main className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <Link href="/">
-            <Button variant="ghost" size="sm" className="gap-2">
-              <ArrowLeftIcon className="size-4" />
-              Back to Home
-            </Button>
-          </Link>
-        </div>
+    <div className="max-w-3xl mx-auto py-12 px-4">
+      <div className="mb-8 space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">
+          Professional Verification
+        </h1>
+        <p className="text-muted-foreground">
+          Complete the following steps to receive your verified medical badge
+          and start earning XLM.
+        </p>
+      </div>
 
-        <div className="max-w-2xl mx-auto mb-8 text-center space-y-4">
-          <div className="flex justify-center">
-            <div className="rounded-full bg-primary/10 p-3">
-              <ShieldCheckIcon className="size-8 text-primary" />
+      {/* Progress Indicator */}
+      <div className="mb-8">
+        <div className="flex justify-between text-sm mb-2 font-medium">
+          <span>Step {currentStep} of 4</span>
+          <span className="text-muted-foreground">
+            {Math.round((currentStep / 4) * 100)}%
+          </span>
+        </div>
+        <Progress value={(currentStep / 4) * 100} className="h-2" />
+        <div className="flex justify-between mt-2 px-1">
+          {STEPS.map((s) => (
+            <div
+              key={s.id}
+              className={`text-xs flex items-center gap-1 ${currentStep >= s.id ? 'text-primary font-medium' : 'text-muted-foreground'}`}
+            >
+              {currentStep > s.id && <Check className="w-3 h-3" />}
+              {s.name}
             </div>
-          </div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            Professional Verification
-          </h1>
-          <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            Get verified as a medical professional to unlock enhanced features
-            and build trust with patients on Stellar Uzima.
-          </p>
-        </div>
-
-        <VerificationForm />
-
-        <div className="mt-8 text-center">
-          <p className="text-xs text-muted-foreground max-w-md mx-auto">
-            Your information is securely stored and will only be used for
-            verification purposes. We take your privacy seriously.
-          </p>
+          ))}
         </div>
       </div>
-    </main>
+
+      {/* Main Form Card */}
+      <Card className="border-t-4 border-t-primary shadow-lg">
+        <CardHeader>
+          <CardTitle>{STEPS[currentStep - 1].name}</CardTitle>
+          <CardDescription>
+            {currentStep === 1 && 'Tell us about your professional background.'}
+            {currentStep === 2 &&
+              'Upload your valid medical license and credentials.'}
+            {currentStep === 3 && 'Provide verifiable contact methods.'}
+            {currentStep === 4 && 'Review your information before submitting.'}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {/* Render Current Step */}
+          {currentStep === 1 && (
+            <Step1Personal form={form} onSubmit={processStep} />
+          )}
+          {currentStep === 2 && (
+            <Step2Credentials form={form} onSubmit={processStep} />
+          )}
+          {currentStep === 3 && (
+            <Step3Contact form={form} onSubmit={processStep} />
+          )}
+          {currentStep === 4 &&
+            (isSubmitting ? (
+              <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                <Loader2 className="w-12 h-12 animate-spin text-primary" />
+                <p className="text-muted-foreground">Verifying documents...</p>
+              </div>
+            ) : (
+              <Step4Review
+                form={form}
+                onSubmit={processStep}
+                allData={formData}
+              />
+            ))}
+        </CardContent>
+      </Card>
+
+      {/* Navigation Footer (Back Button) */}
+      <div className="mt-6 flex justify-between">
+        {currentStep > 1 && !isSubmitting && (
+          <Button variant="ghost" onClick={goBack}>
+            Back
+          </Button>
+        )}
+      </div>
+    </div>
   );
 }
