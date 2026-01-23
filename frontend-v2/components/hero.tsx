@@ -2,7 +2,9 @@
 
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
+import Link from "next/link"
 import { useState, useEffect } from "react"
+import { Loader2 } from "lucide-react" 
 
 const heroImages = [
   {
@@ -21,6 +23,8 @@ const heroImages = [
 
 export function Hero() {
   const [currentImage, setCurrentImage] = useState(0)
+  const [isPending, setIsPending] = useState(false)
+  const [showSpinner, setShowSpinner] = useState(false)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -28,6 +32,16 @@ export function Hero() {
     }, 4000)
     return () => clearInterval(interval)
   }, [])
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout
+    if (isPending) {
+      timer = setTimeout(() => setShowSpinner(true), 500)
+    } else {
+      setShowSpinner(false)
+    }
+    return () => clearTimeout(timer)
+  }, [isPending])
 
   return (
     <section className="relative overflow-hidden bg-background py-16 lg:py-24">
@@ -45,9 +59,20 @@ export function Hero() {
               tokens, and access quality healthcare information affordably.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Button className="bg-[oklch(0.65_0.15_175)] hover:bg-[oklch(0.55_0.15_175)] text-white rounded-full px-8 py-6 text-lg">
-                Get Started
-              </Button>
+              <Link href="/contact" scroll={false} className="w-full sm:w-auto">
+                <Button aria-label="Get started with Stellar Uzima" onClick={() => {
+                  setIsPending(true)
+                  console.log("Analytics: Get Started clicked")
+                  }}
+                  className="w-full sm:w-auto bg-[oklch(0.65_0.15_175)] hover:bg-teal-700 transition-colors duration-200 text-white rounded-full px-8 py-6 text-lg cursor-pointer"
+                >
+                  <span className="flex items-center justify-center">
+                    {showSpinner && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+                    Get Started
+                  </span>
+                </Button>
+              </Link>
+
               <Button
                 variant="outline"
                 className="border-[oklch(0.25_0.03_250)] text-[oklch(0.25_0.03_250)] rounded-full px-8 py-6 text-lg hover:bg-[oklch(0.25_0.03_250)] hover:text-white bg-transparent"
