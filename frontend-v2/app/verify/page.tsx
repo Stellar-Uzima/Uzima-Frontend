@@ -148,7 +148,7 @@ export default function VerificationPage() {
         </p>
       </div>
 
-      {/* Progress Indicator */}
+      
       <div className="mb-8">
         <div className="flex justify-between text-sm mb-2 font-medium">
           <span>Step {currentStep} of 4</span>
@@ -170,7 +170,7 @@ export default function VerificationPage() {
         </div>
       </div>
 
-      {/* Main Form Card */}
+      
       <Card className="border-t-4 border-t-primary shadow-lg">
         <CardHeader>
           <CardTitle>{STEPS[currentStep - 1].name}</CardTitle>
@@ -183,7 +183,7 @@ export default function VerificationPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {/* Render Current Step */}
+          
           {currentStep === 1 && (
             <Step1Personal form={form} onSubmit={processStep} />
           )}
@@ -209,7 +209,7 @@ export default function VerificationPage() {
         </CardContent>
       </Card>
 
-      {/* Navigation Footer (Back Button) */}
+      
       <div className="mt-6 flex justify-between">
         {currentStep > 1 && !isSubmitting && (
           <Button variant="ghost" onClick={goBack}>
