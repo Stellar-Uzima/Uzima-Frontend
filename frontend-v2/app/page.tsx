@@ -4,7 +4,7 @@ import { TrustedBy } from "@/components/trusted-by"
 import { ForProfessionals } from "@/components/for-professionals"
 import { ForPatients } from "@/components/for-patients"
 import { HowItWorks } from "@/components/how-it-works"
-import { WaitlistCTA } from "@/components/waitlist-cta"
+import WaitlistSection from "@/components/sections/WaitlistSection"
 import { ProductSections } from "@/components/product-sections"
 import { SafeSecure } from "@/components/safe-secure"
 import { WhyStellarUzima } from "@/components/why-stellar-uzima"
@@ -23,7 +23,7 @@ export default function Home() {
       <ForProfessionals />
       <ForPatients />
       <HowItWorks />
-      <WaitlistCTA />
+      <WaitlistSection />
       <ProductSections />
       <SafeSecure />
       <WhyStellarUzima />

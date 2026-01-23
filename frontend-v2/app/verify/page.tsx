@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { ShieldCheckIcon, WalletIcon, ArrowLeftIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,6 +18,60 @@ import { VerificationForm } from '@/components/verification';
 export default function VerifyPage() {
   const [isWalletConnected, setIsWalletConnected] = useState<boolean | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token');
+  const [verificationStatus, setVerificationStatus] = useState<'verifying' | 'success' | 'error' | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (token) {
+      setVerificationStatus('verifying');
+      fetch('/api/waitlist/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            setVerificationStatus('success');
+            setTimeout(() => router.push('/'), 3000);
+          } else {
+            setVerificationStatus('error');
+          }
+        })
+        .catch(() => setVerificationStatus('error'));
+    }
+  }, [token, router]);
+
+  if (token) {
+    return (
+      <main className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          {verificationStatus === 'verifying' && <Spinner className="size-8 mx-auto" />}
+          {verificationStatus === 'success' && (
+            <>
+              <div className="mx-auto bg-green-100 p-3 rounded-full w-fit">
+                <ShieldCheckIcon className="size-8 text-green-600" />
+              </div>
+              <h1 className="text-2xl font-bold">Email Verified!</h1>
+              <p>Redirecting you to the home page...</p>
+            </>
+          )}
+          {verificationStatus === 'error' && (
+            <>
+              <h1 className="text-2xl font-bold text-red-500">Verification Failed</h1>
+              <p>The token may be invalid or expired.</p>
+              <Link href="/">
+                <Button>Return Home</Button>
+              </Link>
+            </>
+          )}
+        </div>
+      </main>
+    )
+  }
+
 
   // Check wallet connection status on mount
   useEffect(() => {
@@ -34,11 +89,11 @@ export default function VerifyPage() {
   // Mock wallet connection
   const handleConnectWallet = async () => {
     setIsConnecting(true);
-    
+
     try {
       // Simulate wallet connection delay
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      
+
       // Mock successful connection
       localStorage.setItem('wallet-connected', 'true');
       setIsWalletConnected(true);
