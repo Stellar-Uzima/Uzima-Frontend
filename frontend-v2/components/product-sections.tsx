@@ -3,6 +3,9 @@
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { useRouter as useLocaleRouter } from "@/src/routing"
+import { Loader2 } from "lucide-react"
 
 const healthKnowledgeImages = [
   { src: "/images/health-products.jpg", alt: "African woman with health products" },
@@ -66,6 +69,32 @@ function AnimatedImageSection({
 }
 
 export function ProductSections() {
+  const router = useRouter() // For non-locale routes
+  const localeRouter = useLocaleRouter() // For locale-aware routes
+  const [isNavigatingToVerify, setIsNavigatingToVerify] = useState(false)
+  const [isNavigatingToMarketplace, setIsNavigatingToMarketplace] = useState(false)
+
+  const handleNavigateToVerify = async () => {
+    setIsNavigatingToVerify(true)
+    try {
+      router.push('/verify')
+    } catch (error) {
+      console.error('Navigation error:', error)
+      setIsNavigatingToVerify(false)
+    }
+  }
+
+  const handleNavigateToMarketplace = async () => {
+    setIsNavigatingToMarketplace(true)
+    try {
+      // Use locale-aware routing for marketplace
+      localeRouter.push('/marketplace')
+    } catch (error) {
+      console.error('Navigation error:', error)
+      setIsNavigatingToMarketplace(false)
+    }
+  }
+
   return (
     <>
       {/* Health Products Section */}
@@ -108,12 +137,36 @@ export function ProductSections() {
                 quality contributions and access verified healthcare information from professionals
                 worldwide.
               </p>
-              <div className="flex flex-wrap gap-4">
-                <Button className="bg-[oklch(0.65_0.15_175)] hover:bg-[oklch(0.55_0.15_175)] text-white rounded-full px-8 py-6">
-                  Earn XLM
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button
+                  onClick={handleNavigateToVerify}
+                  disabled={isNavigatingToVerify || isNavigatingToMarketplace}
+                  aria-label="Register as a healthcare professional to earn XLM tokens"
+                  className="bg-teal-500 hover:bg-teal-600 text-white rounded-lg px-8 py-3 font-semibold w-full sm:w-auto focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 min-h-[44px]"
+                >
+                  {isNavigatingToVerify ? (
+                    <span className="flex items-center justify-center">
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+                      Loading...
+                    </span>
+                  ) : (
+                    "Earn XLM"
+                  )}
                 </Button>
-                <Button className="bg-[oklch(0.25_0.03_250)] hover:bg-[oklch(0.2_0.03_250)] text-white rounded-full px-8 py-6">
-                  See Doctors
+                <Button
+                  onClick={handleNavigateToMarketplace}
+                  disabled={isNavigatingToVerify || isNavigatingToMarketplace}
+                  aria-label="Browse healthcare professionals and doctors"
+                  className="bg-gray-900 hover:bg-gray-800 text-white rounded-lg px-8 py-3 font-semibold w-full sm:w-auto focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 min-h-[44px]"
+                >
+                  {isNavigatingToMarketplace ? (
+                    <span className="flex items-center justify-center">
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+                      Loading...
+                    </span>
+                  ) : (
+                    "See Doctors"
+                  )}
                 </Button>
               </div>
             </div>
