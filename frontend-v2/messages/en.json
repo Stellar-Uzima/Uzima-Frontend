@@ -1,0 +1,23 @@
+{
+    "HomePage": {
+        "title": "Welcome to our Platform",
+        "description": "Connecting you with healthcare",
+        "heroTitlePart1": "Healthcare Knowledge That",
+        "heroTitleEmpower": "Empowers",
+        "heroTitleReward": "Rewards",
+        "heroDescription": "Stellar Uzima connects medical professionals and patients to share knowledge, earn XLM tokens, and access quality healthcare information affordably.",
+        "getStarted": "Get Started",
+        "learnMore": "Learn More"
+    },
+    "Navigation": {
+        "home": "Home",
+        "about": "About Us",
+        "services": "Services",
+        "knowledgeSharing": "Knowledge Sharing",
+        "consultations": "Consultations",
+        "rewards": "XLM Rewards",
+        "marketplace": "Marketplace",
+        "blog": "Blogs",
+        "connectWallet": "Connect Wallet"
+    }
+}
