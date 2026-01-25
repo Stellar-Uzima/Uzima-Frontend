@@ -6,6 +6,7 @@ import { Menu, X, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import LanguageSwitcher from "./LanguageSwitcher"
 import { useTranslations } from "next-intl"
+import { GlobalSearch } from "./search/GlobalSearch"
 
 export function Header() {
   const t = useTranslations('Navigation');
