@@ -37,7 +37,7 @@
   --sidebar-accent-foreground: oklch(0.25 0.03 250);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.65 0.15 175);
-  
+
   /* Custom colors for Stellar Uzima */
   --navy: oklch(0.25 0.03 250);
   --teal: oklch(0.65 0.15 175);
@@ -125,6 +125,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -136,6 +137,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -146,6 +148,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -156,6 +159,7 @@
     opacity: 0;
     transform: translateX(30px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -163,9 +167,12 @@
 }
 
 @keyframes pulse-slow {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.7;
   }

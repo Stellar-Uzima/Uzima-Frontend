@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import Link from "next/link"
 import { useState, useEffect } from "react"
-import { Loader2 } from "lucide-react" 
+import { Loader2 } from "lucide-react"
 
 const heroImages = [
   {
@@ -21,7 +21,10 @@ const heroImages = [
   },
 ]
 
+import { useTranslations } from "next-intl"
+
 export function Hero() {
+  const t = useTranslations('HomePage');
   const [currentImage, setCurrentImage] = useState(0)
   const [isPending, setIsPending] = useState(false)
   const [showSpinner, setShowSpinner] = useState(false)
@@ -50,25 +53,24 @@ export function Hero() {
           {/* Left Content */}
           <div className="space-y-6">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[oklch(0.25_0.03_250)] leading-tight text-balance">
-              Healthcare Knowledge That{" "}
-              <span className="text-[oklch(0.65_0.15_175)]">Empowers</span> &{" "}
-              <span className="text-[oklch(0.75_0.15_85)]">Rewards</span>
+              {t('heroTitlePart1')}{" "}
+              <span className="text-[oklch(0.65_0.15_175)]">{t('heroTitleEmpower')}</span> &{" "}
+              <span className="text-[oklch(0.75_0.15_85)]">{t('heroTitleReward')}</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-lg">
-              Stellar Uzima connects medical professionals and patients to share knowledge, earn XLM
-              tokens, and access quality healthcare information affordably.
+              {t('heroDescription')}
             </p>
             <div className="flex flex-wrap gap-4">
               <Link href="/contact" scroll={false} className="w-full sm:w-auto">
                 <Button aria-label="Get started with Stellar Uzima" onClick={() => {
                   setIsPending(true)
                   console.log("Analytics: Get Started clicked")
-                  }}
+                }}
                   className="w-full sm:w-auto bg-[oklch(0.65_0.15_175)] hover:bg-teal-700 transition-colors duration-200 text-white rounded-full px-8 py-6 text-lg cursor-pointer"
                 >
                   <span className="flex items-center justify-center">
                     {showSpinner && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
-                    Get Started
+                    {t('getStarted')}
                   </span>
                 </Button>
               </Link>
@@ -77,7 +79,7 @@ export function Hero() {
                 variant="outline"
                 className="border-[oklch(0.25_0.03_250)] text-[oklch(0.25_0.03_250)] rounded-full px-8 py-6 text-lg hover:bg-[oklch(0.25_0.03_250)] hover:text-white bg-transparent"
               >
-                Learn More
+                {t('learnMore')}
               </Button>
             </div>
           </div>
@@ -91,11 +93,10 @@ export function Hero() {
                   src={image.src || "/placeholder.svg"}
                   alt={image.alt}
                   fill
-                  className={`object-cover transition-all duration-1000 ease-in-out ${
-                    index === currentImage
+                  className={`object-cover transition-all duration-1000 ease-in-out ${index === currentImage
                       ? "opacity-100 scale-100"
                       : "opacity-0 scale-105"
-                  }`}
+                    }`}
                   priority={index === 0}
                 />
               ))}
@@ -106,11 +107,10 @@ export function Hero() {
                 <button
                   key={index}
                   onClick={() => setCurrentImage(index)}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    index === currentImage
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentImage
                       ? "bg-[oklch(0.65_0.15_175)] w-6"
                       : "bg-white/60 hover:bg-white"
-                  }`}
+                    }`}
                   aria-label={`Go to slide ${index + 1}`}
                 />
               ))}

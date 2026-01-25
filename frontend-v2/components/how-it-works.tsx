@@ -137,6 +137,12 @@ const modalVariants = {
   exit: { opacity: 0, scale: 0.95, y: 20, transition: { duration: 0.3, ease: easing } },
 }
 
+const colorMap: Record<string, string> = {
+  teal: "bg-[oklch(0.65_0.15_175)]",
+  gold: "bg-[oklch(0.75_0.15_85)]",
+  pink: "bg-pink-400",
+}
+
 export function HowItWorks() {
   const router = useRouter()
   const searchParams = useSearchParams()
