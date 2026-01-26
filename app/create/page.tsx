@@ -89,9 +89,9 @@ export default function CreatePage() {
   }
 
   const handleSubmit = (asDraft: boolean) => {
-    setIsDraft(asDraft)
     // Handle form submission
     console.log({
+      isDraft: asDraft,
       contentType,
       title,
       content,
@@ -100,7 +100,6 @@ export default function CreatePage() {
       language,
       tags,
       culturalContext,
-      isDraft: asDraft,
     })
   }
 
@@ -358,7 +357,7 @@ export default function CreatePage() {
               </CardHeader>
               <CardContent>
                 <div className="text-center mb-4">
-                  <div className="text-3xl font-bold text-orange-600">~{estimatedEarnings} XLM</div>
+                  <div className="text-3xl font-bold text-orange-600">~2.5 XLM</div>
                   <p className="text-sm text-orange-600">Estimated earnings</p>
                 </div>
 

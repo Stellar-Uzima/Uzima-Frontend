@@ -334,7 +334,7 @@ export default function HomePage() {
             </div>
 
             <div className="grid gap-6 max-w-6xl mx-auto">
-              {posts.map((post, index) => (
+              {[].map((post: any, index: number) => (
                 <motion.div
                   key={post.id}
                   initial={{ opacity: 0, y: 20 }}
@@ -359,7 +359,7 @@ export default function HomePage() {
                               <AvatarFallback>
                                 {post.author
                                   .split(" ")
-                                  .map((n) => n[0])
+                                  .map((n: string) => n[0])
                                   .join("")}
                               </AvatarFallback>
                             </Avatar>
@@ -399,7 +399,7 @@ export default function HomePage() {
                         <p className="text-gray-600 mb-4">{post.content}</p>
 
                         <div className="flex flex-wrap gap-2 mb-4">
-                          {post.tags.map((tag, tagIndex) => (
+                          {post.tags.map((tag: string, tagIndex: number) => (
                             <Badge
                               key={tagIndex}
                               variant="outline"

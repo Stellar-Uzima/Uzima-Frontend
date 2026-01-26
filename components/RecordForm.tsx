@@ -1,4 +1,4 @@
-import { MedicalRecord, saveRecordOffline, syncRecords } from '@/services/SyncService';
+import { MedicalRecord, saveRecordOffline, syncRecords } from '@/src/services/SyncService';
 import React, { useState, useEffect } from 'react';
 // import { saveRecordOffline, syncRecords, MedicalRecord } from '../services/syncService';
 import { v4 as uuidv4 } from 'uuid';
@@ -26,14 +26,14 @@ const RecordForm: React.FC = () => {
       createdBy: 'user_id_from_auth', // Replace this with actual user ID logic
     };
 
-    await saveRecordOffline(fullRecord);
+    await (saveRecordOffline as any)(fullRecord);
     alert('Record saved offline!');
     setRecord({ patientName: '', diagnosis: '', treatment: '', date: new Date().toISOString().split('T')[0], filePath: '' });
   };
 
   useEffect(() => {
-    window.addEventListener('online', syncRecords);
-    return () => window.removeEventListener('online', syncRecords);
+    window.addEventListener('online', syncRecords as any);
+    return () => window.removeEventListener('online', syncRecords as any);
   }, []);
 
   return (
