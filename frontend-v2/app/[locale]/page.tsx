@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl"
+
 import { Header } from "@/components/header"
 import { Hero } from "@/components/hero"
 import { TrustedBy } from "@/components/trusted-by"
@@ -14,11 +16,21 @@ import { LatestNews } from "@/components/latest-news"
 import { ContactForm } from "@/components/contact-form"
 import { Footer } from "@/components/footer"
 
+
 export default function Home() {
+  const t = useTranslations('HomePage');
+
   return (
     <main className="min-h-screen">
       <Header />
       <Hero />
+      {/* 
+        Ideally we would pass props like:
+        <Hero title={t('title')} description={t('description')} /> 
+        But for now just keeping it rendering to ensure i18n context works.
+        I will need to refactor Hero to accept these props or useTranslations inside it.
+        Given "Wrap with NextIntlClientProvider" in the prompt, using useTranslations inside components is cleaner.
+      */}
       <TrustedBy />
       <ForProfessionals />
       <ForPatients />

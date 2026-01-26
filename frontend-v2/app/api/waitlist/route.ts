@@ -90,7 +90,7 @@ export async function POST(req: Request) {
                         <p style="margin: 5px 0 0 0; font-size: 32px; font-weight: bold; color: #0f172a;">#${position.toLocaleString()}</p>
                     </div>
                     <p>Please verify your email to secure your spot:</p>
-                    <a href="${process.env.NEXT_PUBLIC_SITE_URL}/verify?token=${token}" style="display: inline-block; background: #0d9488; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Verify Email</a>
+                    <a href="${process.env.NEXT_PUBLIC_SITE_URL}/verify-email?token=${token}" style="display: inline-block; background: #0d9488; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Verify Email</a>
                     <p style="margin-top: 20px; font-size: 12px; color: #888;">If you didn't sign up, please ignore this email.</p>
                 </div>
             `

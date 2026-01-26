@@ -6,36 +6,45 @@ import { useState, useEffect } from "react"
 
 const features = [
   {
-    color: "bg-[oklch(0.65_0.15_175)]",
+    color: "teal",
     title: "Access Knowledge",
     description: "Get reliable healthcare information from verified medical professionals, 24/7.",
   },
   {
-    color: "bg-[oklch(0.75_0.15_85)]",
+    color: "gold",
     title: "Earn by Learning",
     description: "Earn XLM tokens by engaging with quality content and helping others",
   },
   {
-    color: "bg-pink-400",
+    color: "pink",
     title: "Connect with Specialists",
     description: "Access a global pool of healthcare specialists for consultations",
   },
   {
-    color: "bg-red-400",
+    color: "red",
     title: "Manage Conditions",
     description: "Get support for managing chronic conditions like diabetes and hypertension",
   },
   {
-    color: "bg-amber-400",
+    color: "amber",
     title: "Health Tracking",
     description: "Track your health journey and share progress with your care team",
   },
   {
-    color: "bg-emerald-400",
+    color: "emerald",
     title: "Portable Records",
     description: "Access your health records and consultation history anytime, anywhere",
   },
 ]
+
+const colorMap: Record<string, string> = {
+  teal: "bg-[oklch(0.65_0.15_175)]",
+  gold: "bg-[oklch(0.75_0.15_85)]",
+  pink: "bg-pink-400",
+  red: "bg-red-400",
+  amber: "bg-amber-400",
+  emerald: "bg-emerald-400",
+}
 
 const patientImages = [
   {
@@ -75,11 +84,10 @@ export function ForPatients() {
                   src={image.src || "/placeholder.svg"}
                   alt={image.alt}
                   fill
-                  className={`object-cover transition-all duration-1000 ease-in-out ${
-                    index === currentImage
-                      ? "opacity-100 scale-100"
-                      : "opacity-0 scale-95"
-                  }`}
+                  className={`object-cover transition-all duration-1000 ease-in-out ${index === currentImage
+                    ? "opacity-100 scale-100"
+                    : "opacity-0 scale-95"
+                    }`}
                 />
               ))}
             </div>
@@ -89,11 +97,10 @@ export function ForPatients() {
                 <button
                   key={index}
                   onClick={() => setCurrentImage(index)}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    index === currentImage
-                      ? "bg-[oklch(0.65_0.15_175)] w-6"
-                      : "bg-gray-400/60 hover:bg-gray-600"
-                  }`}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentImage
+                    ? "bg-[oklch(0.65_0.15_175)] w-6"
+                    : "bg-gray-400/60 hover:bg-gray-600"
+                    }`}
                   aria-label={`Go to slide ${index + 1}`}
                 />
               ))}
@@ -118,7 +125,7 @@ export function ForPatients() {
                   className="space-y-3 opacity-0 animate-[fadeInUp_0.6s_ease-out_forwards]"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <div className={`w-4 h-4 rounded ${feature.color}`} />
+                  <div className={`w-4 h-4 rounded ${colorMap[feature.color]}`} />
                   <h3 className="text-[oklch(0.25_0.03_250)] font-semibold text-lg">
                     {feature.title}
                   </h3>
