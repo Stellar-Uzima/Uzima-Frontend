@@ -1,163 +1,98 @@
-# Stellar Uzima Healthcare Platform
+Stellar Uzima Healthcare Platform
+🚀 MIGRATION IN PROGRESS TO V2!
 
-> 🚀 **MIGRATION IN PROGRESS TO V2!**
->
-> We're upgrading to a completely new architecture for Drip Open Source.
-> See [MIGRATION-V2.md](MIGRATION-V2.md) for details.
+We're upgrading to a completely new architecture for Drip Open Source. See MIGRATION-V2.md for details.
 
----
+🎯 About Stellar Uzima A healthcare knowledge-sharing platform that rewards users with Stellar (XLM) tokens for quality medical content.
 
-## 🎯 About Stellar Uzima
+🛠️ Tech Stack (V2)
+Framework: Next.js 14+ (App Router)
 
-A healthcare knowledge-sharing platform that rewards users with Stellar (XLM) tokens for quality medical content.
+Internationalization: next-intl
 
-### Key Features
+Language: TypeScript
 
-- 💊 Medical professionals and patients share knowledge
-- 💰 Earn XLM tokens, convert to USDT
-- ⭐ Quality content gets better rewards
-- 🔒 Secure authentication and rate limiting
-- 📈 Modular, scalable architecture
+Styling: Tailwind CSS
 
----
+UI Components: shadcn/ui
 
-## 📂 Current Project Structure
+Blockchain: Stellar SDK
 
-### 🆕 V2 (Active Development - v2-redesign branch)
+Optimization: Bundle Analyzer included for performance tracking.
 
-```
-frontend-v2/          # New Next.js frontend
-├── app/             # Next.js app directory
-├── components/      # React components
-├── hooks/           # Custom React hooks
-├── lib/             # Utilities and configs
-├── public/          # Static assets
-├── styles/          # Global styles
-└── ...
-```
+📂 Project Structure (V2 Highlights)
+The V2 migration introduces several key architectural improvements:
 
-**To run V2:**
+i18n.ts: Centralized configuration for multi-language support.
 
-```bash
-cd frontend-v2
-npm install
-npm run dev
-```
+Strict Security: Enhanced CSP and Permissions policies to protect medical data.
 
-### 📦 V1 (Legacy)
+Performance: Optimized for African internet conditions with Gzip compression and standalone output.
 
-- Root directory contains V1 code (main branch)
-- Fully backed up in `archive/v1` branch
-- See `CONTRIBUTORS-V1.md` for all V1 contributors
+🚀 Quick Start (V2)
+Clone & Navigate
 
----
+Bash
 
-## 🚀 Quick Start (V2)
-
-```bash
-# Clone the repository
 git clone https://github.com/Stellar-Uzima/Uzima-Frontend.git
 cd Uzima-Frontend
-
-# Switch to v2 development branch
 git checkout v2-redesign
-
-# Install and run
 cd frontend-v2
+Environment Setup
+
+Bash
+
+cp .env.example .env.local
+Installation & Development
+
+Bash
+
 npm install
 npm run dev
-```
+Open http://localhost:3000 to view the app.
 
-Open [http://localhost:3000](http://localhost:3000) to see the app.
+Analyze Bundle (Optional) To check performance and bundle sizes:
 
----
+Bash
 
-## 🔐 Environment Variables
+ANALYZE=true npm run build
+🔒 Security & Performance Features
+We have implemented a "Security-First" configuration in the Next.js core:
 
-This project uses environment variables to configure public and server-only settings.
+Content Security Policy (CSP): Strict rules to prevent XSS and data injection.
 
-### Important Notes (Next.js)
+HSTS: Enforced HTTPS for secure communication.
 
-- Variables prefixed with `NEXT_PUBLIC_` are **exposed to the browser**.
-- **Sensitive values (secrets) must NOT use `NEXT_PUBLIC_`**.
-- Server-only variables are only accessible in server-side code (API routes, server actions, etc.).
+Privacy-Focused: Browser features like camera, microphone, and geolocation are disabled by default via Permissions-Policy.
 
-### Setup
+Optimized Images: Support for remote medical imagery with built-in SVG protection.
 
-1. Copy the example file:
-   ```bash
-   cp .env.example .env.local
-   ```
+🤝 Contributing & Support
+Need Help?
+If you're stuck on the V2 migration or setting up the internationalization (next-intl), here is how to get help:
 
-## 🏗️ Tech Stack
+Check the Docs: Review MIGRATION-V2.md.
 
-### V2
+i18n Setup: Ensure your locale files in messages/ match the configuration in i18n.ts.
 
-- **Framework**: Next.js 14+ (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **UI Components**: shadcn/ui
-- **Blockchain**: Stellar SDK
+Open an Issue: Tag it with v2-redesign for a quicker response from the core team.
 
-### V1 (Legacy)
+Development Workflow
+Fork the repository.
 
-- Next.js
-- TypeScript
-- Tailwind CSS
+Create a feature branch from v2-redesign.
 
----
+Make your changes in frontend-v2/.
 
-## 🤝 Contributing
+Note: We currently ignore ESLint and TypeScript errors during builds to facilitate rapid migration development, but please try to fix errors locally!
 
-We're transitioning to **Drip Open Source**!
+Submit a pull request.
 
-- Check out [MIGRATION-V2.md](MIGRATION-V2.md) to understand the changes
-- New contribution guidelines coming soon
-- For now, focus contributions on the `frontend-v2/` directory in the `v2-redesign` branch
+📊 Project Status
+✅ V1 Completed (Hacktoberfest)
 
-### Development Workflow
+✅ V1 Archived
 
-1. Fork the repository
-2. Create a feature branch from `v2-redesign`
-3. Make your changes in `frontend-v2/`
-4. Submit a pull request
+🔄 V2 In Development (Internationalization & Security focus) ⏳ V2 Testing Phase
 
----
-
-## 🙏 Acknowledgments
-
-**V1 Contributors**: See [CONTRIBUTORS-V1.md](CONTRIBUTORS-V1.md) for all the amazing people who built our foundation during Hacktoberfest!
-
-Your contributions during Hacktoberfest helped shape this project. Thank you! 🎉
-
----
-
-## 📜 License
-
-[Your License Here]
-
----
-
-## 🔗 Links
-
-- **GitHub**: https://github.com/Stellar-Uzima/Uzima-Frontend
-- **Inspired by**: https://wazimahealth.com/services/
-- **Stellar**: https://stellar.org
-
----
-
-## 📊 Project Status
-
-- ✅ V1 Completed (Hacktoberfest)
-- ✅ V1 Archived
-- 🔄 V2 In Development (Drip Open Source)
-- ⏳ V2 Testing Phase
-- ⏳ Full Migration
-
----
-
-## 💡 About Drip Open Source
-
-This project is being prepared for Drip Open Source, which provides better rewards and recognition for quality contributions.
-
-Stay tuned for more updates!
+⏳ Full Migration
