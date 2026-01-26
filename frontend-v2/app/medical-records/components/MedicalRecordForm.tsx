@@ -15,7 +15,7 @@ interface MedicalRecordFormProps {
 export default function MedicalRecordForm({ onRecordAdded }: MedicalRecordFormProps) {
   const [patientName, setPatientName] = useState("");
   const [age, setAge] = useState("");
-  const [diagnosis, setDiagnosis] = useState("");
+  const [diagnosis, setDiagnosis] =  useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
