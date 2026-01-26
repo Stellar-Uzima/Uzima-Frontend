@@ -33,7 +33,7 @@ export default function TraditionalMedicinePage() {
     if (!selectedTreatment && traditionalTreatments.length > 0) {
       // Optional: setSelectedTreatment(traditionalTreatments[0])
     }
-  }, [])
+  }, [selectedTreatment])
 
   useEffect(() => {
     if (selectedTreatment) {

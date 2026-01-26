@@ -9,9 +9,6 @@ import {
   PersistQueryClientProvider,
 } from "@tanstack/react-query-persist-client";
 import {
-  createSyncStoragePersister,
-} from "@tanstack/query-persist-client-sync-storage";
-import {
   createIDBPersister,
 } from "@tanstack/query-persist-client-indexeddb";
 

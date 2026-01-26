@@ -25,7 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
 import { Navigation } from "@/components/layout/navigation";
 import { Footer } from "@/components/layout/footer";
@@ -67,83 +67,10 @@ const healthSlang = [
   "Asante sana for this knowledge! 🙏",
 ];
 
-const featuredPosts = [
-  {
-    id: 1,
-    title:
-      "Integrating Traditional Healing with Modern Medicine in Rural Kenya",
-    author: "Dr. Amina Hassan",
-    specialty: "Integrative Medicine",
-    content:
-      "Exploring how traditional Kikuyu healing practices can complement modern medical treatments for better patient outcomes...",
-    likes: 234,
-    shares: 45,
-    comments: 67,
-    xlmEarned: 12.5,
-    tags: ["Traditional Medicine", "Integration", "Kenya", "Rural Health"],
-    timeAgo: "2 hours ago",
-    avatar: "/placeholder.svg?height=40&width=40",
-    region: "East Africa",
-    language: "Swahili/English",
-  },
-  {
-    id: 2,
-    title: "Telemedicine Success Stories from Remote Nigerian Communities",
-    author: "Dr. Chidi Okafor",
-    specialty: "Telemedicine Specialist",
-    content:
-      "How satellite internet and mobile health apps are transforming healthcare delivery in Northern Nigeria...",
-    likes: 189,
-    shares: 32,
-    comments: 89,
-    xlmEarned: 9.8,
-    tags: ["Telemedicine", "Nigeria", "Remote Care", "Digital Health"],
-    timeAgo: "4 hours ago",
-    avatar: "/placeholder.svg?height=40&width=40",
-    region: "West Africa",
-    language: "Hausa/English",
-  },
-  {
-    id: 3,
-    title: "Community Health Workers: The Backbone of African Healthcare",
-    author: "Mama Fatima Kone",
-    specialty: "Community Health Leader",
-    content:
-      "Sharing 20 years of experience training and supporting community health workers across Mali...",
-    likes: 156,
-    shares: 28,
-    comments: 43,
-    xlmEarned: 8.2,
-    tags: ["Community Health", "Mali", "Training", "Healthcare Workers"],
-    timeAgo: "6 hours ago",
-    avatar: "/placeholder.svg?height=40&width=40",
-    region: "West Africa",
-    language: "Bambara/French",
-  },
-  {
-    id: 4,
-    title: "Offline-First Medical Records: A Game Changer for Rural Clinics",
-    author: "Dr. Nomsa Mbeki",
-    specialty: "Health Informatics",
-    content:
-      "How implementing offline-capable electronic health records improved patient care in South African townships...",
-    likes: 203,
-    shares: 56,
-    comments: 78,
-    xlmEarned: 11.3,
-    tags: ["Health Tech", "Offline", "South Africa", "EHR"],
-    timeAgo: "8 hours ago",
-    avatar: "/placeholder.svg?height=40&width=40",
-    region: "Southern Africa",
-    language: "Zulu/English",
-  },
-];
-
 export default function HomePage() {
   const [currentEmoji, setCurrentEmoji] = useState(0);
   const [currentSlang, setCurrentSlang] = useState(0);
   const isOnline = useNetworkStatus();
-  const [posts, setPosts] = useState(featuredPosts);
 
   useEffect(() => {
     const emojiInterval = setInterval(() => {
