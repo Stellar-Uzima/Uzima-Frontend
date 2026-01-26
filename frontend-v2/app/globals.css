@@ -1,5 +1,6 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -37,7 +38,7 @@
   --sidebar-accent-foreground: oklch(0.25 0.03 250);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.65 0.15 175);
-  
+
   /* Custom colors for Stellar Uzima */
   --navy: oklch(0.25 0.03 250);
   --teal: oklch(0.65 0.15 175);
@@ -81,8 +82,8 @@
 }
 
 @theme inline {
-  --font-sans: 'Geist', 'Geist Fallback';
-  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  --font-sans: "Geist", "Geist Fallback";
+  --font-mono: "Geist Mono", "Geist Mono Fallback";
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -163,7 +164,8 @@
 }
 
 @keyframes pulse-slow {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
