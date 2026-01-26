@@ -34,6 +34,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '../../src/routing';
+import { Toaster } from "@/components/ui/sonner"
 
 export default async function RootLayout({
   children,
@@ -55,13 +56,12 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
-      <body className={`font-sans antialiased`}>
-        <NextIntlClientProvider messages={messages}>
-          {children}
-          <Analytics />
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <NextIntlClientProvider messages={messages}>
+      <div lang={locale}>
+        {children}
+        <Analytics />
+        <Toaster />
+      </div>
+    </NextIntlClientProvider>
   )
 }

@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link } from '@/src/routing'
 import { Facebook, Twitter, Linkedin, Instagram } from "lucide-react"
 
 export function Footer() {

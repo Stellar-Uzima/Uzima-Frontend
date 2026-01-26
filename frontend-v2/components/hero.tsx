@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
-import Link from "next/link"
+import { Link } from '@/src/routing'
 import { useState, useEffect } from "react"
 import { Loader2 } from "lucide-react"
 
