@@ -1,4 +1,4 @@
-import { syncRecords } from '@/services/SyncService';
+import { syncRecords } from '@/src/services/SyncService';
 import React, { useEffect } from 'react';
 import RecordForm from '../../components/RecordForm';
 

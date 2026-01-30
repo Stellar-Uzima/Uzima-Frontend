@@ -663,12 +663,12 @@ export default function EducationPage() {
 
                         <div>
                           <p className="text-sm text-gray-600 mb-2">
-                            What you'll learn
+                          What you&apos;ll learn
                           </p>
                           <div className="space-y-2">
-                            {selectedCourse.tags.map((tag, idx) => (
+                            {selectedCourse.tags.map((tag) => (
                               <div
-                                key={idx}
+                                key={tag}
                                 className="flex items-center space-x-2"
                               >
                                 <CheckCircle className="w-4 h-4 text-green-500" />
@@ -707,7 +707,7 @@ export default function EducationPage() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-3">
-                        {sampleLessons.map((lesson, idx) => (
+                        {sampleLessons.map((lesson) => (
                           <div
                             key={lesson.id}
                             className={`flex items-center justify-between p-3 rounded-lg ${
@@ -811,7 +811,7 @@ export default function EducationPage() {
                   <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
                     <CardContent className="p-6 text-center text-gray-600">
                       <Play className="w-8 h-8 mx-auto text-gray-400 mb-3" />
-                      <p>You haven't started any courses yet. Go to **All Courses** to begin!</p>
+                      <p>You haven&apos;t started any courses yet. Go to **All Courses** to begin!</p>
                     </CardContent>
                   </Card>
                 )}
@@ -882,7 +882,7 @@ export default function EducationPage() {
                   <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
                     <CardContent className="p-6 text-center text-gray-600">
                       <Download className="w-8 h-8 mx-auto text-gray-400 mb-3" />
-                      <p>You haven't downloaded any courses yet. Use the **Offline** badge on course cards to save content for offline access!</p>
+                      <p>You haven&apos;t downloaded any courses yet. Use the **Offline** badge on course cards to save content for offline access!</p>
                     </CardContent>
                   </Card>
                 )}

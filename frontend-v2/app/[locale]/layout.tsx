@@ -3,6 +3,12 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
+import { notFound } from 'next/navigation';
+import { routing } from '../../src/routing';
+import { WalletProvider } from "@/context/WalletProvider"
+
 
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
@@ -30,10 +36,6 @@ export const metadata: Metadata = {
   },
 }
 
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
-import { notFound } from 'next/navigation';
-import { routing } from '../../src/routing';
 
 export default async function RootLayout({
   children,
@@ -57,10 +59,12 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body className={`font-sans antialiased`}>
+        <WalletProvider>
         <NextIntlClientProvider messages={messages}>
           {children}
           <Analytics />
         </NextIntlClientProvider>
+        </WalletProvider>
       </body>
     </html>
   )
