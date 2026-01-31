@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useCallback } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart,
   Wifi,
@@ -15,34 +15,34 @@ import {
   Clock,
   Download,
   Upload,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface MedicalRecord {
-  id: string
-  patientName: string
-  patientId: string
-  age: number
-  gender: string
-  diagnosis: string
-  treatment: string
-  date: string
-  status: "active" | "completed" | "pending"
+  id: string;
+  patientName: string;
+  patientId: string;
+  age: number;
+  gender: string;
+  diagnosis: string;
+  treatment: string;
+  date: string;
+  status: "active" | "completed" | "pending";
   vitals: {
-    bloodPressure: string
-    heartRate: number
-    temperature: number
-    weight: number
-  }
-  medications: string[]
-  notes: string
-  lastSync: string
-  isOfflineCreated: boolean
+    bloodPressure: string;
+    heartRate: number;
+    temperature: number;
+    weight: number;
+  };
+  medications: string[];
+  notes: string;
+  lastSync: string;
+  isOfflineCreated: boolean;
 }
 
 const mockRecords: MedicalRecord[] = [
@@ -109,52 +109,57 @@ const mockRecords: MedicalRecord[] = [
     lastSync: "2024-01-13T09:20:00Z",
     isOfflineCreated: true,
   },
-]
+];
 
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 export default function MedicalRecordsPage() {
-  const [isOnline, setIsOnline] = useState(true)
-  const [records, setRecords] = useState<MedicalRecord[]>(mockRecords)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedRecord, setSelectedRecord] = useState<MedicalRecord | null>(null)
-  const [syncStatus, setSyncStatus] = useState<"idle" | "syncing" | "success" | "error">("idle")
-  const [pendingSync, setPendingSync] = useState(0)
+  const [isOnline, setIsOnline] = useState(true);
+  const [records, setRecords] = useState<MedicalRecord[]>(mockRecords);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedRecord, setSelectedRecord] = useState<MedicalRecord | null>(
+    null,
+  );
+  const [syncStatus, setSyncStatus] = useState<
+    "idle" | "syncing" | "success" | "error"
+  >("idle");
+  const [pendingSync, setPendingSync] = useState(0);
 
   // Simulate network status
   useEffect(() => {
-    const handleOnline = () => setIsOnline(true)
-    const handleOffline = () => setIsOnline(false)
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
 
-    window.addEventListener("online", handleOnline)
-    window.addEventListener("offline", handleOffline)
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
 
     // Simulate intermittent connectivity
     const interval = setInterval(() => {
-      setIsOnline((prev) => (Math.random() > 0.8 ? !prev : prev))
-    }, 10000)
+      setIsOnline((prev) => (Math.random() > 0.8 ? !prev : prev));
+    }, 10000);
 
     return () => {
-      window.removeEventListener("online", handleOnline)
-      window.removeEventListener("offline", handleOffline)
-      clearInterval(interval)
-    }
-  }, [])
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+      clearInterval(interval);
+    };
+  }, []);
 
   // Count offline-created records
   useEffect(() => {
-    const offlineRecords = records.filter((record) => record.isOfflineCreated).length
-    setPendingSync(offlineRecords)
-  }, [records])
+    const offlineRecords = records.filter(
+      (record) => record.isOfflineCreated,
+    ).length;
+    setPendingSync(offlineRecords);
+  }, [records]);
 
-  // Handle sync function with useCallback to prevent dependency issues
   const handleSync = useCallback(async () => {
-    if (!isOnline) return
+    if (!isOnline) return;
 
-    setSyncStatus("syncing")
+    setSyncStatus("syncing");
 
     // Simulate sync process
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     // Update records to mark as synced
     setRecords((prev) =>
@@ -163,41 +168,41 @@ export default function MedicalRecordsPage() {
         isOfflineCreated: false,
         lastSync: new Date().toISOString(),
       })),
-    )
+    );
 
-    setSyncStatus("success")
-    setTimeout(() => setSyncStatus("idle"), 3000)
-  }, [isOnline])
+    setSyncStatus("success");
+    setTimeout(() => setSyncStatus("idle"), 3000);
+  }, [isOnline]);
 
   // Auto-sync when online
   useEffect(() => {
     if (isOnline && pendingSync > 0) {
-      handleSync()
+      handleSync();
     }
-  }, [isOnline, pendingSync, handleSync])
+  }, [isOnline, pendingSync, handleSync]);
 
   const filteredRecords = records.filter(
     (record) =>
       record.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       record.patientId.toLowerCase().includes(searchTerm.toLowerCase()) ||
       record.diagnosis.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+  );
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
-        return "bg-blue-100 text-blue-800"
+        return "bg-blue-100 text-blue-800";
       case "completed":
-        return "bg-green-100 text-green-800"
+        return "bg-green-100 text-green-800";
       case "pending":
-        return "bg-yellow-100 text-yellow-800"
+        return "bg-yellow-100 text-yellow-800";
       default:
-        return "bg-gray-100 text-gray-800"
+        return "bg-gray-100 text-gray-800";
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
+    <div className="min-h-screen bg-linear-to-br from-emerald-50 via-teal-50 to-cyan-50">
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-md border-b border-emerald-200 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
@@ -205,16 +210,22 @@ export default function MedicalRecordsPage() {
             <div className="flex items-center space-x-3">
               <motion.div
                 animate={{ rotate: 360 }}
-                transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                transition={{
+                  duration: 2,
+                  repeat: Number.POSITIVE_INFINITY,
+                  ease: "linear",
+                }}
                 className="text-3xl"
               >
                 🏥
               </motion.div>
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                <h1 className="text-2xl font-bold bg-linear-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
                   Medical Records
                 </h1>
-                <p className="text-sm text-emerald-600">Offline-First Healthcare Management</p>
+                <p className="text-sm text-emerald-600">
+                  Offline-First Healthcare Management
+                </p>
               </div>
             </div>
 
@@ -222,18 +233,28 @@ export default function MedicalRecordsPage() {
               {/* Connection Status */}
               <div
                 className={`flex items-center space-x-2 px-3 py-1 rounded-full ${
-                  isOnline ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                  isOnline
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-700"
                 }`}
               >
-                {isOnline ? <Wifi className="w-4 h-4" /> : <WifiOff className="w-4 h-4" />}
-                <span className="text-sm font-medium">{isOnline ? "Online" : "Offline"}</span>
+                {isOnline ? (
+                  <Wifi className="w-4 h-4" />
+                ) : (
+                  <WifiOff className="w-4 h-4" />
+                )}
+                <span className="text-sm font-medium">
+                  {isOnline ? "Online" : "Offline"}
+                </span>
               </div>
 
               {/* Sync Status */}
               {pendingSync > 0 && (
                 <div className="flex items-center space-x-2 bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full">
                   <Clock className="w-4 h-4" />
-                  <span className="text-sm font-medium">{pendingSync} pending sync</span>
+                  <span className="text-sm font-medium">
+                    {pendingSync} pending sync
+                  </span>
                 </div>
               )}
 
@@ -241,10 +262,16 @@ export default function MedicalRecordsPage() {
               <Button
                 onClick={handleSync}
                 disabled={!isOnline || syncStatus === "syncing"}
-                className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
+                className="bg-linear-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
               >
                 {syncStatus === "syncing" ? (
-                  <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY }}>
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{
+                      duration: 1,
+                      repeat: Number.POSITIVE_INFINITY,
+                    }}
+                  >
                     <Upload className="w-4 h-4 mr-2" />
                   </motion.div>
                 ) : (
@@ -273,7 +300,7 @@ export default function MedicalRecordsPage() {
                     className="pl-10 border-emerald-200 focus:border-emerald-400"
                   />
                 </div>
-                <Button className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600">
+                <Button className="bg-linear-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600">
                   <Plus className="w-4 h-4 mr-2" />
                   New Record
                 </Button>
@@ -298,7 +325,9 @@ export default function MedicalRecordsPage() {
                         <div className="flex items-start justify-between mb-4">
                           <div className="flex items-center space-x-3">
                             <Avatar>
-                              <AvatarImage src={`/placeholder.svg?height=40&width=40`} />
+                              <AvatarImage
+                                src={`/placeholder.svg?height=40&width=40`}
+                              />
                               <AvatarFallback>
                                 {record.patientName
                                   .split(" ")
@@ -307,14 +336,23 @@ export default function MedicalRecordsPage() {
                               </AvatarFallback>
                             </Avatar>
                             <div>
-                              <h3 className="font-semibold text-gray-800">{record.patientName}</h3>
-                              <p className="text-sm text-gray-600">ID: {record.patientId}</p>
+                              <h3 className="font-semibold text-gray-800">
+                                {record.patientName}
+                              </h3>
+                              <p className="text-sm text-gray-600">
+                                ID: {record.patientId}
+                              </p>
                             </div>
                           </div>
                           <div className="flex items-center space-x-2">
-                            <Badge className={getStatusColor(record.status)}>{record.status}</Badge>
+                            <Badge className={getStatusColor(record.status)}>
+                              {record.status}
+                            </Badge>
                             {record.isOfflineCreated && (
-                              <Badge variant="outline" className="border-orange-200 text-orange-600">
+                              <Badge
+                                variant="outline"
+                                className="border-orange-200 text-orange-600"
+                              >
                                 <WifiOff className="w-3 h-3 mr-1" />
                                 Offline
                               </Badge>
@@ -333,16 +371,23 @@ export default function MedicalRecordsPage() {
                           </div>
                           <div>
                             <p className="text-xs text-gray-500">Diagnosis</p>
-                            <p className="font-medium text-emerald-600">{record.diagnosis}</p>
+                            <p className="font-medium text-emerald-600">
+                              {record.diagnosis}
+                            </p>
                           </div>
                           <div>
                             <p className="text-xs text-gray-500">Date</p>
-                            <p className="font-medium">{new Date(record.date).toLocaleDateString()}</p>
+                            <p className="font-medium">
+                              {new Date(record.date).toLocaleDateString()}
+                            </p>
                           </div>
                         </div>
 
                         <div className="flex items-center justify-between text-sm text-gray-500">
-                          <span>Last sync: {new Date(record.lastSync).toLocaleString()}</span>
+                          <span>
+                            Last sync:{" "}
+                            {new Date(record.lastSync).toLocaleString()}
+                          </span>
                           <div className="flex items-center space-x-4">
                             <span className="flex items-center">
                               <Heart className="w-4 h-4 mr-1 text-red-500" />
@@ -388,22 +433,34 @@ export default function MedicalRecordsPage() {
                               .join("")}
                           </AvatarFallback>
                         </Avatar>
-                        <h3 className="font-semibold text-lg">{selectedRecord.patientName}</h3>
-                        <p className="text-gray-600">ID: {selectedRecord.patientId}</p>
+                        <h3 className="font-semibold text-lg">
+                          {selectedRecord.patientName}
+                        </h3>
+                        <p className="text-gray-600">
+                          ID: {selectedRecord.patientId}
+                        </p>
                       </div>
 
                       <div className="space-y-3">
                         <div className="flex justify-between">
                           <span className="text-gray-600">Age:</span>
-                          <span className="font-medium">{selectedRecord.age} years</span>
+                          <span className="font-medium">
+                            {selectedRecord.age} years
+                          </span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-600">Gender:</span>
-                          <span className="font-medium">{selectedRecord.gender}</span>
+                          <span className="font-medium">
+                            {selectedRecord.gender}
+                          </span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-600">Status:</span>
-                          <Badge className={getStatusColor(selectedRecord.status)}>{selectedRecord.status}</Badge>
+                          <Badge
+                            className={getStatusColor(selectedRecord.status)}
+                          >
+                            {selectedRecord.status}
+                          </Badge>
                         </div>
                       </div>
                     </TabsContent>
@@ -413,42 +470,66 @@ export default function MedicalRecordsPage() {
                         <div className="text-center p-3 bg-red-50 rounded-lg">
                           <Heart className="w-6 h-6 text-red-500 mx-auto mb-1" />
                           <p className="text-sm text-gray-600">Heart Rate</p>
-                          <p className="font-bold text-red-600">{selectedRecord.vitals.heartRate} bpm</p>
+                          <p className="font-bold text-red-600">
+                            {selectedRecord.vitals.heartRate} bpm
+                          </p>
                         </div>
                         <div className="text-center p-3 bg-blue-50 rounded-lg">
                           <Stethoscope className="w-6 h-6 text-blue-500 mx-auto mb-1" />
-                          <p className="text-sm text-gray-600">Blood Pressure</p>
-                          <p className="font-bold text-blue-600">{selectedRecord.vitals.bloodPressure}</p>
+                          <p className="text-sm text-gray-600">
+                            Blood Pressure
+                          </p>
+                          <p className="font-bold text-blue-600">
+                            {selectedRecord.vitals.bloodPressure}
+                          </p>
                         </div>
                         <div className="text-center p-3 bg-orange-50 rounded-lg">
                           <span className="text-2xl">🌡️</span>
                           <p className="text-sm text-gray-600">Temperature</p>
-                          <p className="font-bold text-orange-600">{selectedRecord.vitals.temperature}°C</p>
+                          <p className="font-bold text-orange-600">
+                            {selectedRecord.vitals.temperature}°C
+                          </p>
                         </div>
                         <div className="text-center p-3 bg-green-50 rounded-lg">
                           <span className="text-2xl">⚖️</span>
                           <p className="text-sm text-gray-600">Weight</p>
-                          <p className="font-bold text-green-600">{selectedRecord.vitals.weight} kg</p>
+                          <p className="font-bold text-green-600">
+                            {selectedRecord.vitals.weight} kg
+                          </p>
                         </div>
                       </div>
                     </TabsContent>
 
                     <TabsContent value="treatment" className="space-y-4">
                       <div>
-                        <h4 className="font-medium text-gray-800 mb-2">Diagnosis</h4>
-                        <p className="text-emerald-600 font-medium">{selectedRecord.diagnosis}</p>
+                        <h4 className="font-medium text-gray-800 mb-2">
+                          Diagnosis
+                        </h4>
+                        <p className="text-emerald-600 font-medium">
+                          {selectedRecord.diagnosis}
+                        </p>
                       </div>
 
                       <div>
-                        <h4 className="font-medium text-gray-800 mb-2">Treatment Plan</h4>
-                        <p className="text-gray-600">{selectedRecord.treatment}</p>
+                        <h4 className="font-medium text-gray-800 mb-2">
+                          Treatment Plan
+                        </h4>
+                        <p className="text-gray-600">
+                          {selectedRecord.treatment}
+                        </p>
                       </div>
 
                       <div>
-                        <h4 className="font-medium text-gray-800 mb-2">Medications</h4>
+                        <h4 className="font-medium text-gray-800 mb-2">
+                          Medications
+                        </h4>
                         <div className="space-y-1">
                           {selectedRecord.medications.map((med, index) => (
-                            <Badge key={index} variant="outline" className="mr-2 mb-1">
+                            <Badge
+                              key={index}
+                              variant="outline"
+                              className="mr-2 mb-1"
+                            >
                               {med}
                             </Badge>
                           ))}
@@ -456,8 +537,12 @@ export default function MedicalRecordsPage() {
                       </div>
 
                       <div>
-                        <h4 className="font-medium text-gray-800 mb-2">Notes</h4>
-                        <p className="text-gray-600 text-sm">{selectedRecord.notes}</p>
+                        <h4 className="font-medium text-gray-800 mb-2">
+                          Notes
+                        </h4>
+                        <p className="text-gray-600 text-sm">
+                          {selectedRecord.notes}
+                        </p>
                       </div>
                     </TabsContent>
                   </Tabs>
@@ -467,7 +552,9 @@ export default function MedicalRecordsPage() {
               <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
                 <CardContent className="p-8 text-center">
                   <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">Select a patient record to view details</p>
+                  <p className="text-gray-600">
+                    Select a patient record to view details
+                  </p>
                 </CardContent>
               </Card>
             )}
@@ -490,13 +577,17 @@ export default function MedicalRecordsPage() {
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Connection:</span>
-                    <span className={`font-medium ${isOnline ? "text-green-600" : "text-red-600"}`}>
+                    <span
+                      className={`font-medium ${isOnline ? "text-green-600" : "text-red-600"}`}
+                    >
                       {isOnline ? "Online" : "Offline"}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Pending Sync:</span>
-                    <span className="font-medium text-orange-600">{pendingSync} records</span>
+                    <span className="font-medium text-orange-600">
+                      {pendingSync} records
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Last Sync:</span>
@@ -524,5 +615,5 @@ export default function MedicalRecordsPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

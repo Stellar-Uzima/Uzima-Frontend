@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import {
   Card,
   CardContent,
@@ -230,7 +231,7 @@ export default function ExplorePage() {
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedStories = filteredStories.slice(
     startIndex,
-    startIndex + ITEMS_PER_PAGE
+    startIndex + ITEMS_PER_PAGE,
   );
 
   // Reset to page 1 when filters change
@@ -382,9 +383,12 @@ export default function ExplorePage() {
                   key={story.id}
                   className="flex flex-col hover:shadow-lg transition-shadow"
                 >
-                  <img
+                  <Image
                     src={story.image || "/placeholder.svg"}
                     alt={story.title}
+                    width={500}
+                    height={300}
+                    priority={true}
                     className="w-full h-48 object-cover rounded-t-lg"
                   />
                   <CardHeader>
@@ -451,7 +455,7 @@ export default function ExplorePage() {
                       >
                         {page}
                       </Button>
-                    )
+                    ),
                   )}
                 </div>
 

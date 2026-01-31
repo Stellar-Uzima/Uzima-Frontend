@@ -30,9 +30,9 @@ import Link from "next/link";
 import { Navigation } from "@/components/layout/navigation";
 import { Footer } from "@/components/layout/footer";
 import Image from "next/image";
-import { useNetworkStatus } from '@/hooks/useNetworkStatus';
+import { useNetworkStatus } from "@/hooks/useNetworkStatus";
 
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 const healthEmojis = [
   "🏥",
@@ -67,10 +67,83 @@ const healthSlang = [
   "Asante sana for this knowledge! 🙏",
 ];
 
+const featuredPosts = [
+  {
+    id: 1,
+    title:
+      "Integrating Traditional Healing with Modern Medicine in Rural Kenya",
+    author: "Dr. Amina Hassan",
+    specialty: "Integrative Medicine",
+    content:
+      "Exploring how traditional Kikuyu healing practices can complement modern medical treatments for better patient outcomes...",
+    likes: 234,
+    shares: 45,
+    comments: 67,
+    xlmEarned: 12.5,
+    tags: ["Traditional Medicine", "Integration", "Kenya", "Rural Health"],
+    timeAgo: "2 hours ago",
+    avatar: "/placeholder.svg?height=40&width=40",
+    region: "East Africa",
+    language: "Swahili/English",
+  },
+  {
+    id: 2,
+    title: "Telemedicine Success Stories from Remote Nigerian Communities",
+    author: "Dr. Chidi Okafor",
+    specialty: "Telemedicine Specialist",
+    content:
+      "How satellite internet and mobile health apps are transforming healthcare delivery in Northern Nigeria...",
+    likes: 189,
+    shares: 32,
+    comments: 89,
+    xlmEarned: 9.8,
+    tags: ["Telemedicine", "Nigeria", "Remote Care", "Digital Health"],
+    timeAgo: "4 hours ago",
+    avatar: "/placeholder.svg?height=40&width=40",
+    region: "West Africa",
+    language: "Hausa/English",
+  },
+  {
+    id: 3,
+    title: "Community Health Workers: The Backbone of African Healthcare",
+    author: "Mama Fatima Kone",
+    specialty: "Community Health Leader",
+    content:
+      "Sharing 20 years of experience training and supporting community health workers across Mali...",
+    likes: 156,
+    shares: 28,
+    comments: 43,
+    xlmEarned: 8.2,
+    tags: ["Community Health", "Mali", "Training", "Healthcare Workers"],
+    timeAgo: "6 hours ago",
+    avatar: "/placeholder.svg?height=40&width=40",
+    region: "West Africa",
+    language: "Bambara/French",
+  },
+  {
+    id: 4,
+    title: "Offline-First Medical Records: A Game Changer for Rural Clinics",
+    author: "Dr. Nomsa Mbeki",
+    specialty: "Health Informatics",
+    content:
+      "How implementing offline-capable electronic health records improved patient care in South African townships...",
+    likes: 203,
+    shares: 56,
+    comments: 78,
+    xlmEarned: 11.3,
+    tags: ["Health Tech", "Offline", "South Africa", "EHR"],
+    timeAgo: "8 hours ago",
+    avatar: "/placeholder.svg?height=40&width=40",
+    region: "Southern Africa",
+    language: "Zulu/English",
+  },
+];
+
 export default function HomePage() {
   const [currentEmoji, setCurrentEmoji] = useState(0);
   const [currentSlang, setCurrentSlang] = useState(0);
   const isOnline = useNetworkStatus();
+  // const [posts, setPosts] = useState(featuredPosts);
 
   useEffect(() => {
     const emojiInterval = setInterval(() => {
@@ -88,7 +161,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
+    <div className="min-h-screen bg-linear-to-br from-emerald-50 via-teal-50 to-cyan-50">
       <Navigation />
 
       <main id="main-content">
@@ -113,7 +186,7 @@ export default function HomePage() {
                 </AnimatePresence>
               </div>
 
-              <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
+              <h1 className="text-5xl font-bold mb-4 bg-linear-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
                 Ubuntu Healthcare for Africa
               </h1>
 
@@ -136,10 +209,11 @@ export default function HomePage() {
               {/* Connection Status */}
               <div className="flex justify-center mb-8">
                 <div
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-full ${isOnline
-                    ? "bg-green-100 text-green-700"
-                    : "bg-orange-100 text-orange-700"
-                    }`}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-full ${
+                    isOnline
+                      ? "bg-green-100 text-green-700"
+                      : "bg-orange-100 text-orange-700"
+                  }`}
                 >
                   {isOnline ? (
                     <Wifi className="w-5 h-5" />
@@ -278,7 +352,7 @@ export default function HomePage() {
                 >
                   <Badge
                     variant="secondary"
-                    className="px-4 py-2 bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-700 hover:from-emerald-200 hover:to-teal-200 cursor-pointer"
+                    className="px-4 py-2 bg-linear-to-r from-emerald-100 to-teal-100 text-emerald-700 hover:from-emerald-200 hover:to-teal-200 cursor-pointer"
                   >
                     #{topic}
                   </Badge>
@@ -324,7 +398,7 @@ export default function HomePage() {
               </h3>
               <Link href="/create">
                 <Button
-                  className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
+                  className="bg-linear-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
                   aria-label="Share your own healthcare story"
                 >
                   <Plus className="w-4 h-4 mr-2" aria-hidden="true" />
@@ -334,7 +408,7 @@ export default function HomePage() {
             </div>
 
             <div className="grid gap-6 max-w-6xl mx-auto">
-              {[].map((post: any, index: number) => (
+              {featuredPosts.map((post, index) => (
                 <motion.div
                   key={post.id}
                   initial={{ opacity: 0, y: 20 }}
@@ -342,9 +416,7 @@ export default function HomePage() {
                   transition={{ delay: index * 0.1 }}
                 >
                   <article>
-                    <Card
-                      className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300"
-                    >
+                    <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300">
                       <CardHeader>
                         <div className="flex items-start justify-between">
                           <div className="flex items-center space-x-3">
@@ -359,7 +431,7 @@ export default function HomePage() {
                               <AvatarFallback>
                                 {post.author
                                   .split(" ")
-                                  .map((n: string) => n[0])
+                                  .map((n) => n[0])
                                   .join("")}
                               </AvatarFallback>
                             </Avatar>
@@ -399,7 +471,7 @@ export default function HomePage() {
                         <p className="text-gray-600 mb-4">{post.content}</p>
 
                         <div className="flex flex-wrap gap-2 mb-4">
-                          {post.tags.map((tag: string, tagIndex: number) => (
+                          {post.tags.map((tag, tagIndex) => (
                             <Badge
                               key={tagIndex}
                               variant="outline"
@@ -454,7 +526,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="py-16 px-4 bg-gradient-to-r from-emerald-100 to-teal-100">
+        <section className="py-16 px-4 bg-linear-to-r from-emerald-100 to-teal-100">
           <div className="container mx-auto text-center">
             <h3 className="text-3xl font-bold mb-4 text-emerald-800">
               Ubuntu - We Heal Together
@@ -494,7 +566,10 @@ export default function HomePage() {
                   className="text-center"
                 >
                   <div className="w-16 h-16 bg-emerald-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <feature.icon className="w-8 h-8 text-emerald-600" aria-hidden="true" />
+                    <feature.icon
+                      className="w-8 h-8 text-emerald-600"
+                      aria-hidden="true"
+                    />
                   </div>
                   <h4 className="text-xl font-semibold text-emerald-800 mb-2">
                     {feature.title}

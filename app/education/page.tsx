@@ -285,23 +285,23 @@ export default function EducationPage() {
               ...course,
               isDownloaded: !course.isDownloaded,
             }
-          : course
-      )
+          : course,
+      ),
     );
   };
 
   const ongoingCourses = myCourses.filter(
-    (course) => course.progress !== undefined && course.progress > 0
+    (course) => course.progress !== undefined && course.progress > 0,
   );
 
   const downloadedCourses = myCourses.filter(
-    (course) => course.isDownloaded && course.isOfflineAvailable
+    (course) => course.isDownloaded && course.isOfflineAvailable,
   );
-  
+
   const totalCourses = initialCourses.length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-linear-to-br from-purple-50 via-blue-50 to-indigo-50">
       <Navigation />
 
       {/* Header */}
@@ -314,7 +314,7 @@ export default function EducationPage() {
             <div className="text-6xl mb-4">
               <BookOpen className="w-16 h-16 mx-auto text-purple-600" />
             </div>
-            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold mb-4 bg-linear-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
               Health Education for Africa
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
@@ -351,9 +351,15 @@ export default function EducationPage() {
       <div className="container mx-auto px-4 pb-12">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-4 max-w-2xl mx-auto mb-8">
-            <TabsTrigger value="courses">All Courses ({totalCourses})</TabsTrigger>
-            <TabsTrigger value="my-learning">My Learning ({ongoingCourses.length})</TabsTrigger>
-            <TabsTrigger value="downloads">Downloads ({downloadedCourses.length})</TabsTrigger>
+            <TabsTrigger value="courses">
+              All Courses ({totalCourses})
+            </TabsTrigger>
+            <TabsTrigger value="my-learning">
+              My Learning ({ongoingCourses.length})
+            </TabsTrigger>
+            <TabsTrigger value="downloads">
+              Downloads ({downloadedCourses.length})
+            </TabsTrigger>
             <TabsTrigger value="certificates">Certificates</TabsTrigger>
           </TabsList>
 
@@ -430,7 +436,7 @@ export default function EducationPage() {
                           <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300">
                             <CardContent className="p-6">
                               <div className="flex items-start space-x-4">
-                                <div className="w-24 h-16 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <div className="w-24 h-16 bg-purple-100 rounded-lg flex items-center justify-center shrink-0">
                                   <BookOpen className="w-8 h-8 text-purple-600" />
                                 </div>
 
@@ -663,12 +669,12 @@ export default function EducationPage() {
 
                         <div>
                           <p className="text-sm text-gray-600 mb-2">
-                          What you&apos;ll learn
+                            What you&apos;ll learn
                           </p>
                           <div className="space-y-2">
-                            {selectedCourse.tags.map((tag) => (
+                            {selectedCourse.tags.map((tag, idx) => (
                               <div
-                                key={tag}
+                                key={idx}
                                 className="flex items-center space-x-2"
                               >
                                 <CheckCircle className="w-4 h-4 text-green-500" />
@@ -811,7 +817,10 @@ export default function EducationPage() {
                   <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
                     <CardContent className="p-6 text-center text-gray-600">
                       <Play className="w-8 h-8 mx-auto text-gray-400 mb-3" />
-                      <p>You haven&apos;t started any courses yet. Go to **All Courses** to begin!</p>
+                      <p>
+                        You haven&apos;t started any courses yet. Go to **All
+                        Courses** to begin!
+                      </p>
                     </CardContent>
                   </Card>
                 )}
@@ -827,7 +836,8 @@ export default function EducationPage() {
                 Offline Downloads ({downloadedCourses.length})
               </h2>
               <p className="text-gray-600 mb-6">
-                Access these courses anytime, even without an internet connection.
+                Access these courses anytime, even without an internet
+                connection.
               </p>
 
               <div className="grid gap-6">
@@ -842,37 +852,41 @@ export default function EducationPage() {
                       <Card className="bg-blue-50 border border-blue-200 shadow-md">
                         <CardContent className="p-4 flex items-center justify-between">
                           <div className="flex items-center space-x-4">
-                            <CloudDownload className="w-6 h-6 text-blue-600 flex-shrink-0" />
-                            <div className='flex-1'>
+                            <CloudDownload className="w-6 h-6 text-blue-600 shrink-0" />
+                            <div className="flex-1">
                               <h3 className="font-semibold text-gray-800 text-base">
                                 {course.title}
                               </h3>
                               <div className="flex items-center space-x-2 text-sm text-gray-600">
-                                  <Clock className="w-4 h-4" />
-                                  <span>{course.duration}</span>
-                                  {course.progress !== undefined && course.progress > 0 && (
+                                <Clock className="w-4 h-4" />
+                                <span>{course.duration}</span>
+                                {course.progress !== undefined &&
+                                  course.progress > 0 && (
                                     <>
-                                        <Badge variant="outline" className="bg-white text-purple-700">
-                                            Progress: {course.progress}%
-                                        </Badge>
+                                      <Badge
+                                        variant="outline"
+                                        className="bg-white text-purple-700"
+                                      >
+                                        Progress: {course.progress}%
+                                      </Badge>
                                     </>
                                   )}
                               </div>
                             </div>
                           </div>
                           <div className="flex space-x-2">
-                              <Button 
-                                  variant="outline" 
-                                  size="icon" 
-                                  className="border-red-300 text-red-600 hover:bg-red-100"
-                                  onClick={() => handleDownloadToggle(course.id)}
-                                  aria-label={`Remove download for ${course.title}`}
-                              >
-                                  <Trash2 className="w-4 h-4" />
-                              </Button>
-                              <Button className="bg-purple-500 hover:bg-blue-600">
-                                  View Offline
-                              </Button>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="border-red-300 text-red-600 hover:bg-red-100"
+                              onClick={() => handleDownloadToggle(course.id)}
+                              aria-label={`Remove download for ${course.title}`}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                            <Button className="bg-purple-500 hover:bg-blue-600">
+                              View Offline
+                            </Button>
                           </div>
                         </CardContent>
                       </Card>
@@ -882,7 +896,11 @@ export default function EducationPage() {
                   <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
                     <CardContent className="p-6 text-center text-gray-600">
                       <Download className="w-8 h-8 mx-auto text-gray-400 mb-3" />
-                      <p>You haven&apos;t downloaded any courses yet. Use the **Offline** badge on course cards to save content for offline access!</p>
+                      <p>
+                        You haven&apos;t downloaded any courses yet. Use the
+                        **Offline** badge on course cards to save content for
+                        offline access!
+                      </p>
                     </CardContent>
                   </Card>
                 )}
@@ -898,7 +916,8 @@ export default function EducationPage() {
                 Your Achievements
               </h2>
               <p className="text-lg text-gray-600 mb-8">
-                Certificates you earn upon course completion will appear here. Keep up the great work!
+                Certificates you earn upon course completion will appear here.
+                Keep up the great work!
               </p>
               <Button className="bg-purple-500 hover:bg-purple-600">
                 Explore Courses to Earn Certificates

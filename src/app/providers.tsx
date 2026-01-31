@@ -1,10 +1,15 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-import {
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { createIDBPersister } from "@tanstack/query-persist-client-indexeddb";
+
+// Setup IndexedDB persister
+const idbPersister = createIDBPersister({
+  dbName: "reactQuery", // database name
+  storeName: "reactQuery", // store name
+});
 
 // Providers wrapper
 export default function Providers({ children }: { children: ReactNode }) {
@@ -19,12 +24,15 @@ export default function Providers({ children }: { children: ReactNode }) {
             staleTime: 1000 * 60 * 5, // 5 minutes
           },
         },
-      })
+      }),
   );
 
   return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{ persister: idbPersister }}
+    >
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </PersistQueryClientProvider>
   );
 }
