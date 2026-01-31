@@ -28,13 +28,12 @@ export default function TraditionalMedicinePage() {
 
   // Default to first treatment if none selected? Or null. Let's start with null for "Select One" state.
   // Actually, for better UX on desktop, selecting the first one is nice.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     // Only select first if nothing selected and filtered list is not empty
     if (!selectedTreatment && traditionalTreatments.length > 0) {
       // Optional: setSelectedTreatment(traditionalTreatments[0])
     }
-  }, [selectedTreatment, traditionalTreatments]);
+  }, [selectedTreatment]);
 
   useEffect(() => {
     if (selectedTreatment) {

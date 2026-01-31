@@ -53,7 +53,6 @@ function Calendar({
         day_hidden: "invisible",
         ...classNames,
       }}
-      /* eslint-disable no-unused-vars */
       components={{
         IconLeft: ({ ...props }) => (
           <ChevronLeft className="h-4 w-4" {...props} />

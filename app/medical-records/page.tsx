@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart,
@@ -153,7 +153,7 @@ export default function MedicalRecordsPage() {
     setPendingSync(offlineRecords);
   }, [records]);
 
-  const handleSync = async () => {
+  const handleSync = useCallback(async () => {
     if (!isOnline) return;
 
     setSyncStatus("syncing");
@@ -172,14 +172,14 @@ export default function MedicalRecordsPage() {
 
     setSyncStatus("success");
     setTimeout(() => setSyncStatus("idle"), 3000);
-  };
+  }, [isOnline]);
 
   // Auto-sync when online
   useEffect(() => {
     if (isOnline && pendingSync > 0) {
       handleSync();
     }
-  }, [isOnline, pendingSync]);
+  }, [isOnline, pendingSync, handleSync]);
 
   const filteredRecords = records.filter(
     (record) =>

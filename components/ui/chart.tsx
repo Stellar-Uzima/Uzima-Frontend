@@ -68,10 +68,8 @@ const ChartContainer = React.forwardRef<
 ChartContainer.displayName = "Chart";
 
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
-  /* eslint-disable no-unused-vars */
-  const colorConfig = Object.entries(config).filter(([_, config]) => {
-    console.log(_);
-    return config.theme || config.color;
+  const colorConfig = Object.entries(config).filter(([, itemConfig]) => {
+    return itemConfig.theme || itemConfig.color;
   });
 
   if (!colorConfig.length) {
