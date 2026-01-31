@@ -230,7 +230,7 @@ export default function TelemedicinePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-cyan-50 to-teal-50">
       <Navigation />
 
       {/* Header */}
@@ -243,7 +243,7 @@ export default function TelemedicinePage() {
             <div className="text-6xl mb-4">
               <Video className="w-16 h-16 mx-auto text-blue-600" />
             </div>
-            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold mb-4 bg-linear-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
               Telemedicine for Africa
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">

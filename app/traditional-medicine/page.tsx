@@ -60,7 +60,7 @@ export default function TraditionalMedicinePage() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 flex flex-col">
+    <div className="min-h-screen bg-linear-to-br from-emerald-50 via-teal-50 to-cyan-50 flex flex-col">
       <Navigation />
 
       <main className="flex-1 container mx-auto px-4 py-8">
@@ -70,7 +70,7 @@ export default function TraditionalMedicinePage() {
             <motion.h1
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-2"
+              className="text-4xl font-bold bg-linear-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-2"
             >
               Traditional Medicine
             </motion.h1>
@@ -96,7 +96,7 @@ export default function TraditionalMedicinePage() {
         </div>
 
         {/* Content Refactor: Grid Layout */}
-        <div className="grid lg:grid-cols-12 gap-6 lg:h-[calc(100vh-200px)] lg:min-h-[800px] h-auto">
+        <div className="grid lg:grid-cols-12 gap-6 lg:h-[calc(100vh-200px)] lg:min-h-200 h-auto">
           {/* Left Column: List & Search (4 cols) */}
           <div className="lg:col-span-4 flex flex-col gap-6 lg:overflow-hidden lg:max-h-full">
             {/* Search Bar */}
@@ -148,7 +148,7 @@ export default function TraditionalMedicinePage() {
           {/* Right Column: Details & integration (8 cols) */}
           <div className="lg:col-span-8 flex flex-col gap-6 h-full overflow-y-auto lg:overflow-visible">
             {/* Main Detail View */}
-            <div className="flex-1 min-h-[500px]">
+            <div className="flex-1 min-h-125">
               <TreatmentDetails treatment={selectedTreatment} />
             </div>
 

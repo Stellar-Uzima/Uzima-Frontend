@@ -301,7 +301,7 @@ export default function EducationPage() {
   const totalCourses = initialCourses.length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-linear-to-br from-purple-50 via-blue-50 to-indigo-50">
       <Navigation />
 
       {/* Header */}
@@ -314,7 +314,7 @@ export default function EducationPage() {
             <div className="text-6xl mb-4">
               <BookOpen className="w-16 h-16 mx-auto text-purple-600" />
             </div>
-            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold mb-4 bg-linear-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
               Health Education for Africa
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
@@ -436,7 +436,7 @@ export default function EducationPage() {
                           <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300">
                             <CardContent className="p-6">
                               <div className="flex items-start space-x-4">
-                                <div className="w-24 h-16 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <div className="w-24 h-16 bg-purple-100 rounded-lg flex items-center justify-center shrink-0">
                                   <BookOpen className="w-8 h-8 text-purple-600" />
                                 </div>
 
@@ -852,7 +852,7 @@ export default function EducationPage() {
                       <Card className="bg-blue-50 border border-blue-200 shadow-md">
                         <CardContent className="p-4 flex items-center justify-between">
                           <div className="flex items-center space-x-4">
-                            <CloudDownload className="w-6 h-6 text-blue-600 flex-shrink-0" />
+                            <CloudDownload className="w-6 h-6 text-blue-600 shrink-0" />
                             <div className="flex-1">
                               <h3 className="font-semibold text-gray-800 text-base">
                                 {course.title}

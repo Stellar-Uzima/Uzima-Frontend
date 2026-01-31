@@ -121,7 +121,7 @@ export default function CreatePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
+    <div className="min-h-screen bg-linear-to-br from-emerald-50 via-teal-50 to-cyan-50">
       <Navigation />
 
       {/* Header */}
@@ -145,7 +145,7 @@ export default function CreatePage() {
               >
                 🏥
               </motion.div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+              <h1 className="text-xl font-bold bg-linear-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
                 Share Your Healthcare Knowledge
               </h1>
             </div>
@@ -397,7 +397,7 @@ export default function CreatePage() {
                 <div className="flex space-x-4 pt-6">
                   <Button
                     onClick={() => handleSubmit(false)}
-                    className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
+                    className="flex-1 bg-linear-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
                   >
                     <Send className="w-4 h-4 mr-2" />
                     Publish Content
@@ -418,7 +418,7 @@ export default function CreatePage() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Earnings Preview */}
-            <Card className="bg-gradient-to-br from-yellow-50 to-orange-50 border-0 shadow-lg">
+            <Card className="bg-linear-to-br from-yellow-50 to-orange-50 border-0 shadow-lg">
               <CardHeader>
                 <CardTitle className="text-lg text-orange-700 flex items-center">
                   <DollarSign className="w-5 h-5 mr-2" />
@@ -533,7 +533,7 @@ export default function CreatePage() {
             </Card>
 
             {/* Cultural Sensitivity */}
-            <Card className="bg-gradient-to-br from-purple-50 to-blue-50 border-0 shadow-lg">
+            <Card className="bg-linear-to-br from-purple-50 to-blue-50 border-0 shadow-lg">
               <CardHeader>
                 <CardTitle className="text-lg text-purple-700 flex items-center">
                   <Globe className="w-5 h-5 mr-2" />

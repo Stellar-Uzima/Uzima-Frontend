@@ -179,7 +179,7 @@ export default function MedicalRecordsPage() {
     if (isOnline && pendingSync > 0) {
       handleSync();
     }
-  }, [isOnline, pendingSync, handleSync]);
+  }, [isOnline, pendingSync]);
 
   const filteredRecords = records.filter(
     (record) =>
