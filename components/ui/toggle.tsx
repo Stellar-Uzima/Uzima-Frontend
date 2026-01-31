@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+// @ts-ignore - radix-ui toggle module required
 import * as TogglePrimitive from "@radix-ui/react-toggle"
 import { cva, type VariantProps } from "class-variance-authority"
 

@@ -7,8 +7,11 @@ import { Button } from "@/components/ui/button"
 import LanguageSwitcher from "./LanguageSwitcher"
 import { useTranslations } from "next-intl"
 import { GlobalSearch } from "./search/GlobalSearch"
+import WalletConnectButton from "./WalletConnectButton"
+import { useWallet } from "@/context"
 
 export function Header() {
+  const { connected, publicKey } = useWallet();
   const t = useTranslations('Navigation');
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isServicesOpen, setIsServicesOpen] = useState(false)
@@ -64,11 +67,18 @@ export function Header() {
           </nav>
 
           {/* CTA Button */}
-          <div className="hidden lg:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-4 ml-4">
             <LanguageSwitcher />
-            <Button className="bg-[oklch(0.65_0.15_175)] hover:bg-[oklch(0.55_0.15_175)] text-white rounded-full px-6">
+            {/* <Button className="bg-[oklch(0.65_0.15_175)] hover:bg-[oklch(0.55_0.15_175)] text-white rounded-full px-6">
               {t('connectWallet')}
-            </Button>
+            </Button> */}
+             {connected && publicKey && (
+                <div className="px-4 py-2 rounded-full font-mono text-sm bg-gray-100 text-black">
+                  {publicKey.slice(0, 4)}...{publicKey.slice(-4)}
+                </div>
+              )}
+              <WalletConnectButton />
+
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -93,9 +103,10 @@ export function Header() {
               <Link href="/services" className="text-muted-foreground font-medium">{t('services')}</Link>
               <Link href="/marketplace" className="text-muted-foreground font-medium">{t('marketplace')}</Link>
               <Link href="/blog" className="text-muted-foreground font-medium">{t('blog')}</Link>
-              <Button className="bg-[oklch(0.65_0.15_175)] hover:bg-[oklch(0.55_0.15_175)] text-white rounded-full w-full mt-4">
+              {/* <Button className="bg-[oklch(0.65_0.15_175)] hover:bg-[oklch(0.55_0.15_175)] text-white rounded-full w-full mt-4">
                 {t('connectWallet')}
-              </Button>
+              </Button> */}
+              <WalletConnectButton />
             </nav>
           </div>
         )}
