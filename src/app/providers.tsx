@@ -1,24 +1,14 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-import {
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
-import {
-  PersistQueryClientProvider,
-} from "@tanstack/react-query-persist-client";
-import {
-  createSyncStoragePersister,
-} from "@tanstack/query-persist-client-sync-storage";
-import {
-  createIDBPersister,
-} from "@tanstack/query-persist-client-indexeddb";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { createIDBPersister } from "@tanstack/query-persist-client-indexeddb";
 
 // Setup IndexedDB persister
 const idbPersister = createIDBPersister({
-  dbName: "reactQuery",     // database name
-  storeName: "reactQuery",  // store name
+  dbName: "reactQuery", // database name
+  storeName: "reactQuery", // store name
 });
 
 // Providers wrapper
@@ -34,7 +24,7 @@ export default function Providers({ children }: { children: ReactNode }) {
             staleTime: 1000 * 60 * 5, // 5 minutes
           },
         },
-      })
+      }),
   );
 
   return (
@@ -42,9 +32,7 @@ export default function Providers({ children }: { children: ReactNode }) {
       client={queryClient}
       persistOptions={{ persister: idbPersister }}
     >
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </PersistQueryClientProvider>
   );
 }

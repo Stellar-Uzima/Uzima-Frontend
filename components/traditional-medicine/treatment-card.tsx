@@ -1,7 +1,7 @@
 
 "use client"
 
-import { Leaf, Star, Info } from "lucide-react"
+import { Leaf, Star } from "lucide-react"
 import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"

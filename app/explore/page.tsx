@@ -27,6 +27,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import Image from "next/image";
 
 // Mock data for healthcare stories
 const STORIES = [
@@ -202,7 +203,7 @@ const LANGUAGES = [
 
 const ITEMS_PER_PAGE = 6;
 
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -232,7 +233,7 @@ export default function ExplorePage() {
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedStories = filteredStories.slice(
     startIndex,
-    startIndex + ITEMS_PER_PAGE
+    startIndex + ITEMS_PER_PAGE,
   );
 
   // Reset to page 1 when filters change
@@ -384,9 +385,11 @@ export default function ExplorePage() {
                   key={story.id}
                   className="flex flex-col hover:shadow-lg transition-shadow"
                 >
-                  <img
+                  <Image
                     src={story.image || "/placeholder.svg"}
                     alt={story.title}
+                    width={500}
+                    height={300}
                     className="w-full h-48 object-cover rounded-t-lg"
                   />
                   <CardHeader>
@@ -453,7 +456,7 @@ export default function ExplorePage() {
                       >
                         {page}
                       </Button>
-                    )
+                    ),
                   )}
                 </div>
 

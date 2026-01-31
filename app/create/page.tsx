@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
+import { useState } from "react";
+import { motion } from "framer-motion";
 import {
   ArrowLeft,
   Upload,
@@ -16,18 +16,24 @@ import {
   ImageIcon,
   Save,
   Send,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import Link from "next/link"
-import { Navigation } from "@/components/layout/navigation"
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Link from "next/link";
+import { Navigation } from "@/components/layout/navigation";
 
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 const categories = [
   "General Medicine",
@@ -40,9 +46,16 @@ const categories = [
   "Preventive Care",
   "Emergency Medicine",
   "Health Education",
-]
+];
 
-const regions = ["East Africa", "West Africa", "Central Africa", "Southern Africa", "North Africa", "Pan-African"]
+const regions = [
+  "East Africa",
+  "West Africa",
+  "Central Africa",
+  "Southern Africa",
+  "North Africa",
+  "Pan-African",
+];
 
 const languages = [
   "English",
@@ -57,41 +70,42 @@ const languages = [
   "Xhosa",
   "Bambara",
   "Twi",
-]
+];
 
 const rewardTiers = [
   { engagement: "1-10 likes", xlm: "0.1-1", description: "Getting started" },
   { engagement: "11-50 likes", xlm: "1-5", description: "Building momentum" },
   { engagement: "51-100 likes", xlm: "5-10", description: "Viral content" },
   { engagement: "100+ likes", xlm: "10+", description: "Expert level" },
-]
+];
 
 export default function CreatePage() {
-  const [contentType, setContentType] = useState("article")
-  const [title, setTitle] = useState("")
-  const [content, setContent] = useState("")
-  const [category, setCategory] = useState("")
-  const [region, setRegion] = useState("")
-  const [language, setLanguage] = useState("")
-  const [tags, setTags] = useState<string[]>([])
-  const [newTag, setNewTag] = useState("")
-  const [culturalContext, setCulturalContext] = useState("")
-  const [estimatedEarnings, setEstimatedEarnings] = useState(2.5)
-  const [isDraft, setIsDraft] = useState(false)
+  const [contentType, setContentType] = useState("article");
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [category, setCategory] = useState("");
+  const [region, setRegion] = useState("");
+  const [language, setLanguage] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [newTag, setNewTag] = useState("");
+  const [culturalContext, setCulturalContext] = useState("");
+  const [estimatedEarnings] = useState(2.5);
+  const [isDraft, setIsDraft] = useState(false);
+  console.log(isDraft);
 
   const addTag = () => {
     if (newTag && !tags.includes(newTag)) {
-      setTags([...tags, newTag])
-      setNewTag("")
+      setTags([...tags, newTag]);
+      setNewTag("");
     }
-  }
+  };
 
   const removeTag = (tagToRemove: string) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove))
-  }
+    setTags(tags.filter((tag) => tag !== tagToRemove));
+  };
 
   const handleSubmit = (asDraft: boolean) => {
-    setIsDraft(asDraft)
+    setIsDraft(asDraft);
     // Handle form submission
     console.log({
       contentType,
@@ -103,8 +117,8 @@ export default function CreatePage() {
       tags,
       culturalContext,
       isDraft: asDraft,
-    })
-  }
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
@@ -122,7 +136,11 @@ export default function CreatePage() {
             <div className="flex items-center space-x-3">
               <motion.div
                 animate={{ rotate: 360 }}
-                transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                transition={{
+                  duration: 2,
+                  repeat: Number.POSITIVE_INFINITY,
+                  ease: "linear",
+                }}
                 className="text-2xl"
               >
                 🏥
@@ -143,28 +161,46 @@ export default function CreatePage() {
           <div className="lg:col-span-2">
             <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
               <CardHeader>
-                <CardTitle className="text-2xl text-emerald-700">Create New Content</CardTitle>
-                <p className="text-gray-600">Share your healthcare knowledge with the African community</p>
+                <CardTitle className="text-2xl text-emerald-700">
+                  Create New Content
+                </CardTitle>
+                <p className="text-gray-600">
+                  Share your healthcare knowledge with the African community
+                </p>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Content Type Selection */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">Content Type *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Content Type *
+                  </label>
                   <Tabs value={contentType} onValueChange={setContentType}>
                     <TabsList className="grid w-full grid-cols-4">
-                      <TabsTrigger value="article" className="flex items-center space-x-2">
+                      <TabsTrigger
+                        value="article"
+                        className="flex items-center space-x-2"
+                      >
                         <FileText className="w-4 h-4" />
                         <span>Article</span>
                       </TabsTrigger>
-                      <TabsTrigger value="video" className="flex items-center space-x-2">
+                      <TabsTrigger
+                        value="video"
+                        className="flex items-center space-x-2"
+                      >
                         <Video className="w-4 h-4" />
                         <span>Video</span>
                       </TabsTrigger>
-                      <TabsTrigger value="audio" className="flex items-center space-x-2">
+                      <TabsTrigger
+                        value="audio"
+                        className="flex items-center space-x-2"
+                      >
                         <Mic className="w-4 h-4" />
                         <span>Audio</span>
                       </TabsTrigger>
-                      <TabsTrigger value="image" className="flex items-center space-x-2">
+                      <TabsTrigger
+                        value="image"
+                        className="flex items-center space-x-2"
+                      >
                         <ImageIcon className="w-4 h-4" />
                         <span>Image</span>
                       </TabsTrigger>
@@ -174,7 +210,9 @@ export default function CreatePage() {
 
                 {/* Title */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Title *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Title *
+                  </label>
                   <Input
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
@@ -186,7 +224,9 @@ export default function CreatePage() {
                 {/* Category and Region */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Category *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Category *
+                    </label>
                     <Select value={category} onValueChange={setCategory}>
                       <SelectTrigger className="border-emerald-200 focus:border-emerald-400">
                         <SelectValue placeholder="Select a category" />
@@ -202,7 +242,9 @@ export default function CreatePage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Region *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Region *
+                    </label>
                     <Select value={region} onValueChange={setRegion}>
                       <SelectTrigger className="border-emerald-200 focus:border-emerald-400">
                         <SelectValue placeholder="Select region" />
@@ -220,7 +262,9 @@ export default function CreatePage() {
 
                 {/* Language */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Primary Language *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Primary Language *
+                  </label>
                   <Select value={language} onValueChange={setLanguage}>
                     <SelectTrigger className="border-emerald-200 focus:border-emerald-400">
                       <SelectValue placeholder="Select language" />
@@ -237,7 +281,9 @@ export default function CreatePage() {
 
                 {/* Content */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Content *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Content *
+                  </label>
                   {contentType === "article" && (
                     <Textarea
                       value={content}
@@ -250,8 +296,12 @@ export default function CreatePage() {
                   {contentType === "video" && (
                     <div className="border-2 border-dashed border-emerald-200 rounded-lg p-8 text-center">
                       <Video className="w-12 h-12 text-emerald-400 mx-auto mb-4" />
-                      <p className="text-gray-600 mb-2">Upload your video content</p>
-                      <p className="text-sm text-gray-500">MP4, MOV, AVI up to 500MB</p>
+                      <p className="text-gray-600 mb-2">
+                        Upload your video content
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        MP4, MOV, AVI up to 500MB
+                      </p>
                       <Button className="mt-4 bg-emerald-500 hover:bg-emerald-600">
                         <Upload className="w-4 h-4 mr-2" />
                         Choose Video File
@@ -261,8 +311,12 @@ export default function CreatePage() {
                   {contentType === "audio" && (
                     <div className="border-2 border-dashed border-emerald-200 rounded-lg p-8 text-center">
                       <Mic className="w-12 h-12 text-emerald-400 mx-auto mb-4" />
-                      <p className="text-gray-600 mb-2">Upload your audio content</p>
-                      <p className="text-sm text-gray-500">MP3, WAV, M4A up to 100MB</p>
+                      <p className="text-gray-600 mb-2">
+                        Upload your audio content
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        MP3, WAV, M4A up to 100MB
+                      </p>
                       <Button className="mt-4 bg-emerald-500 hover:bg-emerald-600">
                         <Upload className="w-4 h-4 mr-2" />
                         Choose Audio File
@@ -272,8 +326,12 @@ export default function CreatePage() {
                   {contentType === "image" && (
                     <div className="border-2 border-dashed border-emerald-200 rounded-lg p-8 text-center">
                       <ImageIcon className="w-12 h-12 text-emerald-400 mx-auto mb-4" />
-                      <p className="text-gray-600 mb-2">Upload medical images, charts, or infographics</p>
-                      <p className="text-sm text-gray-500">PNG, JPG, SVG up to 10MB</p>
+                      <p className="text-gray-600 mb-2">
+                        Upload medical images, charts, or infographics
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        PNG, JPG, SVG up to 10MB
+                      </p>
                       <Button className="mt-4 bg-emerald-500 hover:bg-emerald-600">
                         <Upload className="w-4 h-4 mr-2" />
                         Choose Image File
@@ -284,7 +342,9 @@ export default function CreatePage() {
 
                 {/* Cultural Context */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Cultural Context</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Cultural Context
+                  </label>
                   <Textarea
                     value={culturalContext}
                     onChange={(e) => setCulturalContext(e.target.value)}
@@ -293,13 +353,16 @@ export default function CreatePage() {
                     className="border-emerald-200 focus:border-emerald-400"
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    Help others understand the cultural significance and appropriate application of your knowledge
+                    Help others understand the cultural significance and
+                    appropriate application of your knowledge
                   </p>
                 </div>
 
                 {/* Tags */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Tags</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Tags
+                  </label>
                   <div className="flex space-x-2 mb-3">
                     <Input
                       value={newTag}
@@ -308,7 +371,11 @@ export default function CreatePage() {
                       className="border-emerald-200 focus:border-emerald-400"
                       onKeyPress={(e) => e.key === "Enter" && addTag()}
                     />
-                    <Button onClick={addTag} variant="outline" className="border-emerald-200 bg-transparent">
+                    <Button
+                      onClick={addTag}
+                      variant="outline"
+                      className="border-emerald-200 bg-transparent"
+                    >
                       <Tag className="w-4 h-4" />
                     </Button>
                   </div>
@@ -360,23 +427,30 @@ export default function CreatePage() {
               </CardHeader>
               <CardContent>
                 <div className="text-center mb-4">
-                  <div className="text-3xl font-bold text-orange-600">~{estimatedEarnings} XLM</div>
+                  <div className="text-3xl font-bold text-orange-600">
+                    ~{estimatedEarnings} XLM
+                  </div>
                   <p className="text-sm text-orange-600">Estimated earnings</p>
                 </div>
 
                 <div className="space-y-3">
                   {rewardTiers.map((tier, index) => (
-                    <div key={index} className="flex justify-between items-center text-sm">
+                    <div
+                      key={index}
+                      className="flex justify-between items-center text-sm"
+                    >
                       <span className="text-gray-600">{tier.engagement}</span>
-                      <span className="font-medium text-orange-600">{tier.xlm} XLM</span>
+                      <span className="font-medium text-orange-600">
+                        {tier.xlm} XLM
+                      </span>
                     </div>
                   ))}
                 </div>
 
                 <div className="mt-4 p-3 bg-orange-100 rounded-lg">
                   <p className="text-xs text-orange-700">
-                    💡 Quality content with cultural sensitivity and medical accuracy gets higher engagement and
-                    rewards!
+                    💡 Quality content with cultural sensitivity and medical
+                    accuracy gets higher engagement and rewards!
                   </p>
                 </div>
               </CardContent>
@@ -393,7 +467,9 @@ export default function CreatePage() {
               <CardContent className="space-y-3 text-sm">
                 <div className="flex items-start space-x-2">
                   <span className="text-emerald-500">✓</span>
-                  <span>Use clear, accessible language appropriate for your audience</span>
+                  <span>
+                    Use clear, accessible language appropriate for your audience
+                  </span>
                 </div>
                 <div className="flex items-start space-x-2">
                   <span className="text-emerald-500">✓</span>
@@ -401,11 +477,15 @@ export default function CreatePage() {
                 </div>
                 <div className="flex items-start space-x-2">
                   <span className="text-emerald-500">✓</span>
-                  <span>Respect cultural practices and traditional knowledge</span>
+                  <span>
+                    Respect cultural practices and traditional knowledge
+                  </span>
                 </div>
                 <div className="flex items-start space-x-2">
                   <span className="text-emerald-500">✓</span>
-                  <span>Share personal experiences respectfully and ethically</span>
+                  <span>
+                    Share personal experiences respectfully and ethically
+                  </span>
                 </div>
                 <div className="flex items-start space-x-2">
                   <span className="text-emerald-500">✓</span>
@@ -413,7 +493,9 @@ export default function CreatePage() {
                 </div>
                 <div className="flex items-start space-x-2">
                   <span className="text-emerald-500">✓</span>
-                  <span>Consider offline accessibility for rural communities</span>
+                  <span>
+                    Consider offline accessibility for rural communities
+                  </span>
                 </div>
               </CardContent>
             </Card>
@@ -465,11 +547,16 @@ export default function CreatePage() {
                 </div>
                 <div className="flex items-start space-x-2">
                   <span className="text-purple-500">🤝</span>
-                  <span>Promote collaboration between traditional and modern medicine</span>
+                  <span>
+                    Promote collaboration between traditional and modern
+                    medicine
+                  </span>
                 </div>
                 <div className="flex items-start space-x-2">
                   <span className="text-purple-500">🗣️</span>
-                  <span>Use inclusive language that respects all communities</span>
+                  <span>
+                    Use inclusive language that respects all communities
+                  </span>
                 </div>
                 <div className="flex items-start space-x-2">
                   <span className="text-purple-500">📚</span>
@@ -481,5 +568,5 @@ export default function CreatePage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

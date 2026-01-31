@@ -25,14 +25,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
 import { Navigation } from "@/components/layout/navigation";
 import { Footer } from "@/components/layout/footer";
 import Image from "next/image";
-import { useNetworkStatus } from '@/hooks/useNetworkStatus';
+import { useNetworkStatus } from "@/hooks/useNetworkStatus";
 
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 const healthEmojis = [
   "🏥",
@@ -143,7 +143,7 @@ export default function HomePage() {
   const [currentEmoji, setCurrentEmoji] = useState(0);
   const [currentSlang, setCurrentSlang] = useState(0);
   const isOnline = useNetworkStatus();
-  const [posts, setPosts] = useState(featuredPosts);
+  // const [posts, setPosts] = useState(featuredPosts);
 
   useEffect(() => {
     const emojiInterval = setInterval(() => {
@@ -161,7 +161,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
+    <div className="min-h-screen bg-linear-to-br from-emerald-50 via-teal-50 to-cyan-50">
       <Navigation />
 
       <main id="main-content">
@@ -186,7 +186,7 @@ export default function HomePage() {
                 </AnimatePresence>
               </div>
 
-              <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
+              <h1 className="text-5xl font-bold mb-4 bg-linear-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
                 Ubuntu Healthcare for Africa
               </h1>
 
@@ -209,10 +209,11 @@ export default function HomePage() {
               {/* Connection Status */}
               <div className="flex justify-center mb-8">
                 <div
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-full ${isOnline
-                    ? "bg-green-100 text-green-700"
-                    : "bg-orange-100 text-orange-700"
-                    }`}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-full ${
+                    isOnline
+                      ? "bg-green-100 text-green-700"
+                      : "bg-orange-100 text-orange-700"
+                  }`}
                 >
                   {isOnline ? (
                     <Wifi className="w-5 h-5" />
@@ -351,7 +352,7 @@ export default function HomePage() {
                 >
                   <Badge
                     variant="secondary"
-                    className="px-4 py-2 bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-700 hover:from-emerald-200 hover:to-teal-200 cursor-pointer"
+                    className="px-4 py-2 bg-linear-to-r from-emerald-100 to-teal-100 text-emerald-700 hover:from-emerald-200 hover:to-teal-200 cursor-pointer"
                   >
                     #{topic}
                   </Badge>
@@ -397,7 +398,7 @@ export default function HomePage() {
               </h3>
               <Link href="/create">
                 <Button
-                  className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
+                  className="bg-linear-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
                   aria-label="Share your own healthcare story"
                 >
                   <Plus className="w-4 h-4 mr-2" aria-hidden="true" />
@@ -407,7 +408,7 @@ export default function HomePage() {
             </div>
 
             <div className="grid gap-6 max-w-6xl mx-auto">
-              {posts.map((post, index) => (
+              {featuredPosts.map((post, index) => (
                 <motion.div
                   key={post.id}
                   initial={{ opacity: 0, y: 20 }}
@@ -415,9 +416,7 @@ export default function HomePage() {
                   transition={{ delay: index * 0.1 }}
                 >
                   <article>
-                    <Card
-                      className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300"
-                    >
+                    <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300">
                       <CardHeader>
                         <div className="flex items-start justify-between">
                           <div className="flex items-center space-x-3">
@@ -527,7 +526,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="py-16 px-4 bg-gradient-to-r from-emerald-100 to-teal-100">
+        <section className="py-16 px-4 bg-linear-to-r from-emerald-100 to-teal-100">
           <div className="container mx-auto text-center">
             <h3 className="text-3xl font-bold mb-4 text-emerald-800">
               Ubuntu - We Heal Together
@@ -567,7 +566,10 @@ export default function HomePage() {
                   className="text-center"
                 >
                   <div className="w-16 h-16 bg-emerald-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <feature.icon className="w-8 h-8 text-emerald-600" aria-hidden="true" />
+                    <feature.icon
+                      className="w-8 h-8 text-emerald-600"
+                      aria-hidden="true"
+                    />
                   </div>
                   <h4 className="text-xl font-semibold text-emerald-800 mb-2">
                     {feature.title}

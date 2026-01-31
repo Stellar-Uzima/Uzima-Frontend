@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Video,
   Phone,
@@ -12,56 +12,50 @@ import {
   Star,
   MapPin,
   Languages,
-  Stethoscope,
-  Heart,
-  Brain,
-  Eye,
-  Bone,
-  Baby,
   Shield,
   Wifi,
   WifiOff,
   CheckCircle,
   AlertCircle,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Navigation } from "@/components/layout/navigation"
-import { Footer } from "@/components/layout/footer"
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Navigation } from "@/components/layout/navigation";
+import { Footer } from "@/components/layout/footer";
 
 interface Doctor {
-  id: string
-  name: string
-  specialty: string
-  rating: number
-  experience: number
-  languages: string[]
-  location: string
-  availability: "available" | "busy" | "offline"
-  consultationFee: number
-  avatar: string
-  verified: boolean
-  nextAvailable: string
-  specializations: string[]
-  education: string
-  about: string
+  id: string;
+  name: string;
+  specialty: string;
+  rating: number;
+  experience: number;
+  languages: string[];
+  location: string;
+  availability: "available" | "busy" | "offline";
+  consultationFee: number;
+  avatar: string;
+  verified: boolean;
+  nextAvailable: string;
+  specializations: string[];
+  education: string;
+  about: string;
 }
 
 interface Appointment {
-  id: string
-  doctorId: string
-  doctorName: string
-  specialty: string
-  date: string
-  time: string
-  status: "upcoming" | "completed" | "cancelled"
-  type: "video" | "audio" | "chat"
-  symptoms: string
-  avatar: string
+  id: string;
+  doctorId: string;
+  doctorName: string;
+  specialty: string;
+  date: string;
+  time: string;
+  status: "upcoming" | "completed" | "cancelled";
+  type: "video" | "audio" | "chat";
+  symptoms: string;
+  avatar: string;
 }
 
 const doctors: Doctor[] = [
@@ -80,7 +74,8 @@ const doctors: Doctor[] = [
     nextAvailable: "Available now",
     specializations: ["Preventive Care", "Chronic Diseases", "Women's Health"],
     education: "MD, University of Nairobi",
-    about: "Passionate about accessible healthcare for rural communities across East Africa.",
+    about:
+      "Passionate about accessible healthcare for rural communities across East Africa.",
   },
   {
     id: "2",
@@ -97,7 +92,8 @@ const doctors: Doctor[] = [
     nextAvailable: "Available in 2 hours",
     specializations: ["Child Development", "Vaccinations", "Nutrition"],
     education: "MD, University of Ghana Medical School",
-    about: "Dedicated to improving child health outcomes through telemedicine and community outreach.",
+    about:
+      "Dedicated to improving child health outcomes through telemedicine and community outreach.",
   },
   {
     id: "3",
@@ -114,7 +110,8 @@ const doctors: Doctor[] = [
     nextAvailable: "Available now",
     specializations: ["Anxiety", "Depression", "PTSD", "Cultural Therapy"],
     education: "MD, Université de Bamako",
-    about: "Integrating traditional healing practices with modern mental health treatment.",
+    about:
+      "Integrating traditional healing practices with modern mental health treatment.",
   },
   {
     id: "4",
@@ -131,9 +128,10 @@ const doctors: Doctor[] = [
     nextAvailable: "Available tomorrow 9 AM",
     specializations: ["Heart Disease", "Hypertension", "Preventive Cardiology"],
     education: "MD, University of Cape Town",
-    about: "Leading expert in cardiovascular health with focus on African genetic factors.",
+    about:
+      "Leading expert in cardiovascular health with focus on African genetic factors.",
   },
-]
+];
 
 const upcomingAppointments: Appointment[] = [
   {
@@ -160,75 +158,76 @@ const upcomingAppointments: Appointment[] = [
     symptoms: "Anxiety and sleep issues",
     avatar: "/placeholder.svg?height=40&width=40",
   },
-]
+];
 
-const specialtyIcons = {
-  "General Medicine": Stethoscope,
-  Pediatrics: Baby,
-  "Mental Health": Brain,
-  Cardiology: Heart,
-  Ophthalmology: Eye,
-  Orthopedics: Bone,
-}
+// const specialtyIcons = {
+//   "General Medicine": Stethoscope,
+//   Pediatrics: Baby,
+//   "Mental Health": Brain,
+//   Cardiology: Heart,
+//   Ophthalmology: Eye,
+//   Orthopedics: Bone,
+// };
 
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 export default function TelemedicinePage() {
-  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedSpecialty, setSelectedSpecialty] = useState("all")
-  const [isOnline, setIsOnline] = useState(true)
-  const [activeTab, setActiveTab] = useState("find-doctor")
+  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedSpecialty, setSelectedSpecialty] = useState("all");
+  const [isOnline, setIsOnline] = useState(true);
+  const [activeTab, setActiveTab] = useState("find-doctor");
 
   useEffect(() => {
-    const handleOnline = () => setIsOnline(true)
-    const handleOffline = () => setIsOnline(false)
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
 
-    window.addEventListener("online", handleOnline)
-    window.addEventListener("offline", handleOffline)
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
 
     return () => {
-      window.removeEventListener("online", handleOnline)
-      window.removeEventListener("offline", handleOffline)
-    }
-  }, [])
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
 
   const filteredDoctors = doctors.filter((doctor) => {
     const matchesSearch =
       doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       doctor.specialty.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      doctor.location.toLowerCase().includes(searchTerm.toLowerCase())
+      doctor.location.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesSpecialty = selectedSpecialty === "all" || doctor.specialty === selectedSpecialty
+    const matchesSpecialty =
+      selectedSpecialty === "all" || doctor.specialty === selectedSpecialty;
 
-    return matchesSearch && matchesSpecialty
-  })
+    return matchesSearch && matchesSpecialty;
+  });
 
   const getAvailabilityColor = (availability: string) => {
     switch (availability) {
       case "available":
-        return "bg-green-100 text-green-800"
+        return "bg-green-100 text-green-800";
       case "busy":
-        return "bg-yellow-100 text-yellow-800"
+        return "bg-yellow-100 text-yellow-800";
       case "offline":
-        return "bg-red-100 text-red-800"
+        return "bg-red-100 text-red-800";
       default:
-        return "bg-gray-100 text-gray-800"
+        return "bg-gray-100 text-gray-800";
     }
-  }
+  };
 
   const getAvailabilityIcon = (availability: string) => {
     switch (availability) {
       case "available":
-        return <CheckCircle className="w-3 h-3" />
+        return <CheckCircle className="w-3 h-3" />;
       case "busy":
-        return <Clock className="w-3 h-3" />
+        return <Clock className="w-3 h-3" />;
       case "offline":
-        return <AlertCircle className="w-3 h-3" />
+        return <AlertCircle className="w-3 h-3" />;
       default:
-        return <Clock className="w-3 h-3" />
+        return <Clock className="w-3 h-3" />;
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50">
@@ -237,7 +236,10 @@ export default function TelemedicinePage() {
       {/* Header */}
       <section className="py-12 px-4">
         <div className="container mx-auto text-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
             <div className="text-6xl mb-4">
               <Video className="w-16 h-16 mx-auto text-blue-600" />
             </div>
@@ -245,20 +247,29 @@ export default function TelemedicinePage() {
               Telemedicine for Africa
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              Connect with qualified healthcare professionals across Africa. Quality medical consultations that work
-              even with limited connectivity.
+              Connect with qualified healthcare professionals across Africa.
+              Quality medical consultations that work even with limited
+              connectivity.
             </p>
 
             {/* Connection Status */}
             <div className="flex justify-center mb-8">
               <div
                 className={`flex items-center space-x-2 px-4 py-2 rounded-full ${
-                  isOnline ? "bg-green-100 text-green-700" : "bg-orange-100 text-orange-700"
+                  isOnline
+                    ? "bg-green-100 text-green-700"
+                    : "bg-orange-100 text-orange-700"
                 }`}
               >
-                {isOnline ? <Wifi className="w-5 h-5" /> : <WifiOff className="w-5 h-5" />}
+                {isOnline ? (
+                  <Wifi className="w-5 h-5" />
+                ) : (
+                  <WifiOff className="w-5 h-5" />
+                )}
                 <span className="font-medium">
-                  {isOnline ? "Online - All Features Available" : "Limited Connectivity - Audio/Chat Available"}
+                  {isOnline
+                    ? "Online - All Features Available"
+                    : "Limited Connectivity - Audio/Chat Available"}
                 </span>
               </div>
             </div>
@@ -322,7 +333,9 @@ export default function TelemedicinePage() {
                             <div className="flex items-start space-x-4">
                               <div className="relative">
                                 <Avatar className="w-16 h-16">
-                                  <AvatarImage src={doctor.avatar || "/placeholder.svg"} />
+                                  <AvatarImage
+                                    src={doctor.avatar || "/placeholder.svg"}
+                                  />
                                   <AvatarFallback>
                                     {doctor.name
                                       .split(" ")
@@ -340,8 +353,12 @@ export default function TelemedicinePage() {
                               <div className="flex-1">
                                 <div className="flex items-start justify-between mb-2">
                                   <div>
-                                    <h3 className="font-semibold text-gray-800 text-lg">{doctor.name}</h3>
-                                    <p className="text-blue-600 font-medium">{doctor.specialty}</p>
+                                    <h3 className="font-semibold text-gray-800 text-lg">
+                                      {doctor.name}
+                                    </h3>
+                                    <p className="text-blue-600 font-medium">
+                                      {doctor.specialty}
+                                    </p>
                                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                                       <MapPin className="w-4 h-4" />
                                       <span>{doctor.location}</span>
@@ -350,25 +367,41 @@ export default function TelemedicinePage() {
                                   <div className="text-right">
                                     <div className="flex items-center space-x-1 mb-1">
                                       <Star className="w-4 h-4 text-yellow-500" />
-                                      <span className="font-medium">{doctor.rating}</span>
+                                      <span className="font-medium">
+                                        {doctor.rating}
+                                      </span>
                                     </div>
-                                    <p className="text-sm text-gray-600">{doctor.experience} years exp.</p>
+                                    <p className="text-sm text-gray-600">
+                                      {doctor.experience} years exp.
+                                    </p>
                                   </div>
                                 </div>
 
                                 <div className="flex flex-wrap gap-2 mb-3">
-                                  {doctor.specializations.slice(0, 3).map((spec, idx) => (
-                                    <Badge key={idx} variant="outline" className="border-blue-200 text-blue-700">
-                                      {spec}
-                                    </Badge>
-                                  ))}
+                                  {doctor.specializations
+                                    .slice(0, 3)
+                                    .map((spec, idx) => (
+                                      <Badge
+                                        key={idx}
+                                        variant="outline"
+                                        className="border-blue-200 text-blue-700"
+                                      >
+                                        {spec}
+                                      </Badge>
+                                    ))}
                                 </div>
 
                                 <div className="flex items-center justify-between">
                                   <div className="flex items-center space-x-4">
-                                    <Badge className={getAvailabilityColor(doctor.availability)}>
+                                    <Badge
+                                      className={getAvailabilityColor(
+                                        doctor.availability,
+                                      )}
+                                    >
                                       {getAvailabilityIcon(doctor.availability)}
-                                      <span className="ml-1">{doctor.availability}</span>
+                                      <span className="ml-1">
+                                        {doctor.availability}
+                                      </span>
                                     </Badge>
                                     <div className="flex items-center space-x-1 text-sm text-gray-600">
                                       <Languages className="w-4 h-4" />
@@ -376,18 +409,26 @@ export default function TelemedicinePage() {
                                     </div>
                                   </div>
                                   <div className="text-right">
-                                    <p className="font-semibold text-green-600">${doctor.consultationFee}</p>
-                                    <p className="text-xs text-gray-500">per consultation</p>
+                                    <p className="font-semibold text-green-600">
+                                      ${doctor.consultationFee}
+                                    </p>
+                                    <p className="text-xs text-gray-500">
+                                      per consultation
+                                    </p>
                                   </div>
                                 </div>
 
                                 <div className="mt-3 pt-3 border-t border-gray-100">
-                                  <p className="text-sm text-gray-600 mb-2">{doctor.nextAvailable}</p>
+                                  <p className="text-sm text-gray-600 mb-2">
+                                    {doctor.nextAvailable}
+                                  </p>
                                   <div className="flex space-x-2">
                                     <Button
                                       size="sm"
                                       className="bg-blue-500 hover:bg-blue-600"
-                                      disabled={doctor.availability === "offline"}
+                                      disabled={
+                                        doctor.availability === "offline"
+                                      }
                                     >
                                       <Video className="w-4 h-4 mr-1" />
                                       Video Call
@@ -396,7 +437,9 @@ export default function TelemedicinePage() {
                                       size="sm"
                                       variant="outline"
                                       className="border-blue-200 text-blue-600 bg-transparent"
-                                      disabled={doctor.availability === "offline"}
+                                      disabled={
+                                        doctor.availability === "offline"
+                                      }
                                     >
                                       <MessageSquare className="w-4 h-4 mr-1" />
                                       Chat
@@ -435,7 +478,9 @@ export default function TelemedicinePage() {
                       <div className="text-center mb-6">
                         <div className="relative inline-block">
                           <Avatar className="w-20 h-20 mx-auto mb-3">
-                            <AvatarImage src={selectedDoctor.avatar || "/placeholder.svg"} />
+                            <AvatarImage
+                              src={selectedDoctor.avatar || "/placeholder.svg"}
+                            />
                             <AvatarFallback className="text-lg">
                               {selectedDoctor.name
                                 .split(" ")
@@ -449,22 +494,38 @@ export default function TelemedicinePage() {
                             </div>
                           )}
                         </div>
-                        <h3 className="font-semibold text-lg">{selectedDoctor.name}</h3>
-                        <p className="text-blue-600 font-medium">{selectedDoctor.specialty}</p>
-                        <p className="text-sm text-gray-600">{selectedDoctor.education}</p>
+                        <h3 className="font-semibold text-lg">
+                          {selectedDoctor.name}
+                        </h3>
+                        <p className="text-blue-600 font-medium">
+                          {selectedDoctor.specialty}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          {selectedDoctor.education}
+                        </p>
                       </div>
 
                       <div className="space-y-4">
                         <div>
-                          <h4 className="font-medium text-gray-800 mb-2">About</h4>
-                          <p className="text-sm text-gray-600">{selectedDoctor.about}</p>
+                          <h4 className="font-medium text-gray-800 mb-2">
+                            About
+                          </h4>
+                          <p className="text-sm text-gray-600">
+                            {selectedDoctor.about}
+                          </p>
                         </div>
 
                         <div>
-                          <h4 className="font-medium text-gray-800 mb-2">Specializations</h4>
+                          <h4 className="font-medium text-gray-800 mb-2">
+                            Specializations
+                          </h4>
                           <div className="flex flex-wrap gap-1">
                             {selectedDoctor.specializations.map((spec, idx) => (
-                              <Badge key={idx} variant="outline" className="border-blue-200 text-blue-700">
+                              <Badge
+                                key={idx}
+                                variant="outline"
+                                className="border-blue-200 text-blue-700"
+                              >
                                 {spec}
                               </Badge>
                             ))}
@@ -472,21 +533,31 @@ export default function TelemedicinePage() {
                         </div>
 
                         <div>
-                          <h4 className="font-medium text-gray-800 mb-2">Languages</h4>
-                          <p className="text-sm text-gray-600">{selectedDoctor.languages.join(", ")}</p>
+                          <h4 className="font-medium text-gray-800 mb-2">
+                            Languages
+                          </h4>
+                          <p className="text-sm text-gray-600">
+                            {selectedDoctor.languages.join(", ")}
+                          </p>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
                           <div className="text-center">
                             <div className="flex items-center justify-center mb-1">
                               <Star className="w-4 h-4 text-yellow-500 mr-1" />
-                              <span className="font-semibold">{selectedDoctor.rating}</span>
+                              <span className="font-semibold">
+                                {selectedDoctor.rating}
+                              </span>
                             </div>
                             <p className="text-xs text-gray-500">Rating</p>
                           </div>
                           <div className="text-center">
-                            <div className="font-semibold">{selectedDoctor.experience}</div>
-                            <p className="text-xs text-gray-500">Years Experience</p>
+                            <div className="font-semibold">
+                              {selectedDoctor.experience}
+                            </div>
+                            <p className="text-xs text-gray-500">
+                              Years Experience
+                            </p>
                           </div>
                         </div>
 
@@ -496,7 +567,8 @@ export default function TelemedicinePage() {
                             disabled={selectedDoctor.availability === "offline"}
                           >
                             <Video className="w-4 h-4 mr-2" />
-                            Start Video Consultation - ${selectedDoctor.consultationFee}
+                            Start Video Consultation - $
+                            {selectedDoctor.consultationFee}
                           </Button>
                           <Button
                             variant="outline"
@@ -514,7 +586,9 @@ export default function TelemedicinePage() {
                   <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
                     <CardContent className="p-8 text-center">
                       <User className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-600">Select a doctor to view their profile</p>
+                      <p className="text-gray-600">
+                        Select a doctor to view their profile
+                      </p>
                     </CardContent>
                   </Card>
                 )}
@@ -522,27 +596,41 @@ export default function TelemedicinePage() {
                 {/* Quick Stats */}
                 <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
                   <CardHeader>
-                    <CardTitle className="text-blue-700">Platform Stats</CardTitle>
+                    <CardTitle className="text-blue-700">
+                      Platform Stats
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Available Doctors:</span>
+                        <span className="text-gray-600">
+                          Available Doctors:
+                        </span>
                         <span className="font-medium text-green-600">
-                          {doctors.filter((d) => d.availability === "available").length}
+                          {
+                            doctors.filter(
+                              (d) => d.availability === "available",
+                            ).length
+                          }
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Consultations Today:</span>
+                        <span className="text-gray-600">
+                          Consultations Today:
+                        </span>
                         <span className="font-medium text-blue-600">247</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Average Response:</span>
-                        <span className="font-medium text-gray-800">&lt; 2 minutes</span>
+                        <span className="font-medium text-gray-800">
+                          &lt; 2 minutes
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Success Rate:</span>
-                        <span className="font-medium text-green-600">98.5%</span>
+                        <span className="font-medium text-green-600">
+                          98.5%
+                        </span>
                       </div>
                     </div>
                   </CardContent>
@@ -555,8 +643,12 @@ export default function TelemedicinePage() {
           <TabsContent value="appointments">
             <div className="max-w-4xl mx-auto">
               <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">Your Appointments</h2>
-                <p className="text-gray-600">Manage your upcoming and past consultations</p>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                  Your Appointments
+                </h2>
+                <p className="text-gray-600">
+                  Manage your upcoming and past consultations
+                </p>
               </div>
 
               <div className="grid gap-6">
@@ -572,7 +664,9 @@ export default function TelemedicinePage() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-4">
                             <Avatar className="w-12 h-12">
-                              <AvatarImage src={appointment.avatar || "/placeholder.svg"} />
+                              <AvatarImage
+                                src={appointment.avatar || "/placeholder.svg"}
+                              />
                               <AvatarFallback>
                                 {appointment.doctorName
                                   .split(" ")
@@ -581,10 +675,17 @@ export default function TelemedicinePage() {
                               </AvatarFallback>
                             </Avatar>
                             <div>
-                              <h3 className="font-semibold text-gray-800">{appointment.doctorName}</h3>
-                              <p className="text-blue-600">{appointment.specialty}</p>
+                              <h3 className="font-semibold text-gray-800">
+                                {appointment.doctorName}
+                              </h3>
+                              <p className="text-blue-600">
+                                {appointment.specialty}
+                              </p>
                               <p className="text-sm text-gray-600">
-                                {new Date(appointment.date).toLocaleDateString()} at {appointment.time}
+                                {new Date(
+                                  appointment.date,
+                                ).toLocaleDateString()}{" "}
+                                at {appointment.time}
                               </p>
                             </div>
                           </div>
@@ -599,14 +700,23 @@ export default function TelemedicinePage() {
                                     : "bg-purple-100 text-purple-800"
                               }
                             >
-                              {appointment.type === "video" && <Video className="w-3 h-3 mr-1" />}
-                              {appointment.type === "audio" && <Phone className="w-3 h-3 mr-1" />}
-                              {appointment.type === "chat" && <MessageSquare className="w-3 h-3 mr-1" />}
+                              {appointment.type === "video" && (
+                                <Video className="w-3 h-3 mr-1" />
+                              )}
+                              {appointment.type === "audio" && (
+                                <Phone className="w-3 h-3 mr-1" />
+                              )}
+                              {appointment.type === "chat" && (
+                                <MessageSquare className="w-3 h-3 mr-1" />
+                              )}
                               {appointment.type}
                             </Badge>
 
                             <div className="flex space-x-2">
-                              <Button size="sm" className="bg-blue-500 hover:bg-blue-600">
+                              <Button
+                                size="sm"
+                                className="bg-blue-500 hover:bg-blue-600"
+                              >
                                 Join Call
                               </Button>
                               <Button
@@ -634,11 +744,17 @@ export default function TelemedicinePage() {
                   <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
                     <CardContent className="p-12 text-center">
                       <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">No Upcoming Appointments</h3>
+                      <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                        No Upcoming Appointments
+                      </h3>
                       <p className="text-gray-600 mb-6">
-                        Schedule your first consultation with a healthcare professional
+                        Schedule your first consultation with a healthcare
+                        professional
                       </p>
-                      <Button onClick={() => setActiveTab("find-doctor")} className="bg-blue-500 hover:bg-blue-600">
+                      <Button
+                        onClick={() => setActiveTab("find-doctor")}
+                        className="bg-blue-500 hover:bg-blue-600"
+                      >
                         Find a Doctor
                       </Button>
                     </CardContent>
@@ -662,10 +778,12 @@ export default function TelemedicinePage() {
                   <div className="space-y-6">
                     <div className="text-center">
                       <div className="text-6xl mb-4">🚨</div>
-                      <h2 className="text-2xl font-bold text-red-700 mb-2">Medical Emergency</h2>
+                      <h2 className="text-2xl font-bold text-red-700 mb-2">
+                        Medical Emergency
+                      </h2>
                       <p className="text-red-600 mb-6">
-                        If this is a life-threatening emergency, please contact your local emergency services
-                        immediately.
+                        If this is a life-threatening emergency, please contact
+                        your local emergency services immediately.
                       </p>
                     </div>
 
@@ -674,14 +792,19 @@ export default function TelemedicinePage() {
                         <Phone className="w-6 h-6 mr-2" />
                         Call Emergency Services
                       </Button>
-                      <Button variant="outline" className="border-red-200 text-red-600 h-16 text-lg bg-transparent">
+                      <Button
+                        variant="outline"
+                        className="border-red-200 text-red-600 h-16 text-lg bg-transparent"
+                      >
                         <Video className="w-6 h-6 mr-2" />
                         Emergency Video Call
                       </Button>
                     </div>
 
                     <div className="bg-white p-4 rounded-lg">
-                      <h3 className="font-semibold text-gray-800 mb-3">Emergency Numbers by Region:</h3>
+                      <h3 className="font-semibold text-gray-800 mb-3">
+                        Emergency Numbers by Region:
+                      </h3>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span>🇰🇪 Kenya:</span>
@@ -703,12 +826,17 @@ export default function TelemedicinePage() {
                     </div>
 
                     <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-                      <h3 className="font-semibold text-yellow-800 mb-2">When to Use Emergency Services:</h3>
+                      <h3 className="font-semibold text-yellow-800 mb-2">
+                        When to Use Emergency Services:
+                      </h3>
                       <ul className="text-sm text-yellow-700 space-y-1">
                         <li>• Severe chest pain or difficulty breathing</li>
                         <li>• Loss of consciousness or severe head injury</li>
-                        <li>• Severe bleeding that won't stop</li>
-                        <li>• Signs of stroke (face drooping, arm weakness, speech difficulty)</li>
+                        <li>• Severe bleeding that won&apos;t stop</li>
+                        <li>
+                          • Signs of stroke (face drooping, arm weakness, speech
+                          difficulty)
+                        </li>
                         <li>• Severe allergic reactions</li>
                       </ul>
                     </div>
@@ -722,5 +850,5 @@ export default function TelemedicinePage() {
 
       <Footer />
     </div>
-  )
+  );
 }
