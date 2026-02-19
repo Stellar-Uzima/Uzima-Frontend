@@ -4,49 +4,67 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Stellar Uzima Color Palette */
-  --clay: #C4622D;
-  --ochre: #E8A84C;
-  --earth: #7B4F2E;
-  --cream: #FAF3E8;
-  --bark: #2C1A0E;
-  --sage: #5C7A5A;
-  --sky: #4A7B9D;
-  --warm-white: #FEFCF8;
-  --shadow: rgba(44, 26, 14, 0.12);
+  /* Stellar Uzima Brand Colors */
+  --earth: #2E1503;
+  --terra: #B84E20;
+  --amber: #E08B2E;
+  --gold: #F0C050;
+  --cream: #FDF5E8;
+  --sage: #5A7A4A;
+  --sky: #4A8CAA;
+  --forest: #1C3020;
+  --muted: #8A6040;
+  --white: #FFFDF5;
+  --radius: 18px;
 
-  /* Design Tokens */
-  --background: var(--warm-white);
-  --foreground: var(--bark);
-  --card: var(--warm-white);
-  --card-foreground: var(--bark);
-  --popover: var(--cream);
-  --popover-foreground: var(--bark);
-  --primary: var(--clay);
-  --primary-foreground: var(--warm-white);
-  --secondary: var(--cream);
-  --secondary-foreground: var(--bark);
-  --muted: rgba(44, 26, 14, 0.12);
-  --muted-foreground: rgba(44, 26, 14, 0.5);
-  --accent: var(--ochre);
-  --accent-foreground: var(--bark);
-  --destructive: #D64545;
-  --destructive-foreground: var(--warm-white);
-  --border: rgba(196, 98, 45, 0.1);
-  --input: rgba(44, 26, 14, 0.08);
-  --ring: var(--clay);
-  --chart-1: var(--clay);
-  --chart-2: var(--sage);
-  --chart-3: var(--sky);
-  --chart-4: var(--ochre);
-  --chart-5: var(--earth);
-  --radius: 0.625rem;
+  /* Design Token Aliases */
+  --background: #FDF5E8;
+  --foreground: #2E1503;
+  --card: #FFFDF5;
+  --card-foreground: #2E1503;
+  --popover: #FFFDF5;
+  --popover-foreground: #2E1503;
+  --primary: #B84E20;
+  --primary-foreground: #FFFDF5;
+  --secondary: #5A7A4A;
+  --secondary-foreground: #FFFDF5;
+  --muted: #8A6040;
+  --muted-foreground: #8A6040;
+  --accent: #E08B2E;
+  --accent-foreground: #FFFDF5;
+  --destructive: #B84E20;
+  --destructive-foreground: #FFFDF5;
+  --border: #E8D4C0;
+  --input: #FFFDF5;
+  --ring: #B84E20;
+}
+
+.dark {
+  --background: #2E1503;
+  --foreground: #FDF5E8;
+  --card: #3A2510;
+  --card-foreground: #FDF5E8;
+  --popover: #3A2510;
+  --popover-foreground: #FDF5E8;
+  --primary: #E08B2E;
+  --primary-foreground: #2E1503;
+  --secondary: #7A9A6A;
+  --secondary-foreground: #FDF5E8;
+  --muted: #9A8070;
+  --muted-foreground: #B0A090;
+  --accent: #F0C050;
+  --accent-foreground: #2E1503;
+  --destructive: #E08B2E;
+  --destructive-foreground: #FDF5E8;
+  --border: #5A4030;
+  --input: #3A2510;
+  --ring: #E08B2E;
 }
 
 @theme inline {
-  --font-sans: 'DM Sans', sans-serif;
-  --font-serif: 'Playfair Display', serif;
-  --font-mono: 'Courier New', monospace;
+  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
+  --font-serif: var(--font-playfair), serif;
+  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -75,6 +93,14 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 }
 
 @layer base {
@@ -89,54 +115,22 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground font-sans;
     overflow-x: hidden;
   }
 
-  h1 {
-    @apply font-serif font-black;
-  }
-
-  h2, h3, h4, h5, h6 {
-    @apply font-serif font-bold;
+  * {
+    @apply border-border outline-ring/50;
   }
 }
 
 @layer utilities {
-  .animate-pulse-dot {
-    animation: pulse 2s infinite;
+  .text-balance {
+    text-wrap: balance;
   }
 
-  .animate-float {
-    animation: float 4s ease-in-out infinite;
-  }
-
-  .animate-fade-up {
-    animation: fadeUp 0.6s ease both;
-  }
-
-  .animate-fade-in {
-    animation: fadeIn 1s ease both;
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.5;
-    transform: scale(0.8);
-  }
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
+  .text-pretty {
+    text-wrap: pretty;
   }
 }
 
@@ -151,11 +145,75 @@
   }
 }
 
-@keyframes fadeIn {
+@keyframes fadeRight {
   from {
     opacity: 0;
+    transform: translateX(20px);
   }
   to {
     opacity: 1;
+    transform: translateX(0);
   }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@layer utilities {
+  .animate-slideUp {
+    animation: slideUp 0.6s ease-out forwards;
+  }
+
+  .animate-slideInLeft {
+    animation: slideInLeft 0.6s ease-out forwards;
+  }
+
+  .animate-scaleIn {
+    animation: scaleIn 0.6s ease-out forwards;
+  }
+
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .stagger-4 { animation-delay: 0.4s; }
+  .stagger-5 { animation-delay: 0.5s; }
 }

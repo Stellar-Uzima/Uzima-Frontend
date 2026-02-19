@@ -1,25 +1,35 @@
-import { Navigation } from '@/components/navigation';
-import { Hero } from '@/components/hero';
-import { MissionStrip } from '@/components/mission-strip';
-import { About } from '@/components/about';
-import { Features } from '@/components/features';
-import { Team } from '@/components/team';
-import { Contribute } from '@/components/contribute';
-import { Contact } from '@/components/contact';
-import { Footer } from '@/components/footer';
+import Navigation from '@/components/Navigation'
+import HeroSection from '@/components/HeroSection'
+import StatsStrip from '@/components/StatsStrip'
+import HowItWorks from '@/components/HowItWorks'
+import EarnSection from '@/components/EarnSection'
+import CouponsSection from '@/components/CouponsSection'
+import CommunitySection from '@/components/CommunitySection'
+import TraditionalMedicineSection from '@/components/TraditionalMedicineSection'
+import UzimaAngelsSection from '@/components/UzimaAngelsSection'
+import BiotechnologySection from '@/components/BiotechnologySection'
+import BlockchainSection from '@/components/BlockchainSection'
+import StoriesSection from '@/components/StoriesSection'
+import CTASection from '@/components/CTASection'
+import Footer from '@/components/Footer'
 
 export default function Home() {
   return (
-    <div className="bg-[var(--warm-white)]">
+    <>
       <Navigation />
-      <Hero />
-      <MissionStrip />
-      <About />
-      <Features />
-      <Team />
-      <Contribute />
-      <Contact />
+      <HeroSection />
+      <StatsStrip />
+      <HowItWorks />
+      <EarnSection />
+      <CouponsSection />
+      <CommunitySection />
+      <TraditionalMedicineSection />
+      <UzimaAngelsSection />
+      <BiotechnologySection />
+      <BlockchainSection />
+      <StoriesSection />
+      <CTASection />
       <Footer />
-    </div>
-  );
+    </>
+  )
 }
