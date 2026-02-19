@@ -1,32 +1,10 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# v0 runtime files (should only exist in preview, not in git)
+__v0_runtime_loader.js
+__v0_devtools.tsx
+__v0_jsx-dev-runtime.ts
 
-# dependencies
-/node_modules
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# env files
-.env*
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-# cursor
-.cursor
-
-bun.lock
+# Common ignores
+node_modules/
+.next/
+.env*.local
+.DS_Store
