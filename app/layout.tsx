@@ -1,48 +1,45 @@
-import type React from "react";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { Providers } from "./providers";
-import { Toaster } from "@/components/ui/toaster";
-import { MotionConfig } from "framer-motion";
+import type { Metadata, Viewport } from 'next'
+import { Playfair_Display, DM_Sans } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
+import './globals.css'
 
-export const dynamic = 'force-dynamic';
+const playfairDisplay = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-serif',
+})
 
-const inter = Inter({ subsets: ["latin"] });
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  variable: '--font-sans',
+})
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#C4622D',
+}
 
 export const metadata: Metadata = {
-  title: "Stellar Uzima - Healthcare for Africa",
-  description:
-    "Bridging traditional African healing with modern medicine through blockchain technology. Accessible healthcare, education, and community support.",
-  manifest: "/manifest.json",
-};
-
-export const viewport = {
-  themeColor: "#10b981",
-};
+  title: 'Stellar Uzima — African Healthcare, Reimagined',
+  description: 'Transforming healthcare across Africa with innovative technology and compassionate care.',
+  generator: 'v0.app',
+  metadataBase: new URL('https://stellar-uzima.com'),
+  alternates: {
+    canonical: '/',
+  },
+}
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: Readonly<{
+  children: React.ReactNode
+}>) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="Stellar Uzima" />
-      </head>
-      <body className={inter.className}>
-        <MotionConfig reducedMotion="user">
-        <Providers>
-          {children}
-          <Toaster />
-        </Providers> 
-        </MotionConfig>
+    <html lang="en" className={`${playfairDisplay.variable} ${dmSans.variable}`}>
+      <body className="font-sans antialiased">
+        {children}
+        <Analytics />
       </body>
     </html>
-  );
+  )
 }
