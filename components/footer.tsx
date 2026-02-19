@@ -1,198 +1,70 @@
-'use client';
+export default function Footer() {
+  const links = {
+    Product: ['Features', 'Pricing', 'Security', 'Roadmap'],
+    Company: ['About Us', 'Blog', 'Careers', 'Contact'],
+    Resources: ['Documentation', 'Help Center', 'Community', 'Status'],
+    Legal: ['Privacy', 'Terms', 'Disclaimer', 'Governance'],
+  }
 
-import { useState } from 'react';
-
-export function Footer() {
-  const currentYear = new Date().getFullYear();
-  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
+  const linkOrder = Object.keys(links);
 
   return (
-    <footer className="relative bg-gradient-to-b from-[var(--bark)] to-[#1a0f08] text-[var(--warm-white)] overflow-hidden">
-      {/* Decorative background elements */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-[var(--clay)] opacity-5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-      <div className="absolute bottom-0 right-0 w-80 h-80 bg-[var(--sage)] opacity-3 rounded-full blur-3xl translate-x-1/3 translate-y-1/3"></div>
-
-      <div className="relative px-8 lg:px-16 py-20">
-        <div className="max-w-7xl mx-auto">
-          {/* Top Section: Brand Mission */}
-          <div className="grid md:grid-cols-2 gap-12 mb-16">
-            {/* Brand with story */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <div className="font-serif text-4xl font-black leading-tight">
-                  Stellar
-                  <span className="inline-block ml-2 text-[var(--ochre)]">★</span>
-                </div>
-                <div className="font-serif text-4xl font-black text-[var(--ochre)]">Uzima</div>
+    <footer className="bg-earth text-cream px-20 py-16 border-t border-white/10">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-5 gap-12 mb-12">
+          {/* Brand */}
+          <div className="col-span-1 animate-slideUp stagger-1 opacity-0">
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className="w-8 h-8 rounded-full bg-terra flex items-center justify-center text-gold text-sm font-bold animate-scaleIn stagger-1 opacity-0">
+                ★
               </div>
-              <p className="text-sm leading-relaxed text-[rgba(254,252,248,0.7)] max-w-sm">
-                Life flourishes when care meets innovation. We honor Ubuntu—the belief that humanity is interconnected—while transforming healthcare across the African continent.
-              </p>
-              
-              {/* Social proof */}
-              <div className="flex gap-6 pt-4">
-                <div className="space-y-1">
-                  <div className="text-2xl font-bold text-[var(--ochre)]">25+</div>
-                  <p className="text-xs text-[rgba(254,252,248,0.5)]">Countries</p>
-                </div>
-                <div className="space-y-1">
-                  <div className="text-2xl font-bold text-[var(--clay)]">500K+</div>
-                  <p className="text-xs text-[rgba(254,252,248,0.5)]">Lives Impacted</p>
-                </div>
-                <div className="space-y-1">
-                  <div className="text-2xl font-bold text-[var(--sky)]">150+</div>
-                  <p className="text-xs text-[rgba(254,252,248,0.5)]">Team Members</p>
-                </div>
-              </div>
+              <span className="font-serif font-bold text-cream text-lg">
+                Stellar
+              </span>
             </div>
-
-            {/* Newsletter CTA */}
-            <div className="bg-gradient-to-br from-[var(--clay)] to-[var(--earth)] rounded-2xl p-8 space-y-4">
-              <div>
-                <h4 className="font-serif text-2xl font-bold text-[var(--warm-white)] mb-2">
-                  Join Our Mission
-                </h4>
-                <p className="text-sm text-[rgba(254,252,248,0.9)]">
-                  Get updates on healthcare innovation and ways to contribute to African health transformation.
-                </p>
-              </div>
-              <form className="flex gap-2">
-                <input
-                  type="email"
-                  placeholder="your@email.com"
-                  className="flex-1 px-4 py-3 rounded-lg bg-[var(--warm-white)] text-[var(--bark)] placeholder-[rgba(44,26,14,0.4)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ochre)]"
-                  required
-                />
-                <button
-                  type="submit"
-                  className="px-6 py-3 bg-[var(--bark)] text-[var(--warm-white)] rounded-lg font-semibold text-sm hover:bg-[#0f0a05] transition-colors duration-200"
-                >
-                  Subscribe
-                </button>
-              </form>
-              <p className="text-xs text-[rgba(254,252,248,0.7)]">
-                No spam. Just stories of impact.
-              </p>
-            </div>
+            <p className="text-xs text-cream/60">
+              Transform your health, wealth, and community with blockchain-powered rewards.
+            </p>
           </div>
 
-          {/* Divider */}
-          <div className="h-px bg-gradient-to-r from-transparent via-[rgba(254,252,248,0.1)] to-transparent my-12"></div>
-
-          {/* Links Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
-            {/* Product */}
-            <div>
-              <h5 className="text-xs font-semibold uppercase tracking-widest text-[var(--ochre)] mb-5 font-sans">
-                Product
-              </h5>
-              <ul className="space-y-3">
-                {['Features', 'About', 'Pricing', 'Security'].map((item) => (
-                  <li key={item}>
-                    <a
-                      href={`#${item.toLowerCase()}`}
-                      onMouseEnter={() => setHoveredLink(item)}
-                      onMouseLeave={() => setHoveredLink(null)}
-                      className="text-xs text-[rgba(254,252,248,0.65)] hover:text-[var(--ochre)] transition-all duration-200 relative inline-block group"
-                    >
+          {/* Links */}
+          {Object.entries(links).map(([title, items], index) => (
+            <div key={title} className={`animate-slideUp opacity-0 stagger-${index + 2}`}>
+              <h4 className="font-bold text-sm text-cream mb-4 hover:text-gold transition-colors duration-300">
+                {title}
+              </h4>
+              <ul className="space-y-2">
+                {items.map((item, itemIndex) => (
+                  <li key={item} className={`animate-slideUp opacity-0 stagger-${itemIndex + 1}`}>
+                    <a href="#" className="text-xs text-cream/60 hover:text-cream hover:translate-x-1 transition-all duration-300">
                       {item}
-                      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--ochre)] group-hover:w-full transition-all duration-300"></span>
                     </a>
                   </li>
                 ))}
               </ul>
             </div>
+          ))}
+        </div>
 
-            {/* Company */}
-            <div>
-              <h5 className="text-xs font-semibold uppercase tracking-widest text-[var(--ochre)] mb-5 font-sans">
-                Company
-              </h5>
-              <ul className="space-y-3">
-                {['Team', 'Contribute', 'Blog', 'Contact'].map((item) => (
-                  <li key={item}>
-                    <a
-                      href={`#${item.toLowerCase()}`}
-                      onMouseEnter={() => setHoveredLink(item)}
-                      onMouseLeave={() => setHoveredLink(null)}
-                      className="text-xs text-[rgba(254,252,248,0.65)] hover:text-[var(--ochre)] transition-all duration-200 relative inline-block group"
-                    >
-                      {item}
-                      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--ochre)] group-hover:w-full transition-all duration-300"></span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
+        {/* Divider */}
+        <div className="border-t border-white/10 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-cream/50">
+          <p className="animate-slideUp stagger-5 opacity-0">
+            © 2024 Stellar Uzima. All rights reserved.
+          </p>
 
-            {/* Legal */}
-            <div>
-              <h5 className="text-xs font-semibold uppercase tracking-widest text-[var(--ochre)] mb-5 font-sans">
-                Legal
-              </h5>
-              <ul className="space-y-3">
-                {['Privacy', 'Terms', 'Cookies', 'License'].map((item) => (
-                  <li key={item}>
-                    <a
-                      href="#"
-                      className="text-xs text-[rgba(254,252,248,0.65)] hover:text-[var(--ochre)] transition-all duration-200 relative inline-block group"
-                    >
-                      {item}
-                      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--ochre)] group-hover:w-full transition-all duration-300"></span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Connect */}
-            <div>
-              <h5 className="text-xs font-semibold uppercase tracking-widest text-[var(--ochre)] mb-5 font-sans">
-                Connect
-              </h5>
-              <ul className="space-y-3">
-                {['Twitter', 'LinkedIn', 'GitHub', 'Instagram'].map((item) => (
-                  <li key={item}>
-                    <a
-                      href="#"
-                      className="text-xs text-[rgba(254,252,248,0.65)] hover:text-[var(--ochre)] transition-all duration-200 relative inline-block group"
-                    >
-                      {item}
-                      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--ochre)] group-hover:w-full transition-all duration-300"></span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Divider */}
-          <div className="h-px bg-gradient-to-r from-transparent via-[rgba(254,252,248,0.1)] to-transparent my-12"></div>
-
-          {/* Bottom Bar */}
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="space-y-2">
-              <p className="text-xs text-[rgba(254,252,248,0.5)]">
-                © {currentYear} Stellar Uzima. Made with passion in Africa.
-              </p>
-              <p className="text-xs text-[rgba(254,252,248,0.35)]">
-                Empowering Africa's healthcare renaissance, one innovation at a time.
-              </p>
-            </div>
-
-            {/* Badges */}
-            <div className="flex gap-3 flex-wrap justify-center md:justify-end">
-              <div className="inline-flex items-center gap-2 bg-[rgba(254,252,248,0.08)] border border-[rgba(254,252,248,0.1)] rounded-full px-4 py-2">
-                <div className="w-2 h-2 bg-[var(--clay)] rounded-full animate-pulse"></div>
-                <span className="text-xs text-[rgba(254,252,248,0.6)]">MIT License</span>
-              </div>
-              <div className="inline-flex items-center gap-2 bg-[rgba(254,252,248,0.08)] border border-[rgba(254,252,248,0.1)] rounded-full px-4 py-2">
-                <span className="text-xs text-[rgba(254,252,248,0.6)]">Open Source</span>
-              </div>
-            </div>
+          <div className="flex gap-4">
+            {['Twitter', 'Discord', 'Telegram', 'LinkedIn'].map((social, index) => (
+              <a 
+                key={social} 
+                href="#" 
+                className={`hover:text-cream hover:translate-y-[-2px] transition-all duration-300 animate-slideUp opacity-0 stagger-${index + 2}`}
+              >
+                {social}
+              </a>
+            ))}
           </div>
         </div>
       </div>
     </footer>
-  );
+  )
 }
