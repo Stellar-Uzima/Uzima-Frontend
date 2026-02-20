@@ -1,5 +1,7 @@
 'use client'
 
+import LanguageSelector from '@/components/ui/LanguageSelector'
+
 export default function Navigation() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-100 flex items-center justify-between px-12 py-4 bg-cream/94 backdrop-blur-md border-b border-terra/10">
@@ -35,12 +37,15 @@ export default function Navigation() {
         </li>
       </ul>
 
-      <a
-        href="#"
-        className="bg-terra text-white px-5 py-2 rounded-full text-sm font-medium transition-all hover:bg-earth hover:shadow-lg hover:shadow-terra/30"
-      >
-        Join Now
-      </a>
+      <div className="flex items-center gap-4">
+        <LanguageSelector />
+        <a
+          href="#"
+          className="bg-terra text-white px-5 py-2 rounded-full text-sm font-medium transition-all hover:bg-earth hover:shadow-lg hover:shadow-terra/30"
+        >
+          Join Now
+        </a>
+      </div>
     </nav>
   )
 }
