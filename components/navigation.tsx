@@ -1,5 +1,13 @@
 'use client'
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import Link from 'next/link'
+
 export default function Navigation() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-100 flex items-center justify-between px-12 py-4 bg-cream/94 backdrop-blur-md border-b border-terra/10">
@@ -32,6 +40,33 @@ export default function Navigation() {
           <a href="#blockchain" className="no-underline text-muted text-sm font-medium hover:text-terra transition-colors">
             Blockchain
           </a>
+        </li>
+        <li>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="no-underline text-muted text-sm font-medium hover:text-terra transition-colors cursor-pointer flex items-center gap-1">
+                Services
+                <span className="text-xs">▼</span>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48 bg-white border border-terra/10 rounded-lg shadow-lg">
+              <DropdownMenuItem asChild>
+                <Link href="/services/knowledge-sharing" className="flex items-center gap-2 px-4 py-2 text-sm text-earth hover:bg-terra/10 cursor-pointer">
+                  Knowledge Sharing
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/services/consultations" className="flex items-center gap-2 px-4 py-2 text-sm text-earth hover:bg-terra/10 cursor-pointer">
+                  Consultations
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/services/xlm-rewards" className="flex items-center gap-2 px-4 py-2 text-sm text-earth hover:bg-terra/10 cursor-pointer">
+                  XLM Rewards
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </li>
       </ul>
 
