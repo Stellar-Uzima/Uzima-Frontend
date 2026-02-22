@@ -16,7 +16,6 @@ import Footer from "@/components/footer";
 export default function Home() {
   return (
     <>
-      <Navigation />
       <HeroSection />
       <StatsStrip />
       <HowItWorks />
@@ -29,7 +28,6 @@ export default function Home() {
       <BlockchainSection />
       <StoriesSection />
       <CTASection />
-      <Footer />
     </>
   );
 }
