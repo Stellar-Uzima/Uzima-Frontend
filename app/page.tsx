@@ -1,3 +1,4 @@
+import Navigation from "@/components/navigation";
 import HeroSection from "@/components/HeroSection";
 import StatsStrip from "@/components/StatsStrip";
 import HowItWorks from "@/components/HowItWorks";
@@ -10,6 +11,7 @@ import BiotechnologySection from "@/components/BiotechnologySection";
 import BlockchainSection from "@/components/BlockchainSection";
 import StoriesSection from "@/components/StoriesSection";
 import CTASection from "@/components/CTASection";
+import Footer from "@/components/footer";
 
 export default function Home() {
   return (
