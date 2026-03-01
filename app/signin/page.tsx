@@ -121,7 +121,7 @@ export default function SignInPage() {
               <button
                 type="button"
                 onClick={() => setForgotPasswordMode(false)}
-                className="text-sm font-medium text-muted hover:text-terra transition-colors focus:outline-none focus:underline"
+                className="text-sm font-medium text-muted hover:text-terra transition-colors focus:outline-none focus:underline cursor-pointer"
               >
                 Back to Sign In
               </button>
@@ -151,19 +151,7 @@ export default function SignInPage() {
 
             {/* Password Field */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-earth font-medium">Password</Label>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setGlobalError(null);
-                    setForgotPasswordMode(true);
-                  }}
-                  className="text-sm text-terra hover:text-earth font-medium transition-colors focus:outline-none focus:underline"
-                >
-                  Forgot password?
-                </button>
-              </div>
+              <Label htmlFor="password" className="text-earth font-medium">Password</Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -179,7 +167,7 @@ export default function SignInPage() {
                   type="button"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-earth transition-colors focus:outline-none"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-earth transition-colors focus:outline-none cursor-pointer"
                 >
                   {showPassword ? (
                     <EyeOff className="w-4 h-4" />
@@ -188,6 +176,20 @@ export default function SignInPage() {
                   )}
                 </button>
               </div>
+
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setGlobalError(null);
+                    setForgotPasswordMode(true);
+                  }}
+                  className="text-sm text-terra hover:text-earth font-medium transition-colors focus:outline-none focus:underline cursor-pointer"
+                >
+                  Forgot password?
+                </button>
+              </div>
+
               {errors.password && (
                 <p id="password-error" className="text-sm text-red-500 mt-1" role="alert">
                   {errors.password.message}
