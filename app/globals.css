@@ -72,6 +72,16 @@
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
+  /* Stellar Uzima Brand Colors */
+  --color-earth: var(--earth);
+  --color-terra: var(--terra);
+  --color-amber: var(--amber);
+  --color-gold: var(--gold);
+  --color-cream: var(--cream);
+  --color-sage: var(--sage);
+  --color-sky: var(--sky);
+  --color-forest: var(--forest);
+  --color-white: var(--white);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
