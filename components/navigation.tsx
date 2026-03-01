@@ -292,13 +292,24 @@ function MobileDrawer({
           <LanguageSelector />
 
           {/* CTA */}
-          <a
-            href="#"
-            onClick={onClose}
-            className="w-full text-center bg-terra text-white px-5 py-3 rounded-full text-sm font-medium transition-all hover:bg-earth hover:shadow-lg hover:shadow-terra/30"
-          >
-            Join Now
-          </a>
+          <div className="flex flex-col gap-3">
+            {!isLoggedIn && (
+              <Link
+                href="/signin"
+                onClick={onClose}
+                className="w-full text-center text-earth font-medium text-sm hover:text-terra transition-colors px-5 py-2 border border-earth/20 rounded-full"
+              >
+                Sign In
+              </Link>
+            )}
+            <a
+              href="#"
+              onClick={onClose}
+              className="w-full text-center bg-terra text-white px-5 py-3 rounded-full text-sm font-medium transition-all hover:bg-earth hover:shadow-lg hover:shadow-terra/30"
+            >
+              Join Now
+            </a>
+          </div>
         </div>
       </div>
     </>
@@ -399,6 +410,15 @@ export default function Navbar() {
           )}
 
           <LanguageSelector />
+
+          {!isLoggedIn && (
+            <Link
+              href="/signin"
+              className="text-earth font-medium text-sm hover:text-terra transition-colors px-2"
+            >
+              Sign In
+            </Link>
+          )}
 
           <a
             href="#"
