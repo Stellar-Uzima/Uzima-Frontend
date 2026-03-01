@@ -11,7 +11,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto">
 
         {/* Top Section */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-12 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6 md:gap-12 mb-6 md:mb-12">
 
           {/* Brand */}
           <div className="col-span-1">
@@ -53,7 +53,7 @@ export default function Footer() {
         </div>
 
         {/* Social Row */}
-        <div className="border-t border-white/10 pt-8 pb-8 flex flex-wrap justify-center md:justify-start gap-5">
+        <div className="border-t border-white/10 pt-8 pb-8 flex flex-wrap justify-start md:justify-start gap-5">
           {socialLinks.map((item) => {
             const Icon = item.icon;
 
@@ -73,13 +73,13 @@ export default function Footer() {
           })}
         </div>
 
-        {/* Bottom Section */}
-        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-cream/60">
+
+
+   <div className="border-t border-white/10  md:pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-6 text-xs text-cream/60">
 
           {/* Left */}
           <div className="flex flex-col md:flex-row items-center gap-4">
             <LanguageSelector />
-            <p>© {currentYear} Stellar Uzima. All rights reserved.</p>
           </div>
 
           {/* Right - Powered By */}
@@ -91,6 +91,19 @@ export default function Footer() {
               Powered by Stellar
             </span>
           </div>
+
+        </div>
+
+
+
+        {/* Bottom Section */}
+        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-center items-center gap-6 text-xs text-cream/60">
+
+
+            <p>© {currentYear} Stellar Uzima. All rights reserved.</p>
+
+
+
 
         </div>
       </div>
