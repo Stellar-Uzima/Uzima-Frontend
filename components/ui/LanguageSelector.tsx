@@ -71,7 +71,7 @@ export default function LanguageSelector() {
   };
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative  " ref={dropdownRef}>
       <button
         ref={buttonRef}
         type="button"
@@ -111,7 +111,7 @@ export default function LanguageSelector() {
       {isOpen && (
         <ul
           role="listbox"
-          className={`absolute right-0 w-48 bg-cream border border-terra/10 rounded-xl shadow-lg shadow-terra/10 py-1 z-50 animate-in fade-in zoom-in-95 duration-200 max-h-70 overflow-y-auto
+          className={`absolute bg-[#FDF5E8] right-0 w-48 bg-cream border border-terra/10 rounded-xl shadow-lg shadow-terra/10 py-1 z-50 animate-in fade-in zoom-in-95 duration-200 max-h-70 overflow-y-auto
             ${openUpward ? "bottom-full mb-2" : "top-full mt-2"}
           `}
         >

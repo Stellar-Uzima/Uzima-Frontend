@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Playfair_Display, DM_Sans, Fraunces } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
+import Footer from '../components/footer';
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -54,6 +55,7 @@ export default function RootLayout({
       <body className={`${playfair.variable} ${dmSans.variable} ${fraunces.variable} font-sans antialiased`}>
         {children}
         <Analytics />
+        <Footer/>
       </body>
     </html>
   )
