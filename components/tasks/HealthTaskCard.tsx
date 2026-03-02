@@ -1,38 +1,22 @@
 'use client'
 
 import * as React from 'react'
-import { Check, Sparkles } from 'lucide-react'
+import { Activity, Check, Coins, Droplets, Footprints, Leaf } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
 export type HealthTaskStatus = 'available' | 'completed' | 'claimed'
 
 export interface HealthTaskCardProps {
-  /** Task title — e.g. "Complete daily hydration check" */
   title: string
-  /** XLM reward amount — e.g. 0.5 */
   reward: number
-  /** Category label — e.g. "Nutrition", "Exercise", "Mental Health" */
   category: string
-  /** Current task status */
   status: HealthTaskStatus
-  /** Emoji or image path used as the task icon */
-  icon: string
-  /** Callback fired when the user clicks the claim button */
   onClaim?: () => void
-  /** Additional class names forwarded to the root element */
   className?: string
 }
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
 
 const CATEGORY_COLORS: Record<string, string> = {
   Nutrition: 'bg-[#5A7A4A]/10 text-[#5A7A4A]',
@@ -44,42 +28,35 @@ function getCategoryColor(category: string): string {
   return CATEGORY_COLORS[category] ?? 'bg-[#8A6040]/10 text-[#8A6040]'
 }
 
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
+function getTaskIcon(title: string, category: string) {
+  const lowerTitle = title.toLowerCase()
 
-/**
- * A reusable card that represents a single health task a user can complete to
- * earn XLM coins. Supports three visual states: **available**, **completed**,
- * and **claimed**.
- *
- * @example
- * ```tsx
- * <HealthTaskCard
- *   title="Complete daily hydration check"
- *   reward={0.5}
- *   category="Nutrition"
- *   status="available"
- *   icon="💧"
- *   onClaim={() => console.log('claimed!')}
- * />
- * ```
- */
+  if (lowerTitle.includes('hydration') || lowerTitle.includes('water')) {
+    return <Droplets className="h-6 w-6 text-[#C05A2B]" aria-hidden="true" />
+  }
+
+  if (lowerTitle.includes('walk') || category === 'Exercise') {
+    return <Footprints className="h-6 w-6 text-[#C05A2B]" aria-hidden="true" />
+  }
+
+  if (category === 'Traditional Medicine') {
+    return <Leaf className="h-6 w-6 text-[#C05A2B]" aria-hidden="true" />
+  }
+
+  return <Activity className="h-6 w-6 text-[#C05A2B]" aria-hidden="true" />
+}
+
 export function HealthTaskCard({
   title,
   reward,
   category,
   status,
-  icon,
   onClaim,
   className,
 }: HealthTaskCardProps) {
   const isAvailable = status === 'available'
   const isCompleted = status === 'completed'
   const isClaimed = status === 'claimed'
-
-  // Determine if the icon is an image path or an emoji
-  const isImageIcon = icon.startsWith('/') || icon.startsWith('http')
 
   return (
     <div
@@ -116,16 +93,7 @@ export function HealthTaskCard({
             isClaimed && 'bg-[#F0C050]/15',
           )}
         >
-          {isImageIcon ? (
-            <img
-              src={icon}
-              alt=""
-              className="h-7 w-7 object-contain"
-              aria-hidden="true"
-            />
-          ) : (
-            <span aria-hidden="true">{icon}</span>
-          )}
+          {getTaskIcon(title, category)}
 
           {/* Completed / claimed checkmark overlay */}
           {(isCompleted || isClaimed) && (
@@ -173,7 +141,7 @@ export function HealthTaskCard({
               'bg-[#F0C050]/15 text-[#B88A20]',
           )}
         >
-          <Sparkles className="h-3 w-3" />
+          <Coins className="h-3 w-3" />
           {reward} XLM
         </Badge>
       </div>
