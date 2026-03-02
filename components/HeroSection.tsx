@@ -85,8 +85,8 @@ export default function HeroSection() {
             {/* Center portrait - Main focus */}
             <div className="absolute z-20 w-56 h-72 rounded-4xl overflow-hidden shadow-2xl border-4 border-cream"
               style={{ boxShadow: '0 30px 80px rgba(46,21,3,0.25)' }}>
-              <img 
-                src="/african-woman-1.jpg" 
+              <img
+                src="/african-woman-1.jpg"
                 alt="Woman from our community"
                 className="w-full h-full object-cover"
               />
@@ -95,8 +95,8 @@ export default function HeroSection() {
             {/* Left portrait - Overlapping */}
             <div className="absolute z-10 left-0 w-44 h-60 rounded-3xl overflow-hidden shadow-lg border-3 border-cream transform -translate-x-12"
               style={{ boxShadow: '0 20px 60px rgba(46,21,3,0.15)' }}>
-              <img 
-                src="/african-man-1.jpg" 
+              <img
+                src="/african-man-1.jpg"
                 alt="Man from our community"
                 className="w-full h-full object-cover"
               />
@@ -105,8 +105,8 @@ export default function HeroSection() {
             {/* Right portrait - Overlapping */}
             <div className="absolute z-10 right-0 w-44 h-60 rounded-3xl overflow-hidden shadow-lg border-3 border-cream transform translate-x-12"
               style={{ boxShadow: '0 20px 60px rgba(46,21,3,0.15)' }}>
-              <img 
-                src="/african-woman-2.jpg" 
+              <img
+                src="/african-woman-2.jpg"
                 alt="Young woman from our community"
                 className="w-full h-full object-cover"
               />

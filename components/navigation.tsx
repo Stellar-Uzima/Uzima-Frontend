@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import LanguageSelector from "@/components/ui/LanguageSelector";
+import { ThemeToggle } from "./theme-toggle";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -214,6 +215,7 @@ function MobileDrawer({
             </span>
           </Link>
 
+
           {/* Close button */}
           <button
             ref={closeButtonRef}
@@ -285,6 +287,8 @@ function MobileDrawer({
             ))}
           </div>
         </nav>
+
+
 
         {/* Drawer footer */}
         <div className="shrink-0 px-6 py-6 border-t border-terra/10 flex flex-col gap-4">
@@ -408,6 +412,8 @@ export default function Navbar() {
           {isLoggedIn && xlmBalance !== null && (
             <XLMBalanceWidget balance={xlmBalance} />
           )}
+
+          <ThemeToggle />
 
           <LanguageSelector />
 
