@@ -25,7 +25,7 @@ export default function CouponsSection() {
   ];
 
   return (
-    <section className="bg-forest text-cream px-20 py-28 relative overflow-hidden">
+    <section className="bg-forest text-cream px-6 sm:px-12 md:px-16 lg:px-20 py-16 sm:py-20 md:py-28 relative overflow-hidden">
       {/* Decorative gradient */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -36,9 +36,9 @@ export default function CouponsSection() {
       />
 
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="grid grid-cols-2 gap-20 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left - Text */}
-          <div>
+          <div className="order-1 lg:order-1">
             <div className="flex items-center gap-2 text-gold/90 font-bold text-xs uppercase tracking-widest mb-2">
               <span>✦</span>
               <span>Redeem Rewards</span>
@@ -61,14 +61,17 @@ export default function CouponsSection() {
           </div>
 
           {/* Right - Coupon cards */}
-          <CouponCard
-            code="HEALTH50"
-            discount="50% off"
-            expiresAt="2026-02-25"
-            specialist="General Practitioner"
-            status="active"
-          />
-          <div className="flex flex-col gap-4">
+          <div className="order-2 lg:order-2 flex flex-col gap-8 items-center lg:items-start">
+            <div className="w-full max-w-sm lg:max-w-none">
+              <CouponCard
+                code="HEALTH50"
+                discount="50% off"
+                expiresAt="2026-02-25"
+                specialist="General Practitioner"
+                status="active"
+              />
+            </div>
+            <div className="flex flex-col gap-4 w-full">
             {coupons.map((coupon, i) => {
               const colorClasses = {
                 terra: "border-terra/30 bg-terra/20",
@@ -113,6 +116,7 @@ export default function CouponsSection() {
                 </div>
               );
             })}
+            </div>
           </div>
         </div>
       </div>

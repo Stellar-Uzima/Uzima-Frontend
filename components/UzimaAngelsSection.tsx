@@ -41,7 +41,7 @@ export default function UzimaAngelsSection() {
   ]
 
   return (
-    <section className="bg-gradient-to-b from-white via-cream/3 to-white px-20 py-28">
+    <section className="bg-gradient-to-b from-white via-cream/3 to-white px-6 sm:px-12 md:px-16 lg:px-20 py-16 sm:py-20 md:py-28">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
@@ -62,7 +62,7 @@ export default function UzimaAngelsSection() {
         </div>
 
         {/* Angels Grid */}
-        <div className="grid grid-cols-2 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-16">
           {angels.map((angel, i) => (
             <div
               key={i}

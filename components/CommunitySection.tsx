@@ -18,12 +18,12 @@ export default function CommunitySection() {
   ]
 
   return (
-    <section id="community" className="bg-cream px-20 py-28">
+    <section id="community" className="bg-cream px-6 sm:px-12 md:px-16 lg:px-20 py-16 sm:py-20 md:py-28">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-2 gap-20 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left - Photo collage */}
-          <div>
-            <div className="grid grid-cols-3 grid-rows-2 gap-3" style={{ gridTemplateRows: 'repeat(2, 180px)' }}>
+          <div className="order-2 lg:order-1">
+            <div className="grid grid-cols-3 grid-rows-2 gap-3" style={{ gridTemplateRows: 'repeat(2, 140px)' }}>
               {/* Cell 1 - small */}
               <div className="rounded-4 overflow-hidden flex items-center justify-center text-6xl"
                 style={{ background: photoGradients[0] }}>
@@ -57,7 +57,7 @@ export default function CommunitySection() {
           </div>
 
           {/* Right - Text content */}
-          <div>
+          <div className="order-1 lg:order-2">
             <div className="flex items-center gap-2 text-terra font-bold text-xs uppercase tracking-widest mb-2">
               <span>✦</span>
               <span>Global Community</span>

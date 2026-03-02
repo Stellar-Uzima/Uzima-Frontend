@@ -111,12 +111,14 @@ function MobileDrawer({
   pathname,
   isLoggedIn,
   xlmBalance,
+  activeSection,
 }: {
   isOpen: boolean;
   onClose: () => void;
   pathname: string;
   isLoggedIn: boolean;
   xlmBalance: number | null;
+  activeSection: string;
 }) {
   const drawerRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -249,21 +251,31 @@ function MobileDrawer({
           )}
 
           {/* Main links */}
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={onClose}
-              className={`flex items-center px-4 py-3.5 rounded-xl text-base font-medium transition-colors
-                ${
-                  pathname === link.href
-                    ? "bg-terra/10 text-terra"
-                    : "text-earth hover:bg-terra/5 hover:text-terra"
-                }`}
-            >
-              {link.label}
-            </a>
-          ))}
+          {NAV_LINKS.map((link) => {
+            // Check if link is active (hash links use activeSection, routes use pathname)
+            const isActive = link.href.startsWith("#")
+              ? `#${activeSection}` === link.href
+              : pathname === link.href;
+
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={onClose}
+                className={`flex items-center px-4 py-3.5 rounded-xl text-base font-medium transition-all duration-200
+                  ${
+                    isActive
+                      ? "bg-terra/10 text-terra font-semibold"
+                      : "text-earth hover:bg-terra/5 hover:text-terra"
+                  }`}
+              >
+                {link.label}
+                {isActive && (
+                  <span className="ml-auto w-1.5 h-1.5 rounded-full bg-terra" />
+                )}
+              </a>
+            );
+          })}
 
           {/* Services section */}
           <div className="mt-2">
@@ -326,18 +338,101 @@ export default function Navbar() {
   const pathname = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { isLoggedIn, xlmBalance } = useWallet();
+  const [activeSection, setActiveSection] = useState<string>("");
+  const [isScrolled, setIsScrolled] = useState(false);
 
   // Close drawer on route change
   useEffect(() => {
     setDrawerOpen(false);
   }, [pathname]);
 
+  // IntersectionObserver for active section tracking
+  useEffect(() => {
+    const sections = document.querySelectorAll<HTMLElement>(
+      "#how, #earn, #community, #blockchain"
+    );
+
+    if (sections.length === 0) return;
+
+    // Mobile-optimized detection settings
+    const isMobile = window.innerWidth < 768;
+    const topOffset = isMobile ? "80px" : "100px"; // Account for navbar height
+    const bottomOffset = isMobile ? "35%" : "50%"; // Less aggressive on mobile
+    const visibilityThreshold = isMobile ? 0.15 : 0.3; // Lower threshold for mobile
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Find section with highest visibility in viewport
+        let maxRatio = 0;
+        let dominantSection = "";
+
+        entries.forEach((entry) => {
+          if (entry.intersectionRatio > maxRatio) {
+            maxRatio = entry.intersectionRatio;
+            dominantSection = entry.target.id;
+          }
+        });
+
+        // Update active section when sufficiently visible
+        if (maxRatio > visibilityThreshold) {
+          setActiveSection(dominantSection);
+        }
+      },
+      {
+        threshold: [0, 0.1, 0.15, 0.2, 0.3, 0.5, 0.7, 1.0],
+        rootMargin: `-${topOffset} 0px -${bottomOffset} 0px`,
+      }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Scroll listener for navbar compression (scroll past 80px)
+  useEffect(() => {
+    let rafId: number | null = null;
+
+    const handleScroll = () => {
+      if (rafId !== null) return;
+
+      rafId = requestAnimationFrame(() => {
+        setIsScrolled(window.scrollY > 80);
+        rafId = null;
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Check initial state
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
+  }, []);
+
   const closeDrawer = useCallback(() => setDrawerOpen(false), []);
   const toggleDrawer = useCallback(() => setDrawerOpen((prev) => !prev), []);
 
+  // Helper to check if link is active
+  const isLinkActive = (href: string) => {
+    // For hash links, check against active section
+    if (href.startsWith("#")) {
+      return `#${activeSection}` === href;
+    }
+    // For route links, check against pathname
+    return pathname === href;
+  };
+
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-6 md:px-12 py-4 bg-cream/94 backdrop-blur-md border-b border-terra/10">
+      <nav
+        className={`fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-6 md:px-12 bg-cream/94 backdrop-blur-md border-b border-terra/10 transition-all duration-300 ease-out ${
+          isScrolled
+            ? "py-[0.95rem] md:py-[0.7rem] shadow-lg shadow-terra/5"
+            : "py-[1.1rem] shadow-sm shadow-terra/0"
+        }`}
+      >
         {/* ── Logo ── */}
         <Link href="/" className="flex items-center gap-2.5 no-underline">
           <div className="w-9 h-9 rounded-full bg-terra flex items-center justify-center text-gold text-sm font-semibold">
@@ -350,21 +445,27 @@ export default function Navbar() {
 
         {/* ── Desktop nav links ── */}
         <ul className="hidden md:flex items-center gap-8 list-none">
-          {NAV_LINKS.map((link) => (
-            <li key={link.href}>
-              <a
-                href={link.href}
-                className={`no-underline text-sm font-medium transition-colors
-                  ${
-                    pathname === link.href
-                      ? "text-terra border-b-2 border-terra pb-0.5"
-                      : "text-muted hover:text-terra"
-                  }`}
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
+          {NAV_LINKS.map((link) => {
+            const active = isLinkActive(link.href);
+            return (
+              <li key={link.href}>
+                <a
+                  href={link.href}
+                  className={`relative no-underline text-sm font-medium transition-all duration-200
+                    ${
+                      active
+                        ? "text-terra"
+                        : "text-muted hover:text-terra"
+                    }`}
+                >
+                  {link.label}
+                  {active && (
+                    <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-terra rounded-full" />
+                  )}
+                </a>
+              </li>
+            );
+          })}
 
           {/* Services dropdown */}
           <li>
@@ -445,6 +546,7 @@ export default function Navbar() {
         pathname={pathname}
         isLoggedIn={isLoggedIn}
         xlmBalance={xlmBalance}
+        activeSection={activeSection}
       />
     </>
   );
