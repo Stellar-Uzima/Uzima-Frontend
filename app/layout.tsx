@@ -3,6 +3,8 @@ import { Playfair_Display, DM_Sans, Fraunces } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import Footer from '../components/footer';
+import { OfflineBanner } from '@/components/pwa/OfflineBanner';
+import { InstallPrompt } from '@/components/pwa/InstallPrompt';
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -26,6 +28,12 @@ export const metadata: Metadata = {
   title: 'Stellar Uzima — Your Health. Your Wealth. Your Community.',
   description: 'Earn, learn, and grow with Stellar Uzima. Transform your health, wealth, and community with blockchain-powered rewards.',
   generator: 'v0.app',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Stellar Uzima',
+  },
   icons: {
     icon: [
       {
@@ -52,8 +60,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta name="theme-color" content="#B84E20" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Stellar Uzima" />
+        <link rel="apple-touch-icon" href="/apple-icon.png" />
+      </head>
       <body className={`${playfair.variable} ${dmSans.variable} ${fraunces.variable} font-sans antialiased`}>
+        <OfflineBanner />
         {children}
+        <InstallPrompt />
         <Analytics />
         <Footer/>
       </body>

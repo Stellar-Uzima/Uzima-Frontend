@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import LanguageSelector from "@/components/ui/LanguageSelector";
+import { InstallButton } from "@/components/pwa/InstallPrompt";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -410,6 +411,9 @@ export default function Navbar() {
           )}
 
           <LanguageSelector />
+          
+          {/* PWA Install Button */}
+          <InstallButton />
 
           {!isLoggedIn && (
             <Link
