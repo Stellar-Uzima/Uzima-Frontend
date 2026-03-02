@@ -3,6 +3,8 @@ import { Playfair_Display, DM_Sans, Fraunces } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import Footer from '../components/footer';
+import { Providers } from '@/providers/providers';
+import Navigation from "@/components/navigation";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -51,11 +53,14 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning >
       <body className={`${playfair.variable} ${dmSans.variable} ${fraunces.variable} font-sans antialiased`}>
-        {children}
-        <Analytics />
-        <Footer/>
+        <Providers>
+              <Navigation/>
+          {children}
+          <Analytics />
+          <Footer />
+        </Providers>
       </body>
     </html>
   )
