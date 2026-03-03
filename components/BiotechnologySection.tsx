@@ -40,17 +40,17 @@ export default function BiotechnologySection() {
   ]
 
   return (
-    <section className="py-20 px-6 bg-gradient-to-br from-cream/50 to-white border-t border-terra/10">
+    <section className="px-6 sm:px-12 md:px-16 lg:px-20 py-16 sm:py-20 bg-gradient-to-br from-cream/50 to-white border-t border-terra/10">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16 animate-fadeUp">
           <div className="inline-block px-4 py-2 bg-sky/10 rounded-full border border-sky/20 mb-4">
             <span className="text-sm font-semibold text-sky">Biotech Innovation</span>
           </div>
-          <h2 className="font-serif text-5xl font-bold text-earth mb-6 text-balance">
+          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-earth mb-6 text-balance">
             Science Meets Tradition
           </h2>
-          <p className="text-lg text-muted max-w-2xl mx-auto text-pretty">
+          <p className="text-sm sm:text-base md:text-lg text-muted max-w-2xl mx-auto text-pretty">
             Bridging ancestral wisdom with cutting-edge biotechnology to create African-centered health solutions and earn rewards for research participation.
           </p>
         </div>
@@ -60,14 +60,14 @@ export default function BiotechnologySection() {
           {researchAreas.map((area, index) => (
             <div
               key={index}
-              className="group bg-white rounded-3xl p-8 border border-terra/10 hover:border-terra/30 transition-all duration-300 hover:shadow-lg"
+              className="group bg-white rounded-3xl p-5 sm:p-6 md:p-8 border border-terra/10 hover:border-terra/30 transition-all duration-300 hover:shadow-lg"
             >
-              <div className="flex items-start gap-4 mb-4">
-                <div className={`text-5xl p-3 rounded-2xl bg-gradient-to-br ${area.color} flex-shrink-0`}>
+              <div className="flex items-start gap-3 sm:gap-4 mb-4">
+                <div className={`text-3xl sm:text-4xl md:text-5xl p-2 sm:p-3 rounded-2xl bg-gradient-to-br ${area.color} flex-shrink-0`}>
                   {area.icon}
                 </div>
-                <div className="flex-1">
-                  <h3 className="font-serif text-2xl font-bold text-earth mb-2">
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-serif text-lg sm:text-xl md:text-2xl font-bold text-earth mb-2">
                     {area.title}
                   </h3>
                   <div className="text-sm font-semibold text-terra bg-terra/8 px-3 py-1 rounded-full w-fit">
@@ -86,8 +86,8 @@ export default function BiotechnologySection() {
         </div>
 
         {/* How to Participate */}
-        <div className="bg-white rounded-3xl p-12 border border-terra/10 mb-16 animate-fadeUp">
-          <h3 className="font-serif text-3xl font-bold text-earth mb-8">
+        <div className="bg-white rounded-3xl p-6 sm:p-8 md:p-12 border border-terra/10 mb-16 animate-fadeUp">
+          <h3 className="font-serif text-2xl sm:text-3xl font-bold text-earth mb-6 sm:mb-8">
             Participate in Research & Earn
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -108,7 +108,7 @@ export default function BiotechnologySection() {
 
         {/* Research Partnerships */}
         <div className="animate-fadeUp">
-          <h3 className="font-serif text-3xl font-bold text-earth mb-8 text-center">
+          <h3 className="font-serif text-2xl sm:text-3xl font-bold text-earth mb-6 sm:mb-8 text-center">
             Our Research Partners
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

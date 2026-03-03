@@ -52,7 +52,7 @@ export default function TraditionalMedicineSection() {
   ]
 
   return (
-    <section className="py-20 px-20 bg-cream">
+    <section className="bg-cream px-6 sm:px-12 md:px-16 lg:px-20 py-16 sm:py-20">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-16 text-center">
@@ -123,16 +123,16 @@ export default function TraditionalMedicineSection() {
         </div>
 
         {/* Call to Action */}
-        <div className="bg-gradient-to-r from-earth to-terra rounded-3xl px-8 py-12 text-center text-white">
-          <h3 className="font-serif text-3xl font-bold mb-3">Support Traditional Medicine</h3>
-          <p className="text-white/80 mb-6 max-w-2xl mx-auto">
+        <div className="bg-gradient-to-r from-earth to-terra rounded-3xl px-6 sm:px-8 py-8 sm:py-12 text-center text-white">
+          <h3 className="font-serif text-2xl sm:text-3xl font-bold mb-3">Support Traditional Medicine</h3>
+          <p className="text-white/80 mb-6 max-w-2xl mx-auto text-sm sm:text-base">
             Buy from verified traditional medicine vendors and practitioners. Earn XLM tokens while supporting African health heritage.
           </p>
-          <div className="flex gap-4 justify-center">
-            <button className="bg-gold text-earth font-bold px-8 py-3 rounded-full hover:bg-white transition-all duration-300 hover:shadow-lg">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button className="w-full sm:w-auto bg-gold text-earth font-bold px-8 py-3 rounded-full hover:bg-white transition-all duration-300 hover:shadow-lg">
               Explore Remedies
             </button>
-            <button className="border-2 border-gold text-gold font-bold px-8 py-3 rounded-full hover:bg-gold hover:text-earth transition-all duration-300">
+            <button className="w-full sm:w-auto border-2 border-gold text-gold font-bold px-8 py-3 rounded-full hover:bg-gold hover:text-earth transition-all duration-300">
               Become a Healer
             </button>
           </div>

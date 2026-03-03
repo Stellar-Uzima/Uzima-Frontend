@@ -21,7 +21,7 @@ export default function StoriesSection() {
   ]
 
   return (
-    <section className="bg-gradient-to-b from-cream via-amber/5 to-cream px-20 py-28">
+    <section className="bg-gradient-to-b from-cream via-amber/5 to-cream px-6 sm:px-12 md:px-16 lg:px-20 py-16 sm:py-20 md:py-28">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
@@ -37,7 +37,7 @@ export default function StoriesSection() {
         </div>
 
         {/* Story cards grid */}
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {stories.map((story, i) => (
             <div
               key={i}

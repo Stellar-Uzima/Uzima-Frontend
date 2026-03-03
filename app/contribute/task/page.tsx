@@ -23,7 +23,10 @@ import {
   Eye,
   ChevronRight,
   ChevronLeft,
+  WifiOff,
+  Wifi,
 } from "lucide-react";
+import { useOfflineSync } from "@/hooks/useOfflineSync";
 
 const taskSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters"),
@@ -43,6 +46,7 @@ type TaskFormData = z.infer<typeof taskSchema>;
 export default function HealthTaskForm() {
   const [step, setStep] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const { isOnline, queueTask, pendingCount } = useOfflineSync();
 
   const methods = useForm<TaskFormData>({
     resolver: zodResolver(taskSchema),
@@ -74,9 +78,27 @@ export default function HealthTaskForm() {
     return () => subscription.unsubscribe();
   }, [methods.watch]);
 
-  const onSubmit = (data: TaskFormData) => {
-    localStorage.removeItem("uzima_task_draft");
-    setIsSubmitted(true);
+  const onSubmit = async (data: TaskFormData) => {
+    try {
+      if (isOnline) {
+        // TODO: Replace with actual API call when backend is ready
+        // const response = await fetch('/api/tasks/submit', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify(data),
+        // });
+        console.log("Task submitted online:", data);
+      } else {
+        // Queue task for offline sync
+        await queueTask(data);
+        console.log("Task queued for offline sync:", data);
+      }
+      
+      localStorage.removeItem("uzima_task_draft");
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error("Error submitting task:", error);
+    }
   };
 
   if (isSubmitted) {
@@ -112,6 +134,32 @@ export default function HealthTaskForm() {
 
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-8">
+      {/* Online/Offline Status Indicator */}
+      {!isOnline && (
+        <div className="mb-6 p-4 bg-[#F0C050]/20 border border-[#F0C050] rounded-lg flex items-center gap-3">
+          <WifiOff className="w-5 h-5 text-[#B88A20]" />
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-[#1A1A1A]">
+              You're currently offline
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Your task will be saved locally and synced when you reconnect
+            </p>
+          </div>
+        </div>
+      )}
+      
+      {pendingCount > 0 && isOnline && (
+        <div className="mb-6 p-4 bg-[#5A7A4A]/20 border border-[#5A7A4A] rounded-lg flex items-center gap-3">
+          <Wifi className="w-5 h-5 text-[#5A7A4A]" />
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-[#1A1A1A]">
+              Syncing {pendingCount} pending {pendingCount === 1 ? 'task' : 'tasks'}...
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Stepper UI */}
       <div className="flex items-center justify-center mb-12 gap-4 md:gap-12">
         {steps.map((s) => (

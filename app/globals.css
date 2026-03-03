@@ -1,78 +1,78 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
   /* Stellar Uzima Brand Colors */
-  --earth: #2E1503;
-  --terra: #B84E20;
-  --amber: #E08B2E;
-  --gold: #F0C050;
-  --cream: #FDF5E8;
-  --sage: #5A7A4A;
-  --sky: #4A8CAA;
-  --forest: #1C3020;
-  --muted: #8A6040;
-  --white: #FFFDF5;
+  --earth: #2e1503;
+  --terra: #b84e20;
+  --amber: #e08b2e;
+  --gold: #f0c050;
+  --cream: #fdf5e8;
+  --sage: #5a7a4a;
+  --sky: #4a8caa;
+  --forest: #1c3020;
+  --muted: #8a6040;
+  --white: #fffdf5;
   --radius: 18px;
 
   /* Design Token Aliases */
-  --background: #FDF5E8;
-  --foreground: #2E1503;
-  --card: #FFFDF5;
-  --card-foreground: #2E1503;
-  --popover: #FFFDF5;
-  --popover-foreground: #2E1503;
-  --primary: #B84E20;
-  --primary-foreground: #FFFDF5;
-  --secondary: #5A7A4A;
-  --secondary-foreground: #FFFDF5;
-  --muted: #8A6040;
-  --muted-foreground: #8A6040;
-  --accent: #E08B2E;
-  --accent-foreground: #FFFDF5;
-  --destructive: #B84E20;
-  --destructive-foreground: #FFFDF5;
-  --border: #E8D4C0;
-  --input: #FFFDF5;
-  --ring: #B84E20;
+  --background: #fdf5e8;
+  --foreground: #2e1503;
+  --card: #fffdf5;
+  --card-foreground: #2e1503;
+  --popover: #fffdf5;
+  --popover-foreground: #2e1503;
+  --primary: #b84e20;
+  --primary-foreground: #fffdf5;
+  --secondary: #5a7a4a;
+  --secondary-foreground: #fffdf5;
+  --muted: #8a6040;
+  --muted-foreground: #8a6040;
+  --accent: #e08b2e;
+  --accent-foreground: #fffdf5;
+  --destructive: #b84e20;
+  --destructive-foreground: #fffdf5;
+  --border: #e8d4c0;
+  --input: #fffdf5;
+  --ring: #b84e20;
 }
 
 .dark {
-  --background: #1A0D05;
-  --foreground: #FDF5E8;
+  --background: #1a0d05;
+  --foreground: #fdf5e8;
 
-  --card: #2A1508;
-  --card-foreground: #FDF5E8;
+  --card: #2a1508;
+  --card-foreground: #fdf5e8;
 
-  --popover: #2A1508;
-  --popover-foreground: #FDF5E8;
+  --popover: #2a1508;
+  --popover-foreground: #fdf5e8;
 
-  --primary: #E07040;
-  --primary-foreground: #1A0D05;
+  --primary: #e07040;
+  --primary-foreground: #1a0d05;
 
-  --secondary: #5A7A4A;
-  --secondary-foreground: #FDF5E8;
+  --secondary: #5a7a4a;
+  --secondary-foreground: #fdf5e8;
 
-  --muted: #3A1E0A;
-  --muted-foreground: #C4956A;
+  --muted: #3a1e0a;
+  --muted-foreground: #c4956a;
 
-  --accent: #E07040;
-  --accent-foreground: #1A0D05;
+  --accent: #e07040;
+  --accent-foreground: #1a0d05;
 
-  --destructive: #E07040;
-  --destructive-foreground: #FDF5E8;
+  --destructive: #e07040;
+  --destructive-foreground: #fdf5e8;
 
-  --border: #3A1E0A;
-  --input: #2A1508;
-  --ring: #E07040;
+  --border: #3a1e0a;
+  --input: #2a1508;
+  --ring: #e07040;
 }
 
 @theme inline {
   --font-sans: var(--font-dm-sans), system-ui, sans-serif;
   --font-serif: var(--font-playfair), serif;
-  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  --font-mono: "Geist Mono", "Geist Mono Fallback";
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -119,6 +119,52 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/* ── Task completion micro-animation keyframes ─────────────────────── */
+
+@keyframes task-ping {
+  0%   { transform: translateX(0); }
+  30%  { transform: translateX(4px); }
+  60%  { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes task-badge-pulse {
+  0%   { transform: scale(1);   box-shadow: 0 0 0 0 rgba(240,192,80,0); }
+  40%  { transform: scale(1.2); box-shadow: 0 0 8px 4px rgba(240,192,80,0.45); }
+  100% { transform: scale(1);   box-shadow: 0 0 0 0 rgba(240,192,80,0); }
+}
+
+@keyframes task-check-pop {
+  0%   { transform: scale(0) rotate(-15deg); opacity: 0; }
+  60%  { transform: scale(1.15) rotate(4deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg);   opacity: 1; }
+}
+
+@keyframes task-confetti-burst {
+  0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: var(--dx, 40px) var(--dy, -60px) scale(0.3); opacity: 0; }
+}
+
+@keyframes task-card-fade-complete {
+  from { opacity: 1; }
+  to   { opacity: 1; } /* card stays visible; border/style handled by class swap */
+}
+
+@layer utilities {
+  .animate-task-ping {
+    animation: task-ping 0.35s ease-in-out forwards;
+  }
+  .animate-task-badge-pulse {
+    animation: task-badge-pulse 0.55s ease-in-out forwards;
+  }
+  .animate-task-check-pop {
+    animation: task-check-pop 0.3s cubic-bezier(0.175,0.885,0.32,1.275) forwards;
+  }
+  .animate-task-confetti {
+    animation: task-confetti-burst 0.7s ease-out forwards;
+  }
 }
 
 @layer base {
@@ -180,7 +226,8 @@
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -257,5 +304,19 @@
   .animate-slideInLeft,
   .animate-scaleIn {
     animation: none !important;
+  .stagger-1 {
+    animation-delay: 0.1s;
+  }
+  .stagger-2 {
+    animation-delay: 0.2s;
+  }
+  .stagger-3 {
+    animation-delay: 0.3s;
+  }
+  .stagger-4 {
+    animation-delay: 0.4s;
+  }
+  .stagger-5 {
+    animation-delay: 0.5s;
   }
 }
