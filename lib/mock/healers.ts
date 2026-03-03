@@ -15,7 +15,6 @@ export type HealerRegion =
 export interface Healer {
   id: string
   name: string
-  avatar: string
   imageUrl?: string
   country: string
   countryCode: string
@@ -59,7 +58,6 @@ export const mockHealers: Healer[] = [
   {
     id: 'healer-ama-adu',
     name: 'Ama Adu',
-    avatar: 'AA',
     imageUrl:
       'https://images.pexels.com/photos/1181519/pexels-photo-1181519.jpeg?auto=compress&cs=tinysrgb&w=200',
     country: 'Ghana',
@@ -74,7 +72,6 @@ export const mockHealers: Healer[] = [
   {
     id: 'healer-oluwaseun-balogun',
     name: 'Oluwaseun Balogun',
-    avatar: 'OB',
     imageUrl:
       'https://images.pexels.com/photos/1181514/pexels-photo-1181514.jpeg?auto=compress&cs=tinysrgb&w=200',
     country: 'Nigeria',
@@ -89,7 +86,6 @@ export const mockHealers: Healer[] = [
   {
     id: 'healer-nia-okello',
     name: 'Nia Okello',
-    avatar: 'NO',
     imageUrl:
       'https://images.pexels.com/photos/3760852/pexels-photo-3760852.jpeg?auto=compress&cs=tinysrgb&w=200',
     country: 'Kenya',
@@ -104,7 +100,6 @@ export const mockHealers: Healer[] = [
   {
     id: 'healer-abdi-hassan',
     name: 'Abdi Hassan',
-    avatar: 'AH',
     country: 'Somalia',
     countryCode: 'SO',
     region: 'East Africa',
@@ -117,7 +112,6 @@ export const mockHealers: Healer[] = [
   {
     id: 'healer-selam-belay',
     name: 'Selam Belay',
-    avatar: 'SB',
     imageUrl:
       'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=200',
     country: 'Ethiopia',
@@ -132,7 +126,6 @@ export const mockHealers: Healer[] = [
   {
     id: 'healer-musa-diallo',
     name: 'Musa Diallo',
-    avatar: 'MD',
     country: 'Senegal',
     countryCode: 'SN',
     region: 'West Africa',
@@ -145,7 +138,6 @@ export const mockHealers: Healer[] = [
   {
     id: 'healer-lindiwe-dlamini',
     name: 'Lindiwe Dlamini',
-    avatar: 'LD',
     imageUrl:
       'https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=200',
     country: 'South Africa',
@@ -160,7 +152,6 @@ export const mockHealers: Healer[] = [
   {
     id: 'healer-thabo-mbeki',
     name: 'Thabo Mbeki',
-    avatar: 'TM',
     country: 'Lesotho',
     countryCode: 'LS',
     region: 'Southern Africa',
@@ -173,7 +164,6 @@ export const mockHealers: Healer[] = [
   {
     id: 'healer-fatima-el-sayed',
     name: 'Fatima El-Sayed',
-    avatar: 'FE',
     imageUrl:
       'https://images.pexels.com/photos/1181681/pexels-photo-1181681.jpeg?auto=compress&cs=tinysrgb&w=200',
     country: 'Egypt',
@@ -188,7 +178,6 @@ export const mockHealers: Healer[] = [
   {
     id: 'healer-samira-ben-ali',
     name: 'Samira Ben Ali',
-    avatar: 'SA',
     country: 'Morocco',
     countryCode: 'MA',
     region: 'North Africa',
@@ -201,7 +190,6 @@ export const mockHealers: Healer[] = [
   {
     id: 'healer-chinonso-okoro',
     name: 'Chinonso Okoro',
-    avatar: 'CO',
     country: 'Nigeria',
     countryCode: 'NG',
     region: 'West Africa',
@@ -214,7 +202,6 @@ export const mockHealers: Healer[] = [
   {
     id: 'healer-yao-kouassi',
     name: 'Yao Kouassi',
-    avatar: 'YK',
     country: "Côte d'Ivoire",
     countryCode: 'CI',
     region: 'West Africa',
@@ -222,32 +209,6 @@ export const mockHealers: Healer[] = [
     languages: ['French'],
     rating: 4.3,
     reviewCount: 47,
-    isVerified: true,
-  },
-  {
-    id: 'healer-aminata-toure',
-    name: 'Aminata Touré',
-    avatar: 'AT',
-    country: 'Mali',
-    countryCode: 'ML',
-    region: 'West Africa',
-    specialties: ['Herbal Medicine', 'Nutrition'],
-    languages: ['French', 'Bambara'],
-    rating: 4.5,
-    reviewCount: 79,
-    isVerified: true,
-  },
-  {
-    id: 'healer-kofi-mensah',
-    name: 'Kofi Mensah',
-    avatar: 'KM',
-    country: 'Ghana',
-    countryCode: 'GH',
-    region: 'West Africa',
-    specialties: ['Spiritual Healing', 'Bone Setting'],
-    languages: ['English', 'Twi'],
-    rating: 4.6,
-    reviewCount: 92,
     isVerified: true,
   },
 ]
