@@ -9,9 +9,9 @@ export default function EarnSection() {
   ]
 
   return (
-    <section id="earn" className="bg-cream px-20 py-28">
+    <section id="earn" className="bg-cream px-6 sm:px-12 md:px-16 lg:px-20 py-16 sm:py-20 md:py-28">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-2 gap-20 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left - Text content */}
           <div>
             <div className="flex items-center gap-2 text-terra font-bold text-xs uppercase tracking-widest mb-2">

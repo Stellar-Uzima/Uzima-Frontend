@@ -2,7 +2,7 @@
 
 export default function HeroSection() {
   return (
-    <section className="min-h-screen pt-20 px-20 py-28 relative overflow-hidden bg-cream">
+    <section className="min-h-screen pt-20 px-6 sm:px-12 md:px-16 lg:px-20 py-16 sm:py-20 md:py-28 relative overflow-hidden bg-cream">
       {/* Decorative gradient orbs */}
       <div className="absolute top-1/4 right-0 w-1/2 h-4/5 pointer-events-none"
         style={{
@@ -22,9 +22,9 @@ export default function HeroSection() {
         }}
       />
 
-      <div className="grid grid-cols-11 gap-16 items-center relative z-10 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-11 gap-8 lg:gap-16 items-center relative z-10 max-w-7xl mx-auto">
         {/* Left content */}
-        <div className="col-span-6">
+        <div className="col-span-1 lg:col-span-6">
           {/* Eyebrow */}
           <div className="inline-flex items-center gap-2 bg-terra/10 border border-terra/22 text-terra text-xs font-bold px-4 py-2 rounded-full tracking-wide uppercase mb-6 animate-[fadeUp_0.7s_ease_both]">
             <span>⚡</span>
@@ -80,10 +80,10 @@ export default function HeroSection() {
         </div>
 
         {/* Right - Real African People Portraits */}
-        <div className="col-span-5 relative animate-[fadeRight_0.8s_0.2s_ease_both]">
-          <div className="relative h-96 flex items-center justify-center">
+        <div className="col-span-1 lg:col-span-5 relative animate-[fadeRight_0.8s_0.2s_ease_both]">
+          <div className="relative h-72 sm:h-80 lg:h-96 flex items-center justify-center">
             {/* Center portrait - Main focus */}
-            <div className="absolute z-20 w-56 h-72 rounded-4xl overflow-hidden shadow-2xl border-4 border-cream"
+            <div className="absolute z-20 w-40 h-56 sm:w-48 sm:h-64 lg:w-56 lg:h-72 rounded-4xl overflow-hidden shadow-2xl border-4 border-cream"
               style={{ boxShadow: '0 30px 80px rgba(46,21,3,0.25)' }}>
               <img
                 src="/african-woman-1.jpg"
@@ -93,7 +93,7 @@ export default function HeroSection() {
             </div>
 
             {/* Left portrait - Overlapping */}
-            <div className="absolute z-10 left-0 w-44 h-60 rounded-3xl overflow-hidden shadow-lg border-3 border-cream transform -translate-x-12"
+            <div className="absolute z-10 left-0 w-32 h-44 sm:w-36 sm:h-52 lg:w-44 lg:h-60 rounded-3xl overflow-hidden shadow-lg border-3 border-cream transform -translate-x-6 sm:-translate-x-8 lg:-translate-x-12"
               style={{ boxShadow: '0 20px 60px rgba(46,21,3,0.15)' }}>
               <img
                 src="/african-man-1.jpg"
@@ -103,7 +103,7 @@ export default function HeroSection() {
             </div>
 
             {/* Right portrait - Overlapping */}
-            <div className="absolute z-10 right-0 w-44 h-60 rounded-3xl overflow-hidden shadow-lg border-3 border-cream transform translate-x-12"
+            <div className="absolute z-10 right-0 w-32 h-44 sm:w-36 sm:h-52 lg:w-44 lg:h-60 rounded-3xl overflow-hidden shadow-lg border-3 border-cream transform translate-x-6 sm:translate-x-8 lg:translate-x-12"
               style={{ boxShadow: '0 20px 60px rgba(46,21,3,0.15)' }}>
               <img
                 src="/african-woman-2.jpg"
@@ -114,21 +114,21 @@ export default function HeroSection() {
           </div>
 
           {/* Floating cards with stats */}
-          <div className="absolute bottom-12 -left-12 bg-white rounded-3.5 px-5 py-3 shadow-lg flex flex-col text-sm text-earth font-medium"
+          <div className="absolute bottom-8 left-0 lg:bottom-12 lg:-left-12 bg-white rounded-3.5 px-4 sm:px-5 py-2 sm:py-3 shadow-lg flex flex-col text-xs sm:text-sm text-earth font-medium"
             style={{ animation: 'float 3s ease-in-out infinite 0s' }}>
-            <div className="text-base font-black text-terra">25K+</div>
-            <div className="text-xs opacity-75">Members</div>
+            <div className="text-sm sm:text-base font-black text-terra">25K+</div>
+            <div className="text-2xs sm:text-xs opacity-75">Members</div>
           </div>
 
-          <div className="absolute top-20 -right-11 bg-white rounded-3.5 px-5 py-3 shadow-lg flex flex-col text-sm font-medium text-center"
+          <div className="absolute top-8 right-0 lg:top-20 lg:-right-11 bg-white rounded-3.5 px-4 sm:px-5 py-2 sm:py-3 shadow-lg flex flex-col text-xs sm:text-sm font-medium text-center"
             style={{ animation: 'float 3s ease-in-out infinite 1.5s' }}>
-            <div className="text-base font-black text-terra">$2M+</div>
-            <div className="text-xs text-muted">Distributed</div>
+            <div className="text-sm sm:text-base font-black text-terra">$2M+</div>
+            <div className="text-2xs sm:text-xs text-muted">Distributed</div>
           </div>
 
-          <div className="absolute bottom-32 -right-16 bg-white rounded-3.5 px-4 py-2.5 shadow-lg flex items-center gap-2 text-xs font-medium whitespace-nowrap"
+          <div className="absolute bottom-24 right-0 sm:bottom-28 lg:bottom-32 lg:-right-16 bg-white rounded-3.5 px-3 sm:px-4 py-2 sm:py-2.5 shadow-lg flex items-center gap-1.5 sm:gap-2 text-2xs sm:text-xs font-medium whitespace-nowrap"
             style={{ animation: 'float 3s ease-in-out infinite 1s' }}>
-            <span className="text-base">⭐</span>
+            <span className="text-sm sm:text-base">⭐</span>
             <span className="text-earth">Real People</span>
           </div>
         </div>
