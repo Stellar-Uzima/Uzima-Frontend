@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Popover } from '@radix-ui/react-popover';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { useNotificationContext } from '../../context/NotificationContext';
 import { NotificationItem } from './NotificationItem';
 import { useNotifications } from '../../hooks/useNotifications';
@@ -14,7 +13,7 @@ export const NotificationPanel: React.FC = () => {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <Popover.Trigger className="relative">
+      <PopoverTrigger className="relative">
         <button aria-label="Notifications">
           🔔
           {unreadCount > 0 && (
@@ -23,9 +22,9 @@ export const NotificationPanel: React.FC = () => {
             </span>
           )}
         </button>
-      </Popover.Trigger>
+      </PopoverTrigger>
 
-      <Popover.Content className="w-80 max-h-[400px] overflow-auto bg-white shadow-lg rounded-md p-2">
+      <PopoverContent className="w-80 max-h-[400px] overflow-auto bg-white shadow-lg rounded-md p-2">
         <div className="flex justify-between items-center px-2 py-1 font-semibold">
           <span>Notifications</span>
           {unreadCount > 0 && (
@@ -51,7 +50,7 @@ export const NotificationPanel: React.FC = () => {
             <Link href="/notifications" className="text-blue-500 text-sm">View all</Link>
           </div>
         )}
-      </Popover.Content>
+      </PopoverContent>
     </Popover>
   );
 };

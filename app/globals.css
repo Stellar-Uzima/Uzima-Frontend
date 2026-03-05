@@ -198,6 +198,11 @@
   }
 }
 
+@keyframes flameFlicker {
+  0%, 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 6px 8px rgba(176, 78, 32, 0.35)); }
+  50% { transform: translateY(-2px) scale(1.03); filter: drop-shadow(0 10px 14px rgba(240, 192, 80, 0.45)); }
+}
+
 @keyframes fadeUp {
   from {
     opacity: 0;
@@ -276,6 +281,29 @@
     animation: scaleIn 0.6s ease-out forwards;
   }
 
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .stagger-4 { animation-delay: 0.4s; }
+  .stagger-5 { animation-delay: 0.5s; }
+
+  .animate-flicker {
+    animation: flameFlicker 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes confettiFall {
+  0% { transform: translateY(-100vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0.9; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-flicker,
+  .animate-slideUp,
+  .animate-slideInLeft,
+  .animate-scaleIn {
+    animation: none !important;
   .stagger-1 {
     animation-delay: 0.1s;
   }
