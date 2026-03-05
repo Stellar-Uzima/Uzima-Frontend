@@ -11,11 +11,13 @@ import BiotechnologySection from "@/components/BiotechnologySection";
 import BlockchainSection from "@/components/BlockchainSection";
 import StoriesSection from "@/components/StoriesSection";
 import CTASection from "@/components/CTASection";
+import StreakCelebrationGate from "@/components/dashboard/StreakCelebrationGate";
 
 export default function Home() {
   return (
     <>
     <Navigation/>
+      <StreakCelebrationGate />
       <HeroSection />
       <StatsStrip />
       <HowItWorks />

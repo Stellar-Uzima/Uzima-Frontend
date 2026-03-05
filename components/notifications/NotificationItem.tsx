@@ -1,63 +1,81 @@
+import React from 'react';
+import { Notification } from './types';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Notification } from '../notifications/types';
-
-interface NotificationContextType {
-  notifications: Notification[];
-  unreadCount: number;
-  markAsRead: (id: string) => void;
-  markAllAsRead: () => void;
-  addNotification: (notification: Notification) => void;
-  deleteNotification: (id: string) => void;
+interface NotificationItemProps {
+  notification: Notification;
+  onClick: () => void;
+  onDelete: () => void;
 }
 
-const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
-
-export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-
-  // Load from localStorage
-  useEffect(() => {
-    const stored = localStorage.getItem('notifications');
-    if (stored) setNotifications(JSON.parse(stored));
-  }, []);
-
-  // Persist to localStorage
-  useEffect(() => {
-    localStorage.setItem('notifications', JSON.stringify(notifications.slice(0, 50)));
-  }, [notifications]);
-
-  const markAsRead = (id: string) => {
-    setNotifications(prev =>
-      prev.map(n => (n.id === id ? { ...n, read: true } : n))
-    );
+export const NotificationItem: React.FC<NotificationItemProps> = ({
+  notification,
+  onClick,
+  onDelete,
+}) => {
+  const getIcon = (type: Notification['type']) => {
+    switch (type) {
+      case 'xlm_earned':
+        return '💰';
+      case 'new_comment':
+        return '💬';
+      case 'verification':
+        return '✅';
+      case 'donation':
+        return '🎁';
+      case 'rank_up':
+        return '⭐';
+      case 'system':
+        return '🔔';
+      default:
+        return '📢';
+    }
   };
 
-  const markAllAsRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-  };
+  const formatTimestamp = (timestamp: number) => {
+    const now = Date.now();
+    const diff = now - timestamp;
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
 
-  const addNotification = (notification: Notification) => {
-    setNotifications(prev => [notification, ...prev.slice(0, 49)]);
+    if (minutes < 1) return 'Just now';
+    if (minutes < 60) return `${minutes}m ago`;
+    if (hours < 24) return `${hours}h ago`;
+    return `${days}d ago`;
   };
-
-  const deleteNotification = (id: string) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
-  };
-
-  const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
-    <NotificationContext.Provider
-      value={{ notifications, unreadCount, markAsRead, markAllAsRead, addNotification, deleteNotification }}
+    <div
+      className={`flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors ${
+        !notification.read ? 'bg-blue-50' : ''
+      }`}
+      onClick={onClick}
     >
-      {children}
-    </NotificationContext.Provider>
+      <div className="text-2xl flex-shrink-0">{getIcon(notification.type)}</div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-start justify-between gap-2">
+          <h4 className="font-semibold text-sm text-gray-900 truncate">
+            {notification.title}
+          </h4>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete();
+            }}
+            className="text-gray-400 hover:text-red-500 flex-shrink-0"
+            aria-label="Delete notification"
+          >
+            ×
+          </button>
+        </div>
+        <p className="text-sm text-gray-600 line-clamp-2">{notification.description}</p>
+        <span className="text-xs text-gray-400 mt-1 block">
+          {formatTimestamp(notification.timestamp)}
+        </span>
+      </div>
+      {!notification.read && (
+        <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1"></div>
+      )}
+    </div>
   );
-};
-
-export const useNotificationContext = () => {
-  const context = useContext(NotificationContext);
-  if (!context) throw new Error('useNotificationContext must be used within NotificationProvider');
-  return context;
 };
