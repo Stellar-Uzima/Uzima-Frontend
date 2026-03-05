@@ -316,7 +316,7 @@ function MobileDrawer({
               </Link>
             )}
             <a
-              href="#"
+              href="/signup"
               onClick={onClose}
               className="w-full text-center bg-terra text-white px-5 py-3 rounded-full text-sm font-medium transition-all hover:bg-earth hover:shadow-lg hover:shadow-terra/30"
             >
@@ -346,7 +346,7 @@ export default function Navbar() {
   // IntersectionObserver for active section tracking
   useEffect(() => {
     const sections = document.querySelectorAll<HTMLElement>(
-      "#how, #earn, #community, #blockchain"
+      "#how, #earn, #community, #blockchain",
     );
 
     if (sections.length === 0) return;
@@ -378,7 +378,7 @@ export default function Navbar() {
       {
         threshold: [0, 0.1, 0.15, 0.2, 0.3, 0.5, 0.7, 1.0],
         rootMargin: `-${topOffset} 0px -${bottomOffset} 0px`,
-      }
+      },
     );
 
     sections.forEach((section) => observer.observe(section));
@@ -449,11 +449,7 @@ export default function Navbar() {
                 <a
                   href={link.href}
                   className={`relative no-underline text-sm font-medium transition-all duration-200
-                    ${
-                      active
-                        ? "text-terra"
-                        : "text-muted hover:text-terra"
-                    }`}
+                    ${active ? "text-terra" : "text-muted hover:text-terra"}`}
                 >
                   {link.label}
                   {active && (
@@ -512,7 +508,7 @@ export default function Navbar() {
           )}
 
           <LanguageSelector />
-          
+
           {/* PWA Install Button */}
           <InstallButton />
 
@@ -526,7 +522,7 @@ export default function Navbar() {
           )}
 
           <a
-            href="#"
+            href="/signup"
             className="bg-terra text-white px-5 py-2 rounded-full text-sm font-medium transition-all hover:bg-earth hover:shadow-lg hover:shadow-terra/30"
           >
             Join Now
