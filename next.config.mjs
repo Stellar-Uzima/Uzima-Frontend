@@ -7,6 +7,7 @@ const withPWA = withPWAInit({
   reloadOnOnline: true,
   swcMinify: true,
   disable: false,
+  customWorkerSrc: "worker",
   workboxOptions: {
     disableDevLogs: true,
   },
