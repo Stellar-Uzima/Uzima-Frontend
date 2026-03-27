@@ -304,6 +304,7 @@
   .animate-slideInLeft,
   .animate-scaleIn {
     animation: none !important;
+  }
   .stagger-1 {
     animation-delay: 0.1s;
   }
