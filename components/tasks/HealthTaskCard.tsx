@@ -105,7 +105,7 @@ export function HealthTaskCard({
   const isCompleted = displayStatus === 'completed'
   const isClaimed   = displayStatus === 'claimed'
 
-  const isImageIcon = icon.startsWith('/') || icon.startsWith('http')
+  const isImageIcon = icon?.startsWith('/') || icon?.startsWith('http')
 
   // ── Animation trigger ────────────────────────────────────────────────────
   function handleMarkComplete() {
