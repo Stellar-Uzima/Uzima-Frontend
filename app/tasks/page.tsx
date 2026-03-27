@@ -7,6 +7,12 @@ import Footer from "@/components/footer";
 import { HealthTaskCard } from "@/components/tasks";
 import { mockTasks } from "@/lib/mock/tasks";
 
+const categoryIcon: Record<string, string> = {
+  Nutrition: "💧",
+  Exercise: "🏃",
+  "Traditional Medicine": "🌿",
+};
+
 export default function TasksPage() {
   const router = useRouter();
 
@@ -37,6 +43,7 @@ export default function TasksPage() {
                 title={task.title}
                 reward={task.rewardXLM}
                 category={task.category}
+                icon={categoryIcon[task.category] ?? "🩺"}
                 status="available"
                 onClaim={() => router.push(`/tasks/${task.id}`)}
               />

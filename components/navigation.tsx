@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import LanguageSelector from "@/components/ui/LanguageSelector";
 import { InstallButton } from "@/components/pwa/InstallPrompt";
+import { NotificationPanel } from "@/components/notifications/NotificationPanel";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -508,6 +509,9 @@ export default function Navbar() {
           )}
 
           <LanguageSelector />
+
+          {/* Notifications */}
+          <NotificationPanel />
 
           {/* PWA Install Button */}
           <InstallButton />
