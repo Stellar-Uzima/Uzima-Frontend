@@ -216,12 +216,13 @@ export default function SignUpForm() {
                   Full Name
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Legend4tech"
-                    autoComplete="name"
-                    className="rounded-xl"
-                    {...field}
-                  />
+                                    <Input
+                                      placeholder="Legend4tech"
+                                      autoComplete="name"
+                                      className="rounded-xl"
+                                      disabled={isLoading}
+                                      {...field}
+                                    />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -243,6 +244,7 @@ export default function SignUpForm() {
                     placeholder="you@example.com"
                     autoComplete="email"
                     className="rounded-xl"
+                    disabled={isLoading}
                     {...field}
                   />
                 </FormControl>
@@ -261,7 +263,7 @@ export default function SignUpForm() {
                 <FormLabel className="text-earth font-medium text-sm">
                   Country
                 </FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select onValueChange={field.onChange} value={field.value} disabled={isLoading}>
                   <FormControl>
                     <SelectTrigger className="rounded-xl w-full">
                       <SelectValue placeholder="Select your country" />
@@ -297,6 +299,7 @@ export default function SignUpForm() {
                       placeholder="Min. 8 characters"
                       autoComplete="new-password"
                       className="rounded-xl pr-10"
+                      disabled={isLoading}
                       {...field}
                     />
                     <button
@@ -336,6 +339,7 @@ export default function SignUpForm() {
                       placeholder="Re-enter your password"
                       autoComplete="new-password"
                       className="rounded-xl pr-10"
+                      disabled={isLoading}
                       {...field}
                     />
                     <button
@@ -375,6 +379,7 @@ export default function SignUpForm() {
                       onCheckedChange={(checked) =>
                         field.onChange(checked === true)
                       }
+                      disabled={isLoading}
                       className="mt-0.5 data-[state=checked]:bg-terra data-[state=checked]:border-terra"
                     />
                   </FormControl>
@@ -413,7 +418,7 @@ export default function SignUpForm() {
                   className="mr-2 h-5 w-5 animate-spin"
                   aria-hidden="true"
                 />
-                Creating account…
+                Submitting…
               </>
             ) : (
               "Create Account →"
