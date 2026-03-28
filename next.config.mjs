@@ -53,6 +53,9 @@ class BuildStatsPlugin {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    turbopack: {}, // Silences the warning/error
+  },
   typescript: {
     ignoreBuildErrors: false,
   },
