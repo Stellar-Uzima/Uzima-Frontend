@@ -374,24 +374,33 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                         <p className="text-[11px] text-earth/80">
                           Reward will appear in your balance shortly.
                         </p>
-                {previewUrl && (
-                  <div className="mt-2 flex">
-                    <div className="inline-flex flex-col items-center rounded-2xl border border-terra/15 bg-cream/90 p-3 sm:p-4">
-                      <div className="relative">
-                        <Image
-                          src={previewUrl}
-                          alt="Uploaded photographic proof for the task"
-                          width={96}
-                          height={96}
-                          unoptimized
-                          loading="lazy"
-                          className="h-20 w-20 sm:h-24 sm:w-24 rounded-xl object-cover border border-terra/20"
-                        />
-                        <div className="absolute -top-2 -left-2 flex h-7 w-7 items-center justify-center rounded-full bg-earth/90 text-cream shadow">
-                          <FileImage className="h-4 w-4" />
-                        </div>
                       </div>
                     </div>
+
+                    {previewUrl && (
+                      <div className="mt-2 flex">
+                        <div className="inline-flex flex-col items-center rounded-2xl border border-terra/15 bg-cream/90 p-3 sm:p-4">
+                          <div className="relative">
+                            <Image
+                              src={previewUrl}
+                              alt="Uploaded photographic proof for the task"
+                              width={96}
+                              height={96}
+                              unoptimized
+                              loading="lazy"
+                              className="h-20 w-20 rounded-xl border border-terra/20 object-cover sm:h-24 sm:w-24"
+                            />
+                            <div className="absolute -top-2 -left-2 flex h-7 w-7 items-center justify-center rounded-full bg-earth/90 text-cream shadow">
+                              <FileImage className="h-4 w-4" />
+                            </div>
+                          </div>
+                          <p className="mt-2 max-w-[8.5rem] truncate text-[11px] font-medium text-earth">
+                            {file?.name}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
                     <Button
                       type="button"
                       size="sm"

@@ -2,8 +2,7 @@ import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import Footer from '../components/footer';
-import { OfflineBanner } from '@/components/pwa/OfflineBanner';
-import { InstallPrompt } from '@/components/pwa/InstallPrompt';
+import { PwaShell } from '@/components/pwa/PwaShell';
 import { Providers } from '@/providers/providers';
 
 
@@ -53,12 +52,11 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased">
         <Providers>
-          <OfflineBanner />
+          <PwaShell />
           <div className="offline-banner-offset">
             {children}
             <Footer/>
           </div>
-          <InstallPrompt />
           <Analytics />
         </Providers>
       </body>

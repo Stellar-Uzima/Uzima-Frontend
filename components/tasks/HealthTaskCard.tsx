@@ -1,10 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Check, Loader2, Sparkles, ArrowRight } from "lucide-react";
-import * as React from 'react'
-import Image from 'next/image'
-import { Check, Loader2, Sparkles } from 'lucide-react'
+import Image from "next/image";
+import { ArrowRight, Check, Loader2, Sparkles } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -94,7 +92,8 @@ export function HealthTaskCard({
   const isAvailable = displayStatus === "available";
   const isCompleted = displayStatus === "completed";
   const isClaimed = displayStatus === "claimed";
-  const isImageIcon = icon?.startsWith("/") || icon?.startsWith("http");
+  const isRemoteImageIcon = icon?.startsWith("http");
+  const isImageIcon = icon?.startsWith("/") || isRemoteImageIcon;
 
   function handleMarkComplete() {
     if (hasAnimated.current || animState !== "idle") return;
@@ -178,21 +177,23 @@ export function HealthTaskCard({
           )}
         >
           {isImageIcon ? (
-            <img
-              src={icon}
-              alt=""
-              className="h-7 w-7 object-contain"
-              aria-hidden="true"
-            <Image 
-              src={icon} 
-              alt={`${title} task category icon`} 
-              width={28}
-              height={28}
-              unoptimized={icon.startsWith('http')}
-              loading="lazy"
-              className="h-7 w-7 object-contain" 
-              aria-hidden="true" 
-            />
+            isRemoteImageIcon ? (
+              <img
+                src={icon}
+                alt={`${title} task category icon`}
+                loading="lazy"
+                className="h-7 w-7 object-contain"
+              />
+            ) : (
+              <Image
+                src={icon}
+                alt={`${title} task category icon`}
+                width={28}
+                height={28}
+                loading="lazy"
+                className="h-7 w-7 object-contain"
+              />
+            )
           ) : (
             <span aria-hidden="true">{icon}</span>
           )}

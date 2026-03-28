@@ -7,6 +7,7 @@ export interface HealthTask {
   title: string;
   category: string;
   rewardXLM: number;
+  createdAt: string;
   status: HealthTaskStatus;
   whyItMatters: string;
   steps: {
@@ -24,6 +25,7 @@ export const mockTasks: HealthTask[] = [
     title: "Daily hydration check",
     category: "Nutrition",
     rewardXLM: 5,
+    createdAt: "2026-03-25T08:00:00.000Z",
     status: "available", // ADDED
     whyItMatters: "...",
     steps: [/* ... */],
@@ -35,6 +37,7 @@ export const mockTasks: HealthTask[] = [
     title: "20 minute neighbourhood walk",
     category: "Exercise",
     rewardXLM: 8,
+    createdAt: "2026-03-26T08:00:00.000Z",
     status: "available", // ADDED
     whyItMatters: "...",
     steps: [/* ... */],
@@ -46,6 +49,7 @@ export const mockTasks: HealthTask[] = [
     title: "Traditional remedy reflection log",
     category: "Traditional Medicine",
     rewardXLM: 10,
+    createdAt: "2026-03-27T08:00:00.000Z",
     status: "claimed", // ADDED (as an example)
     whyItMatters: "...",
     steps: [/* ... */],

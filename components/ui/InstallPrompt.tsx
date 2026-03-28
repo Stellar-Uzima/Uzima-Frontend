@@ -3,9 +3,15 @@
 import { usePwaInstall } from "../../hooks/usePwaInstall";
 
 export default function InstallPrompt() {
-  const { deferredPrompt, showIosPrompt } = usePwaInstall();
+  const {
+    deferredPrompt,
+    dismissPrompt,
+    handleInstall,
+    isIos,
+    showPrompt,
+  } = usePwaInstall();
 
-  if (showIosPrompt) {
+  if (isIos && showPrompt) {
     return (
       <div className="fixed bottom-4 left-4 right-4 bg-white border rounded-md shadow-lg p-4">
         <h2 className="text-lg font-bold mb-2">Install this app</h2>
@@ -17,9 +23,7 @@ export default function InstallPrompt() {
         </ol>
         <button
           className="mt-2 px-4 py-2 bg-gray-200 rounded"
-          onClick={() => {
-            localStorage.setItem("iosPromptDismissed", Date.now().toString());
-          }}
+          onClick={dismissPrompt}
         >
           Dismiss
         </button>
@@ -27,13 +31,11 @@ export default function InstallPrompt() {
     );
   }
 
-  if (deferredPrompt) {
+  if (showPrompt && deferredPrompt) {
     return (
       <button
         className="fixed bottom-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-md"
-        onClick={() => {
-          deferredPrompt.prompt();
-        }}
+        onClick={handleInstall}
       >
         Install App
       </button>

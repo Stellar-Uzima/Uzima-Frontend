@@ -1,9 +1,11 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Download } from "lucide-react";
+import { NotificationProvider } from "@/context/NotificationContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,9 +13,26 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import LanguageSelector from "@/components/ui/LanguageSelector";
-import { InstallButton } from "@/components/pwa/InstallPrompt";
-import { NotificationPanel } from "@/components/notifications/NotificationPanel";
 import { usePwaInstall } from "@/hooks/usePwaInstall";
+
+const InstallButton = dynamic(
+  () => import("@/components/pwa/InstallPrompt").then((mod) => mod.InstallButton),
+  {
+    loading: () => null,
+    ssr: false,
+  },
+);
+
+const NotificationPanel = dynamic(
+  () =>
+    import("@/components/notifications/NotificationPanel").then(
+      (mod) => mod.NotificationPanel,
+    ),
+  {
+    loading: () => null,
+    ssr: false,
+  },
+);
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -418,125 +437,124 @@ export default function Navbar() {
   };
 
   return (
-    <>
-      <nav
-        ref={navRef}
-        className={`fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-6 md:px-12 bg-cream/94 backdrop-blur-md border-b border-terra/10 transition-all duration-300 ease-out ${isScrolled
-            ? "py-[0.95rem] md:py-[0.7rem] shadow-lg shadow-terra/5"
-            : "py-[1.1rem] shadow-sm shadow-terra/0"
-          }`}
-      >
-        {/* ── Logo ── */}
-        <Link href="/" className="flex items-center gap-2.5 no-underline">
-          <div className="w-9 h-9 rounded-full bg-terra flex items-center justify-center text-gold text-sm font-semibold">
-            ★
-          </div>
-          <span className="font-serif font-bold text-earth text-xl tracking-tight">
-            Stellar Uzima
-          </span>
-        </Link>
+    <NotificationProvider>
+      <>
+        <nav
+          ref={navRef}
+          className={`fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-6 md:px-12 bg-cream/94 backdrop-blur-md border-b border-terra/10 transition-all duration-300 ease-out ${isScrolled
+              ? "py-[0.95rem] md:py-[0.7rem] shadow-lg shadow-terra/5"
+              : "py-[1.1rem] shadow-sm shadow-terra/0"
+            }`}
+        >
+          {/* ── Logo ── */}
+          <Link href="/" className="flex items-center gap-2.5 no-underline">
+            <div className="w-9 h-9 rounded-full bg-terra flex items-center justify-center text-gold text-sm font-semibold">
+              ★
+            </div>
+            <span className="font-serif font-bold text-earth text-xl tracking-tight">
+              Stellar Uzima
+            </span>
+          </Link>
 
-        {/* ── Desktop nav links ── */}
-        <ul className="hidden md:flex items-center gap-8 list-none">
-          {NAV_LINKS.map((link) => {
-            const active = isLinkActive(link.href);
-            return (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  className={`relative no-underline text-sm font-medium transition-all duration-200
-                    ${active ? "text-terra" : "text-muted hover:text-terra"}`}
-                >
-                  {link.label}
-                  {active && (
-                    <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-terra rounded-full" />
-                  )}
-                </a>
-              </li>
-            );
-          })}
-
-          <li>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="no-underline text-muted text-sm font-medium hover:text-terra transition-colors cursor-pointer flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-terra/30 rounded">
-                  Services
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+          {/* ── Desktop nav links ── */}
+          <ul className="hidden md:flex items-center gap-8 list-none">
+            {NAV_LINKS.map((link) => {
+              const active = isLinkActive(link.href);
+              return (
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    className={`relative no-underline text-sm font-medium transition-all duration-200
+                      ${active ? "text-terra" : "text-muted hover:text-terra"}`}
                   >
-                    <path d="m6 9 6 6 6-6" />
-                  </svg>
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                className="w-48 bg-white border border-terra/10 rounded-lg shadow-lg"
-              >
-                {SERVICE_LINKS.map((link) => (
-                  <DropdownMenuItem key={link.href} asChild>
-                    <Link
-                      href={link.href}
-                      className={`flex items-center gap-2 px-4 py-2 text-sm cursor-pointer
-                        ${pathname === link.href ? "text-terra font-medium" : "text-earth hover:bg-terra/10"}`}
+                    {link.label}
+                    {active && (
+                      <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-terra rounded-full" />
+                    )}
+                  </a>
+                </li>
+              );
+            })}
+
+            <li>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="no-underline text-muted text-sm font-medium hover:text-terra transition-colors cursor-pointer flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-terra/30 rounded">
+                    Services
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
-                      {link.label}
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </li>
-        </ul>
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="w-48 bg-white border border-terra/10 rounded-lg shadow-lg"
+                >
+                  {SERVICE_LINKS.map((link) => (
+                    <DropdownMenuItem key={link.href} asChild>
+                      <Link
+                        href={link.href}
+                        className={`flex items-center gap-2 px-4 py-2 text-sm cursor-pointer
+                          ${pathname === link.href ? "text-terra font-medium" : "text-earth hover:bg-terra/10"}`}
+                      >
+                        {link.label}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </li>
+          </ul>
 
-        {/* ── Desktop right side ── */}
-        <div className="hidden md:flex items-center gap-4">
-          {isLoggedIn && xlmBalance !== null && (
-            <XLMBalanceWidget balance={xlmBalance} />
-          )}
-          <LanguageSelector />
-          {/* NotificationPanel for Desktop */}
-          <NotificationPanel />
-          <InstallButton />
-          {!isLoggedIn && (
-            <Link
-              href="/signin"
-              className="text-earth font-medium text-sm hover:text-terra transition-colors px-2"
+          {/* ── Desktop right side ── */}
+          <div className="hidden md:flex items-center gap-4">
+            {isLoggedIn && xlmBalance !== null && (
+              <XLMBalanceWidget balance={xlmBalance} />
+            )}
+            <LanguageSelector />
+            <NotificationPanel />
+            <InstallButton />
+            {!isLoggedIn && (
+              <Link
+                href="/signin"
+                className="text-earth font-medium text-sm hover:text-terra transition-colors px-2"
+              >
+                Sign In
+              </Link>
+            )}
+            <a
+              href="/signup"
+              className="bg-terra text-white px-5 py-2 rounded-full text-sm font-medium transition-all hover:bg-earth hover:shadow-lg hover:shadow-terra/30"
             >
-              Sign In
-            </Link>
-          )}
-          <a
-            href="/signup"
-            className="bg-terra text-white px-5 py-2 rounded-full text-sm font-medium transition-all hover:bg-earth hover:shadow-lg hover:shadow-terra/30"
-          >
-            Join Now
-          </a>
-        </div>
+              Join Now
+            </a>
+          </div>
 
-        {/* ── Mobile Actions (Bell + Hamburger) ── */}
-        <div className="flex items-center gap-2 md:hidden">
-          {/* NotificationPanel for Mobile Only */}
-          <NotificationPanel />
-          <HamburgerButton isOpen={drawerOpen} onClick={toggleDrawer} />
-        </div>
-      </nav>
+          {/* ── Mobile Actions (Bell + Hamburger) ── */}
+          <div className="flex items-center gap-2 md:hidden">
+            <NotificationPanel />
+            <HamburgerButton isOpen={drawerOpen} onClick={toggleDrawer} />
+          </div>
+        </nav>
 
-      {/* ── Mobile drawer ── */}
-      <MobileDrawer
-        isOpen={drawerOpen}
-        onClose={closeDrawer}
-        pathname={pathname}
-        isLoggedIn={isLoggedIn}
-        xlmBalance={xlmBalance}
-        activeSection={activeSection}
-      />
-    </>
+        <MobileDrawer
+          isOpen={drawerOpen}
+          onClose={closeDrawer}
+          pathname={pathname}
+          isLoggedIn={isLoggedIn}
+          xlmBalance={xlmBalance}
+          activeSection={activeSection}
+        />
+      </>
+    </NotificationProvider>
   );
 }

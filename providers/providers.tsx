@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import { ThemeProvider } from 'next-themes';
-import { NotificationProvider } from '@/context/NotificationContext';
 
 export function Providers({ children }: { children: React.ReactNode }) {
     React.useEffect(() => {
@@ -20,9 +19,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
             enableSystem
             disableTransitionOnChange
         >
-            <NotificationProvider>
-                {children}
-            </NotificationProvider>
+            {/* Notification state now stays closer to the navbar to reduce shared client work. */}
+            {children}
         </ThemeProvider>
     );
 }

@@ -1,4 +1,4 @@
-'use client'
+// Server-rendered to keep static landing content out of the client bundle.
 import Image from 'next/image'
 export default function HeroSection() {
   return (
