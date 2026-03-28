@@ -321,6 +321,7 @@ export default function Navbar() {
   const { isLoggedIn, xlmBalance } = useWallet();
   const [activeSection, setActiveSection] = useState<string>("");
   const [isScrolled, setIsScrolled] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     setDrawerOpen(false);
@@ -377,6 +378,35 @@ export default function Navbar() {
     };
   }, []);
 
+  useEffect(() => {
+    const root = document.documentElement;
+
+    const updateNavbarHeight = () => {
+      const height = navRef.current?.offsetHeight;
+      if (height) {
+        root.style.setProperty("--navbar-height", `${height}px`);
+      }
+    };
+
+    updateNavbarHeight();
+
+    const observer =
+      typeof ResizeObserver !== "undefined" && navRef.current
+        ? new ResizeObserver(updateNavbarHeight)
+        : null;
+
+    if (observer && navRef.current) {
+      observer.observe(navRef.current);
+    } else {
+      window.addEventListener("resize", updateNavbarHeight);
+    }
+
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", updateNavbarHeight);
+    };
+  }, [isScrolled]);
+
   const closeDrawer = useCallback(() => setDrawerOpen(false), []);
   const toggleDrawer = useCallback(() => setDrawerOpen((prev) => !prev), []);
 
@@ -390,6 +420,7 @@ export default function Navbar() {
   return (
     <>
       <nav
+        ref={navRef}
         className={`fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-6 md:px-12 bg-cream/94 backdrop-blur-md border-b border-terra/10 transition-all duration-300 ease-out ${isScrolled
             ? "py-[0.95rem] md:py-[0.7rem] shadow-lg shadow-terra/5"
             : "py-[1.1rem] shadow-sm shadow-terra/0"
