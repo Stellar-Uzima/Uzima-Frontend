@@ -14,6 +14,7 @@ import {
   FileImage,
   Footprints,
   Leaf,
+  Loader2,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -300,7 +301,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                       accept="image/jpeg,image/png"
                       onChange={handleFileChange}
                       className="sr-only"
-                      disabled={isCompleted}
+                      disabled={isCompleted || isSubmittingProof}
                     />
                   </label>
                 </div>
@@ -348,7 +349,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                   {isCompleted
                     ? "Task completed"
                     : isSubmittingProof
-                      ? "Submitting..."
+                      ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />Submitting…</>)
                       : "Submit photo & complete"}
                 </Button>
               ) : (
@@ -361,7 +362,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                   {isCompleted
                     ? "Task completed"
                     : isMarkingComplete
-                      ? "Marking complete..."
+                      ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />Submitting…</>)
                       : "Mark Complete"}
                 </Button>
               )}

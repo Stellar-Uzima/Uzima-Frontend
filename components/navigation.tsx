@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Download } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,6 +12,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import LanguageSelector from "@/components/ui/LanguageSelector";
 import { InstallButton } from "@/components/pwa/InstallPrompt";
+import { NotificationPanel } from "@/components/notifications/NotificationPanel";
+import { usePwaInstall } from "@/hooks/usePwaInstall";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -19,7 +22,7 @@ interface NavLink {
   href: string;
 }
 
-interface ServiceLink extends NavLink {}
+interface ServiceLink extends NavLink { }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -84,19 +87,16 @@ function HamburgerButton({
       {/* Animated bars */}
       <span className="flex flex-col gap-1.5 w-5">
         <span
-          className={`block h-0.5 bg-black rounded-full transition-all duration-300 origin-center ${
-            isOpen ? "rotate-45 translate-y-2" : ""
-          }`}
+          className={`block h-0.5 bg-black rounded-full transition-all duration-300 origin-center ${isOpen ? "rotate-45 translate-y-2" : ""
+            }`}
         />
         <span
-          className={`block h-0.5 bg-black rounded-full transition-all duration-300 ${
-            isOpen ? "opacity-0 scale-x-0" : ""
-          }`}
+          className={`block h-0.5 bg-black rounded-full transition-all duration-300 ${isOpen ? "opacity-0 scale-x-0" : ""
+            }`}
         />
         <span
-          className={`block h-0.5 bg-black rounded-full transition-all duration-300 origin-center ${
-            isOpen ? "-rotate-45 -translate-y-2" : ""
-          }`}
+          className={`block h-0.5 bg-black rounded-full transition-all duration-300 origin-center ${isOpen ? "-rotate-45 -translate-y-2" : ""
+            }`}
         />
       </span>
     </button>
@@ -122,6 +122,7 @@ function MobileDrawer({
 }) {
   const drawerRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const { isInstalled, deferredPrompt, handleInstall } = usePwaInstall();
 
   // Focus trap — keep focus inside drawer when open
   const handleKeyDown = useCallback(
@@ -184,11 +185,10 @@ function MobileDrawer({
       <div
         aria-hidden="true"
         onClick={onClose}
-        className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
-          isOpen
+        className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity duration-300 md:hidden ${isOpen
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
-        }`}
+          }`}
       />
 
       {/* Drawer panel */}
@@ -198,9 +198,8 @@ function MobileDrawer({
         role="dialog"
         aria-modal="true"
         aria-label="Navigation menu"
-        className={`fixed inset-0 z-50 flex flex-col bg-cream transition-transform duration-300 ease-in-out md:hidden overflow-hidden ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-0 z-50 flex flex-col bg-cream transition-transform duration-300 ease-in-out md:hidden overflow-hidden ${isOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         {/* Drawer header */}
         <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-terra/10">
@@ -262,10 +261,9 @@ function MobileDrawer({
                 href={link.href}
                 onClick={onClose}
                 className={`flex items-center px-4 py-3.5 rounded-xl text-base font-medium transition-all duration-200
-                  ${
-                    isActive
-                      ? "bg-terra/10 text-terra font-semibold"
-                      : "text-earth hover:bg-terra/5 hover:text-terra"
+                  ${isActive
+                    ? "bg-terra/10 text-terra font-semibold"
+                    : "text-earth hover:bg-terra/5 hover:text-terra"
                   }`}
               >
                 {link.label}
@@ -287,10 +285,9 @@ function MobileDrawer({
                 href={link.href}
                 onClick={onClose}
                 className={`flex items-center px-4 py-3.5 rounded-xl text-base font-medium transition-colors
-                  ${
-                    pathname === link.href
-                      ? "bg-terra/10 text-terra"
-                      : "text-earth hover:bg-terra/5 hover:text-terra"
+                  ${pathname === link.href
+                    ? "bg-terra/10 text-terra"
+                    : "text-earth hover:bg-terra/5 hover:text-terra"
                   }`}
               >
                 {link.label}
@@ -301,6 +298,17 @@ function MobileDrawer({
 
         {/* Drawer footer */}
         <div className="shrink-0 px-6 py-6 border-t border-terra/10 flex flex-col gap-4">
+          {/* PWA Install Link */}
+          {!isInstalled && deferredPrompt && (
+            <button
+              onClick={handleInstall}
+              className="flex items-center gap-2 text-terra text-sm font-medium hover:opacity-80 transition-opacity w-fit"
+            >
+              <Download className="w-4 h-4" />
+              Install App for offline access
+            </button>
+          )}
+
           {/* Language selector */}
           <LanguageSelector />
 
@@ -337,6 +345,7 @@ export default function Navbar() {
   const { isLoggedIn, xlmBalance } = useWallet();
   const [activeSection, setActiveSection] = useState<string>("");
   const [isScrolled, setIsScrolled] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
 
   // Close drawer on route change
   useEffect(() => {
@@ -408,6 +417,35 @@ export default function Navbar() {
     };
   }, []);
 
+  useEffect(() => {
+    const root = document.documentElement;
+
+    const updateNavbarHeight = () => {
+      const height = navRef.current?.offsetHeight;
+      if (height) {
+        root.style.setProperty("--navbar-height", `${height}px`);
+      }
+    };
+
+    updateNavbarHeight();
+
+    const observer =
+      typeof ResizeObserver !== "undefined" && navRef.current
+        ? new ResizeObserver(updateNavbarHeight)
+        : null;
+
+    if (observer && navRef.current) {
+      observer.observe(navRef.current);
+    } else {
+      window.addEventListener("resize", updateNavbarHeight);
+    }
+
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", updateNavbarHeight);
+    };
+  }, [isScrolled]);
+
   const closeDrawer = useCallback(() => setDrawerOpen(false), []);
   const toggleDrawer = useCallback(() => setDrawerOpen((prev) => !prev), []);
 
@@ -424,11 +462,11 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-6 md:px-12 bg-cream/94 backdrop-blur-md border-b border-terra/10 transition-all duration-300 ease-out ${
-          isScrolled
+        ref={navRef}
+        className={`fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-6 md:px-12 bg-cream/94 backdrop-blur-md border-b border-terra/10 transition-all duration-300 ease-out ${isScrolled
             ? "py-[0.95rem] md:py-[0.7rem] shadow-lg shadow-terra/5"
             : "py-[1.1rem] shadow-sm shadow-terra/0"
-        }`}
+          }`}
       >
         {/* ── Logo ── */}
         <Link href="/" className="flex items-center gap-2.5 no-underline">
@@ -508,6 +546,9 @@ export default function Navbar() {
           )}
 
           <LanguageSelector />
+
+          {/* Notifications */}
+          <NotificationPanel />
 
           {/* PWA Install Button */}
           <InstallButton />

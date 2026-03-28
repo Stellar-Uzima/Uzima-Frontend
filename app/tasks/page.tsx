@@ -1,11 +1,25 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
-import { HealthTaskCard } from "@/components/tasks";
 import { mockTasks } from "@/lib/mock/tasks";
+
+const VirtualTaskList = dynamic(
+  () => import("@/components/tasks").then((mod) => mod.VirtualTaskList),
+  {
+    ssr: false,
+    loading: () => <div className="h-[420px] rounded-2xl bg-white/70" aria-hidden="true" />,
+  },
+);
+
+const categoryIcon: Record<string, string> = {
+  Nutrition: "💧",
+  Exercise: "🏃",
+  "Traditional Medicine": "🌿",
+};
 
 export default function TasksPage() {
   const router = useRouter();

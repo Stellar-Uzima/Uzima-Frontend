@@ -2,14 +2,12 @@ import React, { useState } from 'react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { useNotificationContext } from '../../context/NotificationContext';
 import { NotificationItem } from './NotificationItem';
-import { useNotifications } from '../../hooks/useNotifications';
+import { PushNotificationSetup } from './PushNotificationSetup';
 import Link from 'next/link';
 
 export const NotificationPanel: React.FC = () => {
   const { notifications, unreadCount, markAsRead, markAllAsRead, deleteNotification } = useNotificationContext();
   const [open, setOpen] = useState(false);
-
-  useNotifications();
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -50,6 +48,9 @@ export const NotificationPanel: React.FC = () => {
             <Link href="/notifications" className="text-blue-500 text-sm">View all</Link>
           </div>
         )}
+        <div className="px-2 pb-2 pt-1 border-t mt-1">
+          <PushNotificationSetup />
+        </div>
       </PopoverContent>
     </Popover>
   );

@@ -1,28 +1,11 @@
 import type { Metadata } from 'next'
-import { Playfair_Display, DM_Sans, Fraunces } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import Footer from '../components/footer';
 import { OfflineBanner } from '@/components/pwa/OfflineBanner';
 import { InstallPrompt } from '@/components/pwa/InstallPrompt';
+import { Providers } from '@/providers/providers';
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-playfair",
-  weight: ["400", "700", "900"],
-});
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  variable: "--font-dm-sans",
-  weight: ["300", "400", "500"],
-});
-
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  variable: "--font-fraunces",
-  weight: ["300", "700"],
-});
 
 export const metadata: Metadata = {
   title: 'Stellar Uzima — Your Health. Your Wealth. Your Community.',
@@ -68,12 +51,16 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Stellar Uzima" />
         <link rel="apple-touch-icon" href="/apple-icon.png" />
       </head>
-      <body className={`${playfair.variable} ${dmSans.variable} ${fraunces.variable} font-sans antialiased`}>
-        <OfflineBanner />
-        {children}
-        <InstallPrompt />
-        <Analytics />
-        <Footer/>
+      <body className="font-sans antialiased">
+        <Providers>
+          <OfflineBanner />
+          <div className="offline-banner-offset">
+            {children}
+            <Footer/>
+          </div>
+          <InstallPrompt />
+          <Analytics />
+        </Providers>
       </body>
     </html>
   )
