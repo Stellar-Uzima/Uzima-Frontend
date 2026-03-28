@@ -42,7 +42,6 @@ const SERVICE_LINKS: ServiceLink[] = [
 // ─── Mock wallet hook — replace with real context when available ──────────────
 
 function useWallet() {
-  // Replace this with your real auth/wallet context
   const [isLoggedIn] = useState(false);
   const [xlmBalance] = useState<number | null>(null);
   return { isLoggedIn, xlmBalance };
@@ -81,10 +80,9 @@ function HamburgerButton({
       aria-label={isOpen ? "Close menu" : "Open menu"}
       aria-expanded={isOpen}
       aria-controls="mobile-drawer"
-      className="relative flex items-center justify-center w-10 h-10 rounded-lg hover:bg-black/5 transition-colors focus:outline-none focus:ring-2 focus:ring-terra/30 md:hidden"
+      className="relative flex items-center justify-center w-10 h-10 rounded-lg hover:bg-black/5 transition-colors focus:outline-none focus:ring-2 focus:ring-terra/30"
     >
       <span className="sr-only">{isOpen ? "Close menu" : "Open menu"}</span>
-      {/* Animated bars */}
       <span className="flex flex-col gap-1.5 w-5">
         <span
           className={`block h-0.5 bg-black rounded-full transition-all duration-300 origin-center ${isOpen ? "rotate-45 translate-y-2" : ""
@@ -124,25 +122,19 @@ function MobileDrawer({
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const { isInstalled, deferredPrompt, handleInstall } = usePwaInstall();
 
-  // Focus trap — keep focus inside drawer when open
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (!isOpen) return;
-
-      // Escape closes drawer
       if (e.key === "Escape") {
         onClose();
         return;
       }
-
-      // Tab traps focus inside drawer
       if (e.key === "Tab" && drawerRef.current) {
         const focusable = drawerRef.current.querySelectorAll<HTMLElement>(
           'a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])',
         );
         const first = focusable[0];
         const last = focusable[focusable.length - 1];
-
         if (e.shiftKey) {
           if (document.activeElement === first) {
             e.preventDefault();
@@ -159,17 +151,14 @@ function MobileDrawer({
     [isOpen, onClose],
   );
 
-  // Attach/detach keyboard listener
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
-  // Move focus to close button when drawer opens
   useEffect(() => {
     if (isOpen) {
       closeButtonRef.current?.focus();
-      // Prevent background scroll
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -181,17 +170,15 @@ function MobileDrawer({
 
   return (
     <>
-      {/* Backdrop */}
       <div
         aria-hidden="true"
         onClick={onClose}
         className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity duration-300 md:hidden ${isOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
+          ? "opacity-100 pointer-events-auto"
+          : "opacity-0 pointer-events-none"
           }`}
       />
 
-      {/* Drawer panel */}
       <div
         id="mobile-drawer"
         ref={drawerRef}
@@ -201,7 +188,6 @@ function MobileDrawer({
         className={`fixed inset-0 z-50 flex flex-col bg-cream transition-transform duration-300 ease-in-out md:hidden overflow-hidden ${isOpen ? "translate-x-0" : "-translate-x-full"
           }`}
       >
-        {/* Drawer header */}
         <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-terra/10">
           <Link
             href="/"
@@ -216,7 +202,6 @@ function MobileDrawer({
             </span>
           </Link>
 
-          {/* Close button */}
           <button
             ref={closeButtonRef}
             type="button"
@@ -239,18 +224,14 @@ function MobileDrawer({
           </button>
         </div>
 
-        {/* Drawer body */}
         <nav className="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-1">
-          {/* XLM balance if logged in */}
           {isLoggedIn && xlmBalance !== null && (
             <div className="mb-4">
               <XLMBalanceWidget balance={xlmBalance} />
             </div>
           )}
 
-          {/* Main links */}
           {NAV_LINKS.map((link) => {
-            // Check if link is active (hash links use activeSection, routes use pathname)
             const isActive = link.href.startsWith("#")
               ? `#${activeSection}` === link.href
               : pathname === link.href;
@@ -274,7 +255,6 @@ function MobileDrawer({
             );
           })}
 
-          {/* Services section */}
           <div className="mt-2">
             <p className="px-4 py-2 text-xs font-semibold uppercase tracking-widest text-muted">
               Services
@@ -296,9 +276,7 @@ function MobileDrawer({
           </div>
         </nav>
 
-        {/* Drawer footer */}
         <div className="shrink-0 px-6 py-6 border-t border-terra/10 flex flex-col gap-4">
-          {/* PWA Install Link */}
           {!isInstalled && deferredPrompt && (
             <button
               onClick={handleInstall}
@@ -309,10 +287,8 @@ function MobileDrawer({
             </button>
           )}
 
-          {/* Language selector */}
           <LanguageSelector />
 
-          {/* CTA */}
           <div className="flex flex-col gap-3">
             {!isLoggedIn && (
               <Link
@@ -346,39 +322,31 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState<string>("");
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // Close drawer on route change
   useEffect(() => {
     setDrawerOpen(false);
   }, [pathname]);
 
-  // IntersectionObserver for active section tracking
   useEffect(() => {
     const sections = document.querySelectorAll<HTMLElement>(
       "#how, #earn, #community, #blockchain",
     );
-
     if (sections.length === 0) return;
 
-    // Mobile-optimized detection settings
     const isMobile = window.innerWidth < 768;
-    const topOffset = isMobile ? "80px" : "100px"; // Account for navbar height
-    const bottomOffset = isMobile ? "35%" : "50%"; // Less aggressive on mobile
-    const visibilityThreshold = isMobile ? 0.15 : 0.3; // Lower threshold for mobile
+    const topOffset = isMobile ? "80px" : "100px";
+    const bottomOffset = isMobile ? "35%" : "50%";
+    const visibilityThreshold = isMobile ? 0.15 : 0.3;
 
     const observer = new IntersectionObserver(
       (entries) => {
-        // Find section with highest visibility in viewport
         let maxRatio = 0;
         let dominantSection = "";
-
         entries.forEach((entry) => {
           if (entry.intersectionRatio > maxRatio) {
             maxRatio = entry.intersectionRatio;
             dominantSection = entry.target.id;
           }
         });
-
-        // Update active section when sufficiently visible
         if (maxRatio > visibilityThreshold) {
           setActiveSection(dominantSection);
         }
@@ -388,28 +356,21 @@ export default function Navbar() {
         rootMargin: `-${topOffset} 0px -${bottomOffset} 0px`,
       },
     );
-
     sections.forEach((section) => observer.observe(section));
-
     return () => observer.disconnect();
   }, []);
 
-  // Scroll listener for navbar compression (scroll past 80px)
   useEffect(() => {
     let rafId: number | null = null;
-
     const handleScroll = () => {
       if (rafId !== null) return;
-
       rafId = requestAnimationFrame(() => {
         setIsScrolled(window.scrollY > 80);
         rafId = null;
       });
     };
-
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // Check initial state
-
+    handleScroll();
     return () => {
       window.removeEventListener("scroll", handleScroll);
       if (rafId !== null) cancelAnimationFrame(rafId);
@@ -419,13 +380,10 @@ export default function Navbar() {
   const closeDrawer = useCallback(() => setDrawerOpen(false), []);
   const toggleDrawer = useCallback(() => setDrawerOpen((prev) => !prev), []);
 
-  // Helper to check if link is active
   const isLinkActive = (href: string) => {
-    // For hash links, check against active section
     if (href.startsWith("#")) {
       return `#${activeSection}` === href;
     }
-    // For route links, check against pathname
     return pathname === href;
   };
 
@@ -467,7 +425,6 @@ export default function Navbar() {
             );
           })}
 
-          {/* Services dropdown */}
           <li>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -509,19 +466,13 @@ export default function Navbar() {
 
         {/* ── Desktop right side ── */}
         <div className="hidden md:flex items-center gap-4">
-          {/* XLM balance widget — only when logged in */}
           {isLoggedIn && xlmBalance !== null && (
             <XLMBalanceWidget balance={xlmBalance} />
           )}
-
           <LanguageSelector />
-
-          {/* Notifications */}
+          {/* NotificationPanel for Desktop */}
           <NotificationPanel />
-
-          {/* PWA Install Button */}
           <InstallButton />
-
           {!isLoggedIn && (
             <Link
               href="/signin"
@@ -530,7 +481,6 @@ export default function Navbar() {
               Sign In
             </Link>
           )}
-
           <a
             href="/signup"
             className="bg-terra text-white px-5 py-2 rounded-full text-sm font-medium transition-all hover:bg-earth hover:shadow-lg hover:shadow-terra/30"
@@ -539,8 +489,12 @@ export default function Navbar() {
           </a>
         </div>
 
-        {/* ── Mobile hamburger ── */}
-        <HamburgerButton isOpen={drawerOpen} onClick={toggleDrawer} />
+        {/* ── Mobile Actions (Bell + Hamburger) ── */}
+        <div className="flex items-center gap-2 md:hidden">
+          {/* NotificationPanel for Mobile Only */}
+          <NotificationPanel />
+          <HamburgerButton isOpen={drawerOpen} onClick={toggleDrawer} />
+        </div>
       </nav>
 
       {/* ── Mobile drawer ── */}
