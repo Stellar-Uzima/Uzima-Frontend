@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   Activity,
@@ -314,9 +315,13 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                   <div className="mt-2 flex">
                     <div className="inline-flex flex-col items-center rounded-2xl border border-terra/15 bg-cream/90 p-3 sm:p-4">
                       <div className="relative">
-                        <img
+                        <Image
                           src={previewUrl}
-                          alt="Photo preview"
+                          alt="Uploaded photographic proof for the task"
+                          width={96}
+                          height={96}
+                          unoptimized
+                          loading="lazy"
                           className="h-20 w-20 sm:h-24 sm:w-24 rounded-xl object-cover border border-terra/20"
                         />
                         <div className="absolute -top-2 -left-2 flex h-7 w-7 items-center justify-center rounded-full bg-earth/90 text-cream shadow">

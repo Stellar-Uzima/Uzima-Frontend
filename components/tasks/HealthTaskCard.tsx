@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import Image from 'next/image'
 import { Check, Loader2, Sparkles } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
@@ -196,7 +197,16 @@ export function HealthTaskCard({
           )}
         >
           {isImageIcon ? (
-            <img src={icon} alt="" className="h-7 w-7 object-contain" aria-hidden="true" />
+            <Image 
+              src={icon} 
+              alt={`${title} task category icon`} 
+              width={28}
+              height={28}
+              unoptimized={icon.startsWith('http')}
+              loading="lazy"
+              className="h-7 w-7 object-contain" 
+              aria-hidden="true" 
+            />
           ) : (
             <span aria-hidden="true">{icon}</span>
           )}
