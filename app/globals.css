@@ -70,8 +70,8 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
-  --font-serif: var(--font-playfair), serif;
+  --font-sans: "DM Sans", system-ui, sans-serif;
+  --font-serif: "Playfair Display", "Fraunces", Georgia, serif;
   --font-mono: "Geist Mono", "Geist Mono Fallback";
   --color-background: var(--background);
   --color-foreground: var(--foreground);
