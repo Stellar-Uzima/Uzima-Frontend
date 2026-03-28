@@ -74,7 +74,10 @@ export default function RootLayout({
       <body className="min-h-screen bg-background text-foreground font-sans antialiased transition-colors duration-300 ease-in-out">
         <Providers>
           <OfflineBanner />
-          {children}
+          <div className="offline-banner-offset">
+            {children}
+            <Footer/>
+          </div>
           <InstallPrompt />
           <Analytics />
           <Footer />

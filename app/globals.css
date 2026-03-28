@@ -36,6 +36,10 @@
   --border: #e8d4c0;
   --input: var(--white);
   --ring: var(--terra);
+  --input: #fffdf5;
+  --ring: #b84e20;
+  --navbar-height: 80px;
+  --offline-banner-offset: 0px;
 }
 
 .dark {
@@ -220,11 +224,44 @@
   .animate-task-confetti {
     animation: task-confetti-burst 0.7s ease-out forwards;
   }
+}
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    overflow-x: hidden;
+    padding-top: var(--offline-banner-offset);
+    transition: padding-top 300ms ease;
+  }
+
+  * {
+    @apply border-border outline-ring/50;
+  }
+}
+
+@layer utilities {
   .text-balance {
     text-wrap: balance;
   }
   .text-pretty {
     text-wrap: pretty;
+  }
+
+}
+
+@media (min-width: 768px) {
+  :root {
+    --navbar-height: 100px;
   }
 }
 
@@ -319,5 +356,24 @@
   .animate-task-ping,
   .animate-task-badge-pulse {
     animation: none !important;
+  }
+  .stagger-1 {
+    animation-delay: 0.1s;
+  }
+
+  .stagger-2 {
+    animation-delay: 0.2s;
+  }
+
+  .stagger-3 {
+    animation-delay: 0.3s;
+  }
+
+  .stagger-4 {
+    animation-delay: 0.4s;
+  }
+
+  .stagger-5 {
+    animation-delay: 0.5s;
   }
 }
