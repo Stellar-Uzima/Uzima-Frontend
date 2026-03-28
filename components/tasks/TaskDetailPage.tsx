@@ -20,6 +20,8 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { HealthTask } from "@/lib/mock/tasks";
+// --- ADDED THIS IMPORT ---
+import { BreadcrumbNav } from "@/components/ui/breadcrumb";
 
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
 
@@ -137,14 +139,14 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
     <main className="min-h-screen bg-cream">
       <div className="pt-28 pb-16 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto space-y-6">
-          <button
-            type="button"
-            onClick={handleBack}
-            className="inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-earth transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            <span>Back to Tasks</span>
-          </button>
+          {/* --- REPLACED STATIC BUTTON WITH DYNAMIC BREADCRUMB --- */}
+          <BreadcrumbNav 
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Health Tasks", href: "/tasks" },
+              { label: task.title }, 
+            ]} 
+          />
 
           <section className="rounded-3xl border border-terra/10 bg-white px-5 py-6 sm:px-8 sm:py-7 shadow-sm">
             <div className="flex flex-col sm:flex-row sm:items-center gap-5">
