@@ -2,6 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import withPWAInit from "@ducanh2912/next-pwa";
 
+const appVersion = process.env.npm_package_version ?? "0.1.0";
+
 const withPWA = withPWAInit({
   dest: "public",
   cacheOnFrontEndNav: true,
@@ -10,8 +12,24 @@ const withPWA = withPWAInit({
   swcMinify: true,
   disable: false,
   customWorkerSrc: "worker",
+  fallbacks: {
+    document: "/~offline",
+  },
   workboxOptions: {
     disableDevLogs: true,
+    additionalManifestEntries: [
+      { url: "/~offline", revision: appVersion },
+      { url: "/tasks", revision: appVersion },
+      { url: "/dashboard", revision: appVersion },
+      { url: "/services/knowledge-sharing", revision: appVersion },
+      { url: "/knowledge", revision: appVersion },
+      { url: "/icon-192x192.png", revision: appVersion },
+      { url: "/icon-512x512.png", revision: appVersion },
+      { url: "/icon.svg", revision: appVersion },
+      { url: "/screenshot-mobile.svg", revision: appVersion },
+      { url: "/screenshot-desktop.svg", revision: appVersion },
+      { url: "/manifest.json", revision: appVersion },
+    ],
   },
 });
 

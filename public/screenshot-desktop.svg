@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" fill="none">
+  <rect width="1280" height="720" fill="#F2E6D2"/>
+  <rect x="40" y="32" width="1200" height="656" rx="30" fill="#FFF9F1" stroke="#D9C5A5"/>
+  <rect x="72" y="60" width="1136" height="92" rx="24" fill="#1F3A2E"/>
+  <text x="112" y="112" fill="#F7F1E5" font-family="Georgia, serif" font-size="34" font-weight="700">Stellar Uzima</text>
+  <text x="894" y="112" fill="#D4E7D0" font-family="Arial, sans-serif" font-size="18">Works online and offline</text>
+  <rect x="72" y="184" width="356" height="220" rx="24" fill="#FFFFFF" stroke="#E6D6BC"/>
+  <text x="104" y="226" fill="#B84E20" font-family="Arial, sans-serif" font-size="16" font-weight="700">TASKS CACHE</text>
+  <text x="104" y="286" fill="#1C1C1C" font-family="Georgia, serif" font-size="44" font-weight="700">/tasks ready offline</text>
+  <text x="104" y="330" fill="#666666" font-family="Arial, sans-serif" font-size="20">Health tasks and list assets stay available during network loss.</text>
+  <rect x="104" y="352" width="180" height="20" rx="10" fill="#E7C8AA"/>
+  <rect x="104" y="382" width="130" height="20" rx="10" fill="#E7C8AA"/>
+  <rect x="460" y="184" width="356" height="220" rx="24" fill="#FFF4E8" stroke="#E7C8AA"/>
+  <text x="492" y="226" fill="#5A7A4A" font-family="Arial, sans-serif" font-size="16" font-weight="700">KNOWLEDGE CACHE</text>
+  <text x="492" y="286" fill="#1C1C1C" font-family="Georgia, serif" font-size="42" font-weight="700">/knowledge available</text>
+  <text x="492" y="330" fill="#666666" font-family="Arial, sans-serif" font-size="20">Articles and learning pages fall back cleanly while offline.</text>
+  <rect x="848" y="184" width="360" height="220" rx="24" fill="#FFFFFF" stroke="#E6D6BC"/>
+  <text x="880" y="226" fill="#1F3A2E" font-family="Arial, sans-serif" font-size="16" font-weight="700">SERVICE WORKER</text>
+  <text x="880" y="286" fill="#1C1C1C" font-family="Georgia, serif" font-size="42" font-weight="700">Network resilient</text>
+  <text x="880" y="330" fill="#666666" font-family="Arial, sans-serif" font-size="20">Offline fallback, critical precache, and automatic cache cleanup.</text>
+  <rect x="72" y="438" width="1136" height="202" rx="24" fill="#1F3A2E"/>
+  <text x="110" y="490" fill="#F7F1E5" font-family="Arial, sans-serif" font-size="16" font-weight="700">DASHBOARD SNAPSHOT</text>
+  <rect x="110" y="520" width="250" height="82" rx="20" fill="#F7F1E5" fill-opacity="0.12"/>
+  <rect x="390" y="520" width="250" height="82" rx="20" fill="#F7F1E5" fill-opacity="0.12"/>
+  <rect x="670" y="520" width="250" height="82" rx="20" fill="#F7F1E5" fill-opacity="0.12"/>
+  <rect x="950" y="520" width="220" height="82" rx="20" fill="#F5C842"/>
+  <text x="142" y="568" fill="#F7F1E5" font-family="Georgia, serif" font-size="28" font-weight="700">12 XLM</text>
+  <text x="422" y="568" fill="#F7F1E5" font-family="Georgia, serif" font-size="28" font-weight="700">4-day streak</text>
+  <text x="702" y="568" fill="#F7F1E5" font-family="Georgia, serif" font-size="28" font-weight="700">3 tasks done</text>
+  <text x="1010" y="568" fill="#1C1C1C" font-family="Arial, sans-serif" font-size="22" font-weight="700">Open offline</text>
+</svg>
