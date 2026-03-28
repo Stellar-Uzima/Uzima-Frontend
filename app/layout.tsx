@@ -72,10 +72,12 @@ export default function RootLayout({
       <body className={`${playfair.variable} ${dmSans.variable} ${fraunces.variable} font-sans antialiased`}>
         <Providers>
           <OfflineBanner />
-          {children}
+          <div className="offline-banner-offset">
+            {children}
+            <Footer/>
+          </div>
           <InstallPrompt />
           <Analytics />
-          <Footer/>
         </Providers>
       </body>
     </html>

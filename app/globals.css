@@ -37,6 +37,8 @@
   --border: #e8d4c0;
   --input: #fffdf5;
   --ring: #b84e20;
+  --navbar-height: 80px;
+  --offline-banner-offset: 0px;
 }
 
 .dark {
@@ -231,6 +233,8 @@
   body {
     @apply bg-background text-foreground font-sans;
     overflow-x: hidden;
+    padding-top: var(--offline-banner-offset);
+    transition: padding-top 300ms ease;
   }
 
   * {
@@ -245,6 +249,13 @@
 
   .text-pretty {
     text-wrap: pretty;
+  }
+
+}
+
+@media (min-width: 768px) {
+  :root {
+    --navbar-height: 100px;
   }
 }
 
