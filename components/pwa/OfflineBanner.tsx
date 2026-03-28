@@ -57,7 +57,7 @@ export function OfflineBanner() {
     const root = document.documentElement;
 
     const clearOffset = () => {
-      root.style.setProperty("--offline-banner-height", "0px");
+      root.style.setProperty("--offline-banner-offset", "0px");
     };
 
     if (!showBanner) {
@@ -67,7 +67,7 @@ export function OfflineBanner() {
 
     const updateBannerOffset = () => {
       const height = bannerRef.current?.offsetHeight ?? 0;
-      root.style.setProperty("--offline-banner-height", `${height}px`);
+      root.style.setProperty("--offline-banner-offset", `${height}px`);
     };
 
     updateBannerOffset();
