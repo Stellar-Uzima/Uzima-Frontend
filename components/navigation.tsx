@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Download } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +13,7 @@ import {
 import LanguageSelector from "@/components/ui/LanguageSelector";
 import { InstallButton } from "@/components/pwa/InstallPrompt";
 import { NotificationPanel } from "@/components/notifications/NotificationPanel";
+import { usePwaInstall } from "@/hooks/usePwaInstall";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

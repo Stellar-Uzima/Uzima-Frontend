@@ -5,9 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { z } from "zod";
 import { Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
-import { countries } from "countries-list";
 
 import {
   Form,
@@ -65,15 +64,12 @@ const AFRICAN_ISO_CODES = new Set([
   "ML",
   "MR",
   "MU",
-  "YT",
   "MA",
   "MZ",
   "NA",
   "NE",
   "NG",
-  "RE",
   "RW",
-  "SH",
   "ST",
   "SN",
   "SL",
@@ -85,15 +81,69 @@ const AFRICAN_ISO_CODES = new Set([
   "TG",
   "TN",
   "UG",
-  "EH",
   "ZM",
   "ZW",
 ]);
 
-// country-list getData() → filter to Africa → sort A–Z by display name
-const AFRICAN_COUNTRIES = Object.entries(countries)
-  .filter(([code]) => AFRICAN_ISO_CODES.has(code))
-  .map(([code, data]) => ({ code, name: data.name }))
+const AFRICAN_COUNTRY_NAMES: Record<string, string> = {
+  DZ: "Algeria",
+  AO: "Angola",
+  BJ: "Benin",
+  BW: "Botswana",
+  BF: "Burkina Faso",
+  BI: "Burundi",
+  CV: "Cape Verde",
+  CM: "Cameroon",
+  CF: "Central African Republic",
+  TD: "Chad",
+  KM: "Comoros",
+  CG: "Congo",
+  CD: "Democratic Republic of the Congo",
+  CI: "Cote d'Ivoire",
+  DJ: "Djibouti",
+  EG: "Egypt",
+  GQ: "Equatorial Guinea",
+  ER: "Eritrea",
+  SZ: "Eswatini",
+  ET: "Ethiopia",
+  GA: "Gabon",
+  GM: "Gambia",
+  GH: "Ghana",
+  GN: "Guinea",
+  GW: "Guinea-Bissau",
+  KE: "Kenya",
+  LS: "Lesotho",
+  LR: "Liberia",
+  LY: "Libya",
+  MG: "Madagascar",
+  MW: "Malawi",
+  ML: "Mali",
+  MR: "Mauritania",
+  MU: "Mauritius",
+  MA: "Morocco",
+  MZ: "Mozambique",
+  NA: "Namibia",
+  NE: "Niger",
+  NG: "Nigeria",
+  RW: "Rwanda",
+  ST: "Sao Tome and Principe",
+  SN: "Senegal",
+  SC: "Seychelles",
+  SL: "Sierra Leone",
+  SO: "Somalia",
+  ZA: "South Africa",
+  SS: "South Sudan",
+  SD: "Sudan",
+  TZ: "Tanzania",
+  TG: "Togo",
+  TN: "Tunisia",
+  UG: "Uganda",
+  ZM: "Zambia",
+  ZW: "Zimbabwe",
+};
+
+const AFRICAN_COUNTRIES = Array.from(AFRICAN_ISO_CODES)
+  .map((code) => ({ code, name: AFRICAN_COUNTRY_NAMES[code] ?? code }))
   .sort((a, b) => a.name.localeCompare(b.name));
 
 const signUpSchema = z
