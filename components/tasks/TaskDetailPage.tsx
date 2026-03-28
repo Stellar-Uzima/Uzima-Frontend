@@ -20,6 +20,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { TaskCommunity } from "@/components/tasks/TaskCommunity";
 import type { HealthTask } from "@/lib/mock/tasks";
 
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
@@ -251,6 +252,8 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
               ))}
             </ol>
           </section>
+
+          <TaskCommunity taskId={task.id} taskTitle={task.title} />
 
           <section className="rounded-3xl border border-terra/10 bg-white p-5 sm:p-6 space-y-5">
             <div className="flex items-center justify-between gap-3 flex-wrap">
