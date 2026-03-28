@@ -37,6 +37,7 @@ export default function TasksPage() {
                 title={task.title}
                 reward={task.rewardXLM}
                 category={task.category}
+                icon="Activity"
                 status="available"
                 onClaim={() => router.push(`/tasks/${task.id}`)}
               />

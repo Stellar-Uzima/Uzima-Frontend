@@ -7,6 +7,7 @@ import {
   healerSpecialties,
   mockHealers,
 } from "@/lib/mock/healers";
+import { Suspense } from "react";
 
 export async function generateMetadata() {
   return {
@@ -16,16 +17,30 @@ export async function generateMetadata() {
   };
 }
 
+// Fallback skeleton while Suspense handles searchParams hook on the client
+function HealersDirectoryFallback() {
+  return (
+    <div className="min-h-screen pt-28 pb-20 bg-cream flex items-center justify-center">
+      <div className="animate-pulse flex flex-col items-center">
+        <div className="h-8 w-8 rounded-full border-2 border-terra border-t-transparent animate-spin"></div>
+        <p className="mt-4 text-terra font-semibold tracking-widest uppercase text-xs">Loading Directory...</p>
+      </div>
+    </div>
+  );
+}
+
 export default function HealersPage() {
   return (
     <>
       <Navigation />
-      <HealersDirectory
-        healers={mockHealers}
-        specialties={healerSpecialties}
-        regions={healerRegions}
-        languages={healerLanguages}
-      />
+      <Suspense fallback={<HealersDirectoryFallback />}>
+        <HealersDirectory
+          healers={mockHealers}
+          specialties={healerSpecialties}
+          regions={healerRegions}
+          languages={healerLanguages}
+        />
+      </Suspense>
       <Footer />
     </>
   );
