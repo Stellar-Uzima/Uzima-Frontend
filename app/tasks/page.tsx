@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
-import { HealthTaskCard } from "@/components/tasks";
+import { VirtualTaskList } from "@/components/tasks";
 import { mockTasks } from "@/lib/mock/tasks";
 
 const categoryIcon: Record<string, string> = {
@@ -36,18 +36,12 @@ export default function TasksPage() {
             </p>
           </header>
 
-          <section className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-            {mockTasks.map((task) => (
-              <HealthTaskCard
-                key={task.id}
-                title={task.title}
-                reward={task.rewardXLM}
-                category={task.category}
-                icon={categoryIcon[task.category] ?? "🩺"}
-                status="available"
-                onClaim={() => router.push(`/tasks/${task.id}`)}
-              />
-            ))}
+          <section>
+            <VirtualTaskList
+              tasks={mockTasks}
+              categoryIcon={categoryIcon}
+              onTaskSelect={(taskId) => router.push(`/tasks/${taskId}`)}
+            />
           </section>
         </div>
       </main>
