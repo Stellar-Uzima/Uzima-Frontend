@@ -1,5 +1,5 @@
 'use client'
-
+import Image from 'next/image'
 export default function HeroSection() {
   return (
     <section className="min-h-screen pt-20 px-6 sm:px-12 md:px-16 lg:px-20 py-16 sm:py-20 md:py-28 relative overflow-hidden bg-cream">
@@ -85,30 +85,39 @@ export default function HeroSection() {
             {/* Center portrait - Main focus */}
             <div className="absolute z-20 w-40 h-56 sm:w-48 sm:h-64 lg:w-56 lg:h-72 rounded-4xl overflow-hidden shadow-2xl border-4 border-cream"
               style={{ boxShadow: '0 30px 80px rgba(46,21,3,0.25)' }}>
-              <img
+              <Image
                 src="/african-woman-1.jpg"
-                alt="Woman from our community"
-                className="w-full h-full object-cover"
+                alt="Smiling African woman representing community health"
+                fill
+                priority
+                className="object-cover"
+                sizes="(max-width: 640px) 160px, (max-width: 1024px) 192px, 224px"
               />
             </div>
 
             {/* Left portrait - Overlapping */}
             <div className="absolute z-10 left-0 w-32 h-44 sm:w-36 sm:h-52 lg:w-44 lg:h-60 rounded-3xl overflow-hidden shadow-lg border-3 border-cream transform -translate-x-6 sm:-translate-x-8 lg:-translate-x-12"
               style={{ boxShadow: '0 20px 60px rgba(46,21,3,0.15)' }}>
-              <img
+              <Image
                 src="/african-man-1.jpg"
-                alt="Man from our community"
-                className="w-full h-full object-cover"
+                alt="African man participating in health program"
+                fill
+                priority
+                className="object-cover"
+                sizes="(max-width: 640px) 128px, (max-width: 1024px) 144px, 176px"
               />
             </div>
 
             {/* Right portrait - Overlapping */}
             <div className="absolute z-10 right-0 w-32 h-44 sm:w-36 sm:h-52 lg:w-44 lg:h-60 rounded-3xl overflow-hidden shadow-lg border-3 border-cream transform translate-x-6 sm:translate-x-8 lg:translate-x-12"
               style={{ boxShadow: '0 20px 60px rgba(46,21,3,0.15)' }}>
-              <img
+              <Image
                 src="/african-woman-2.jpg"
-                alt="Young woman from our community"
-                className="w-full h-full object-cover"
+                alt="Young African woman building health connections"
+                fill
+                priority
+                className="object-cover"
+                sizes="(max-width: 640px) 128px, (max-width: 1024px) 144px, 176px"
               />
             </div>
           </div>
