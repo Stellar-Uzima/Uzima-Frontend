@@ -5,6 +5,7 @@ import './globals.css'
 import Footer from '../components/footer';
 import { OfflineBanner } from '@/components/pwa/OfflineBanner';
 import { InstallPrompt } from '@/components/pwa/InstallPrompt';
+import { Providers } from '@/providers/providers';
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -69,11 +70,13 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/apple-icon.png" />
       </head>
       <body className={`${playfair.variable} ${dmSans.variable} ${fraunces.variable} font-sans antialiased`}>
-        <OfflineBanner />
-        {children}
-        <InstallPrompt />
-        <Analytics />
-        <Footer/>
+        <Providers>
+          <OfflineBanner />
+          {children}
+          <InstallPrompt />
+          <Analytics />
+          <Footer/>
+        </Providers>
       </body>
     </html>
   )

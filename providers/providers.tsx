@@ -1,10 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import { ThemeProvider, useTheme } from 'next-themes';
-
-
-
+import { ThemeProvider } from 'next-themes';
+import { NotificationProvider } from '@/context/NotificationContext';
 
 export function Providers({ children }: { children: React.ReactNode }) {
     return (
@@ -14,7 +12,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
             enableSystem
             disableTransitionOnChange
         >
-            {children}
+            <NotificationProvider>
+                {children}
+            </NotificationProvider>
         </ThemeProvider>
     );
 }
