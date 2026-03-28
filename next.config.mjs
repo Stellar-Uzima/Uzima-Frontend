@@ -65,6 +65,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "flagcdn.com",
       },
+      {
+        protocol: "https",
+        hostname: "images.pexels.com",
+      },
     ],
   },
   webpack: (config, { isServer, nextRuntime, dir }) => {
