@@ -1,14 +1,12 @@
 import withPWAInit from "@ducanh2912/next-pwa";
 
-const isAnalyze = process.env.ANALYZE === "true";
-
 const withPWA = withPWAInit({
   dest: "public",
   cacheOnFrontEndNav: true,
   aggressiveFrontEndNavCaching: true,
   reloadOnOnline: true,
   swcMinify: true,
-  disable: isAnalyze,
+  disable: false,
   customWorkerSrc: "worker",
   workboxOptions: {
     disableDevLogs: true,
@@ -22,21 +20,15 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
-  experimental: {
-    optimizePackageImports: [
-      "lucide-react",
-      "recharts",
-    ],
-  },
   images: {
     unoptimized: true,
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "flagcdn.com",
+        protocol: 'https',
+        hostname: 'flagcdn.com',
       },
     ],
   },
-};
+}
 
-export default withPWA(nextConfig);
+export default withPWA(nextConfig)
