@@ -29,6 +29,9 @@ export default async function TaskPage({ params }: TaskPageProps) {
   return (
     <>
       <Navigation />
+      {/* Breadcrumb logic is handled inside TaskDetailPage 
+          to ensure proper layout alignment within its pt-28 container.
+      */}
       <TaskDetailPage task={task} />
       <Footer />
     </>
