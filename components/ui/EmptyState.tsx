@@ -10,7 +10,8 @@ export interface EmptyStateProps {
   description: string
   ctaLabel?: string
   onCtaClick?: () => void
-  illustration: EmptyStateIllustration
+  icon?: React.ReactNode | string
+  illustration?: EmptyStateIllustration
   className?: string
 }
 
@@ -140,36 +141,53 @@ export function EmptyState({
   description,
   ctaLabel,
   onCtaClick,
+  icon,
   illustration,
   className,
 }: EmptyStateProps) {
-  const IllustrationComponent = illustrationComponents[illustration]
+  const IllustrationComponent = illustration ? illustrationComponents[illustration] : null
 
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center',
-        'bg-background dark:bg-background/50',
-        'transition-colors duration-200',
+        'flex flex-col items-center justify-center rounded-3xl border border-dashed p-10 text-center',
+        'bg-white/50 dark:bg-background/20',
+        'border-terra/15 group',
+        'transition-all duration-300 animate-in fade-in zoom-in-95',
         className,
       )}
       role="region"
       aria-label={title}
     >
-      {/* Illustration */}
-      <div className="mb-6">
-        <IllustrationComponent className="h-28 w-28 sm:h-32 sm:w-32" />
+      {/* Icon / Illustration */}
+      <div className="mb-8 relative">
+        <div className="absolute inset-0 bg-terra/5 rounded-full blur-2xl scale-150 opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="relative flex items-center justify-center w-24 h-24 rounded-full bg-linear-to-br from-terra/10 to-amber/5 border border-terra/10 transition-transform group-hover:scale-110 duration-500 shadow-sm">
+          {icon ? (
+            typeof icon === 'string' ? (
+              <span className="text-4xl sm:text-5xl" role="img" aria-hidden="true">{icon}</span>
+            ) : (
+              <div className="text-terra/80 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full">
+                {icon}
+              </div>
+            )
+          ) : IllustrationComponent ? (
+            <IllustrationComponent className="h-16 w-16 sm:h-20 sm:w-20" />
+          ) : (
+            <span className="text-5xl" role="img" aria-hidden="true">🏥</span>
+          )}
+        </div>
       </div>
 
       {/* Content */}
-      <div className="flex max-w-sm flex-col items-center gap-2">
+      <div className="flex max-w-md flex-col items-center gap-3 px-2">
         {/* Title - using h3 for proper heading hierarchy */}
-        <h3 className="text-lg font-semibold tracking-tight text-foreground dark:text-foreground">
+        <h3 className="text-xl sm:text-2xl font-serif font-bold tracking-tight text-earth dark:text-foreground">
           {title}
         </h3>
 
         {/* Description */}
-        <p className="text-sm text-muted-foreground dark:text-muted-foreground text-balance">
+        <p className="text-sm sm:text-base text-earth/60 dark:text-muted-foreground leading-relaxed text-balance max-w-sm">
           {description}
         </p>
 
@@ -177,8 +195,8 @@ export function EmptyState({
         {ctaLabel && onCtaClick && (
           <Button
             onClick={onCtaClick}
-            className="mt-4"
-            size="default"
+            className="mt-6 rounded-full px-10 bg-terra hover:bg-terra/90 text-white font-bold shadow-lg shadow-terra/15 transition-all hover:scale-[1.02] active:scale-[0.98] h-12"
+            size="lg"
           >
             {ctaLabel}
           </Button>

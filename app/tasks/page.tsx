@@ -131,21 +131,17 @@ function TasksContent() {
             onTaskSelect={(taskId) => router.push(`/tasks/${taskId}`)}
           />
         ) : (
-          <div className="flex flex-col items-center justify-center py-20 rounded-3xl border border-dashed border-terra/20 bg-white/50 text-center">
-            <ListFilter className="h-10 w-10 text-terra/20 mb-4" />
-            <h3 className="text-earth font-bold text-lg">No tasks found</h3>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setCat("All");
-                setStat("All");
-                router.push(pathname);
-              }}
-              className="mt-4 rounded-full"
-            >
-              Clear all filters
-            </Button>
-          </div>
+          <EmptyState
+            icon="📝"
+            title="No tasks found matching your filters"
+            description="We couldn't find any tasks that match your current selection. Try adjusting your filters or clearing them to explore other opportunities."
+            ctaLabel="Clear all filters"
+            onCtaClick={() => {
+              setCat("All");
+              setStat("All");
+              router.push(pathname);
+            }}
+          />
         )}
       </section>
     </div>

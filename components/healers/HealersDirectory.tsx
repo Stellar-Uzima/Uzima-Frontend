@@ -276,10 +276,10 @@ export function HealersDirectory({
 
         {filteredHealers.length === 0 ? (
           <EmptyState
+            icon="👨‍⚕️"
             title="No healers match these filters"
-            description="Try adjusting specialty, region, or language to see more traditional healers."
-            illustration="consultations"
-            className="bg-white border-terra/10"
+            description="Try adjusting specialty, region, or language to see more traditional healers while we expand our network."
+            className="bg-white/50 border-terra/10"
           />
         ) : (
           <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

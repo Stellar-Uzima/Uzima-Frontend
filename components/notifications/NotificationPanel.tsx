@@ -7,6 +7,7 @@ import { NotificationItem } from './NotificationItem';
 import { PushNotificationSetup } from './PushNotificationSetup';
 import { X } from 'lucide-react'; 
 import Link from 'next/link';
+import { EmptyState } from '../ui/EmptyState';
 
 export const NotificationPanel: React.FC = () => {
   const { notifications, unreadCount, markAsRead, markAllAsRead, deleteNotification } = useNotificationContext();
@@ -85,10 +86,12 @@ export const NotificationPanel: React.FC = () => {
             {/* 4. SCROLLABLE CONTENT */}
             <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
               {notifications.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full text-center space-y-2">
-                  <span className="text-4xl opacity-20">📭</span>
-                  <p className="text-earth/40 font-medium">No notifications yet</p>
-                </div>
+                <EmptyState
+                  icon="📭"
+                  title="Clear for now!"
+                  description="You're all caught up. New health alerts and rewards will appear here."
+                  className="bg-transparent border-none py-12"
+                />
               ) : (
                 <div className="space-y-1">
                   {notifications.slice(0, 10).map(n => (
