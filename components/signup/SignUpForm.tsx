@@ -6,6 +6,15 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import {
+  Eye,
+  EyeOff,
+  Loader2,
+  AlertCircle,
+  CheckCircle2,
+  XCircle,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 
@@ -147,6 +156,62 @@ const AFRICAN_COUNTRIES = Array.from(AFRICAN_ISO_CODES)
   .map((code) => ({ code, name: AFRICAN_COUNTRY_NAMES[code] ?? code }))
   .sort((a, b) => a.name.localeCompare(b.name));
 
+const emailPattern = /^\S+@\S+\.\S+$/;
+
+function getPasswordStrength(password: string) {
+  const score = [
+    password.length >= 8,
+    /[A-Z]/.test(password),
+    /[a-z]/.test(password),
+    /\d/.test(password),
+    /[^A-Za-z0-9]/.test(password),
+    password.length >= 12,
+  ].filter(Boolean).length;
+
+  if (!password) {
+    return {
+      label: "Enter a password",
+      strength: 0,
+      color: "bg-slate-200",
+      status: "text-slate-500",
+    };
+  }
+
+  if (score <= 2) {
+    return {
+      label: "Weak",
+      strength: 25,
+      color: "bg-rose-500",
+      status: "text-rose-600",
+    };
+  }
+
+  if (score === 3) {
+    return {
+      label: "Fair",
+      strength: 50,
+      color: "bg-neutral-600",
+      status: "text-amber-600",
+    };
+  }
+
+  if (score === 4) {
+    return {
+      label: "Strong",
+      strength: 75,
+      color: "bg-emerald-500",
+      status: "text-emerald-600",
+    };
+  }
+
+  return {
+    label: "Very Strong",
+    strength: 100,
+    color: "bg-emerald-600",
+    status: "text-emerald-700",
+  };
+}
+
 const signUpSchema = z
   .object({
     fullName: z
@@ -158,6 +223,14 @@ const signUpSchema = z
       .string()
       .min(1, "Email is required")
       .email("Please enter a valid email address"),
+
+    phone: z
+      .string()
+      .min(1, "Phone number is required")
+      .refine((value) => {
+        const normalized = value.replace(/[\s-]/g, "");
+        return /^\+\d{8,15}$/.test(normalized);
+      }, "Please enter a valid phone number including country code"),
 
     country: z.string().min(1, "Please select your country"),
 
@@ -195,15 +268,26 @@ export default function SignUpForm() {
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
     mode: "onBlur",
+    reValidateMode: "onChange",
     defaultValues: {
       fullName: "",
       email: "",
+      phone: "",
       country: "",
       password: "",
       confirmPassword: "",
       terms: false,
     },
   });
+
+  const emailValue = form.watch("email");
+  const passwordValue = form.watch("password");
+  const confirmPasswordValue = form.watch("confirmPassword");
+  const hasValidEmailFormat =
+    emailValue !== "" && emailPattern.test(emailValue);
+  const passwordStrength = getPasswordStrength(passwordValue);
+  const confirmPasswordMatches =
+    confirmPasswordValue !== "" && confirmPasswordValue === passwordValue;
 
   const onSubmit = async (data: SignUpFormValues) => {
     setIsLoading(true);
@@ -259,13 +343,13 @@ export default function SignUpForm() {
                   Full Name
                 </FormLabel>
                 <FormControl>
-                                    <Input
-                                      placeholder="Legend4tech"
-                                      autoComplete="name"
-                                      className="rounded-xl"
-                                      disabled={isLoading}
-                                      {...field}
-                                    />
+                  <Input
+                    placeholder="Legend4tech"
+                    autoComplete="name"
+                    className="rounded-xl"
+                    disabled={isLoading}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -276,16 +360,54 @@ export default function SignUpForm() {
           <FormField
             control={form.control}
             name="email"
+            render={({ field, fieldState }) => {
+              const showValid = hasValidEmailFormat && !fieldState.error;
+
+              return (
+                <FormItem>
+                  <FormLabel className="text-earth font-medium text-sm">
+                    Email Address
+                  </FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Input
+                        type="email"
+                        placeholder="you@example.com"
+                        autoComplete="email"
+                        className={cn(
+                          "rounded-xl pr-10",
+                          showValid && "border-emerald-500 ring-emerald-500/20",
+                        )}
+                        disabled={isLoading}
+                        {...field}
+                      />
+                      {showValid && (
+                        <CheckCircle2
+                          className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-emerald-500"
+                          aria-hidden="true"
+                        />
+                      )}
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
+          />
+
+          <FormField
+            control={form.control}
+            name="phone"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-earth font-medium text-sm">
-                  Email Address
+                  Phone Number
                 </FormLabel>
                 <FormControl>
                   <Input
-                    type="email"
-                    placeholder="you@example.com"
-                    autoComplete="email"
+                    type="tel"
+                    placeholder="+234 801 234 5678"
+                    autoComplete="tel"
                     className="rounded-xl"
                     disabled={isLoading}
                     {...field}
@@ -306,7 +428,11 @@ export default function SignUpForm() {
                 <FormLabel className="text-earth font-medium text-sm">
                   Country
                 </FormLabel>
-                <Select onValueChange={field.onChange} value={field.value} disabled={isLoading}>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  disabled={isLoading}
+                >
                   <FormControl>
                     <SelectTrigger className="rounded-xl w-full">
                       <SelectValue placeholder="Select your country" />
@@ -361,6 +487,25 @@ export default function SignUpForm() {
                     </button>
                   </div>
                 </FormControl>
+                <div className="mt-3 rounded-2xl px-3 py-3 text-sm">
+                  <div className="flex items-center justify-between gap-3 text-xs text-muted">
+                    <span>Password strength</span>
+                    <span
+                      className={cn("font-semibold", passwordStrength.status)}
+                    >
+                      {passwordStrength.label}
+                    </span>
+                  </div>
+                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200">
+                    <div
+                      className={cn(
+                        "h-full rounded-full transition-all",
+                        passwordStrength.color,
+                      )}
+                      style={{ width: `${passwordStrength.strength}%` }}
+                    />
+                  </div>
+                </div>
                 <FormMessage />
               </FormItem>
             )}
@@ -381,7 +526,12 @@ export default function SignUpForm() {
                       type={showConfirmPassword ? "text" : "password"}
                       placeholder="Re-enter your password"
                       autoComplete="new-password"
-                      className="rounded-xl pr-10"
+                      className={cn(
+                        "rounded-xl pr-10",
+                        confirmPasswordValue && confirmPasswordMatches
+                          ? "border-emerald-500 ring-emerald-500/20"
+                          : "",
+                      )}
                       disabled={isLoading}
                       {...field}
                     />
@@ -401,6 +551,21 @@ export default function SignUpForm() {
                         <Eye className="w-4 h-4" aria-hidden="true" />
                       )}
                     </button>
+                    {confirmPasswordValue && (
+                      <span className="absolute right-10 top-1/2 -translate-y-1/2 text-base">
+                        {confirmPasswordMatches ? (
+                          <CheckCircle2
+                            className="h-5 w-5 text-emerald-500"
+                            aria-hidden="true"
+                          />
+                        ) : (
+                          <XCircle
+                            className="h-5 w-5 text-rose-500"
+                            aria-hidden="true"
+                          />
+                        )}
+                      </span>
+                    )}
                   </div>
                 </FormControl>
                 <FormMessage />
