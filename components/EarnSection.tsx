@@ -1,4 +1,6 @@
-export default function EarnSection() {
+import { ErrorBoundary } from '@/components/ErrorBoundary';
+
+function EarnSectionContent() {
   const tasks = [
     { icon: '🏃', name: 'Daily Steps', cat: 'Health', reward: '+50 XLM' },
     { icon: '💤', name: 'Sleep Tracking', cat: 'Health', reward: '+75 XLM' },
@@ -95,5 +97,13 @@ export default function EarnSection() {
         </div>
       </div>
     </section>
-  )
+  );
+}
+
+export default function EarnSection() {
+  return (
+    <ErrorBoundary componentName="EarnSection">
+      <EarnSectionContent />
+    </ErrorBoundary>
+  );
 }
