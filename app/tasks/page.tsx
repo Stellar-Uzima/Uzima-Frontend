@@ -2,11 +2,9 @@
 
 import { Suspense, useMemo, useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
 import * as React from "react";
-import { Bookmark } from "lucide-react";
+import { Bookmark, ListFilter } from "lucide-react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { ListFilter } from "lucide-react";
 
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
@@ -36,21 +34,6 @@ const categoryIcon: Record<string, string> = {
 };
 
 type Tab = "all" | "saved"
-
-export default function TasksPage() {
-  const router = useRouter();
-  const [activeTab, setActiveTab] = React.useState<Tab>("all")
-  const { bookmarkCount, isBookmarked, toggleBookmark, bookmarkedIds } = useBookmarks()
-
-  const savedTasks = React.useMemo(
-    () => mockTasks.filter((task) => isBookmarked(task.id)),
-    [isBookmarked, bookmarkCount],
-  )
-
-  const allBookmarkedIds = React.useMemo(
-    () => new Set(mockTasks.filter((t) => isBookmarked(t.id)).map((t) => t.id)),
-    [isBookmarked, bookmarkCount],
-  )
 function TasksContent() {
   const router = useRouter();
   const pathname = usePathname();
@@ -150,6 +133,19 @@ function TasksContent() {
 }
 
 export default function TasksPage() {
+  const router = useRouter();
+  const [activeTab, setActiveTab] = React.useState<Tab>("all")
+  const { bookmarkCount, isBookmarked, toggleBookmark } = useBookmarks()
+
+  const savedTasks = React.useMemo(
+    () => mockTasks.filter((task) => isBookmarked(task.id)),
+    [isBookmarked, bookmarkCount],
+  )
+
+  const allBookmarkedIds = React.useMemo(
+    () => new Set(mockTasks.filter((t) => isBookmarked(t.id)).map((t) => t.id)),
+    [isBookmarked, bookmarkCount],
+  )
   return (
     <>
       <Navigation />
