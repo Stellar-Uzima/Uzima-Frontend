@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Download } from "lucide-react";
@@ -14,6 +15,26 @@ import LanguageSelector from "@/components/ui/LanguageSelector";
 import { InstallButton } from "@/components/pwa/InstallPrompt";
 import { NotificationPanel } from "@/components/notifications/NotificationPanel";
 import { usePwaInstall } from "@/hooks/usePwaInstall";
+
+function WalletConnectModalSkeleton() {
+  return (
+    <div
+      className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/40"
+      aria-busy="true"
+      aria-label="Loading wallet options"
+    >
+      <div className="h-[280px] w-full max-w-md rounded-lg border border-terra/10 bg-cream shadow-lg animate-pulse" />
+    </div>
+  );
+}
+
+const WalletConnectModal = dynamic(
+  () => import("@/components/wallet/WalletConnectModal"),
+  {
+    loading: () => <WalletConnectModalSkeleton />,
+    ssr: false,
+  },
+);
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -110,6 +131,7 @@ function MobileDrawer({
   isLoggedIn,
   xlmBalance,
   activeSection,
+  onOpenWallet,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -117,6 +139,7 @@ function MobileDrawer({
   isLoggedIn: boolean;
   xlmBalance: number | null;
   activeSection: string;
+  onOpenWallet: () => void;
 }) {
   const drawerRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -290,6 +313,16 @@ function MobileDrawer({
           <LanguageSelector />
 
           <div className="flex flex-col gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                onOpenWallet();
+                onClose();
+              }}
+              className="w-full text-center text-terra font-medium text-sm px-5 py-2 border border-terra/30 rounded-full hover:bg-terra/5 transition-colors"
+            >
+              Connect wallet
+            </button>
             {!isLoggedIn && (
               <Link
                 href="/signin"
@@ -318,6 +351,7 @@ function MobileDrawer({
 export default function Navbar() {
   const pathname = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [walletModalOpen, setWalletModalOpen] = useState(false);
   const { isLoggedIn, xlmBalance } = useWallet();
   const [activeSection, setActiveSection] = useState<string>("");
   const [isScrolled, setIsScrolled] = useState(false);
@@ -504,6 +538,13 @@ export default function Navbar() {
           {/* NotificationPanel for Desktop */}
           <NotificationPanel />
           <InstallButton />
+          <button
+            type="button"
+            onClick={() => setWalletModalOpen(true)}
+            className="text-terra font-medium text-sm hover:opacity-80 transition-opacity px-2"
+          >
+            Connect wallet
+          </button>
           {!isLoggedIn && (
             <Link
               href="/signin"
@@ -536,7 +577,15 @@ export default function Navbar() {
         isLoggedIn={isLoggedIn}
         xlmBalance={xlmBalance}
         activeSection={activeSection}
+        onOpenWallet={() => setWalletModalOpen(true)}
       />
+
+      {walletModalOpen && (
+        <WalletConnectModal
+          open={walletModalOpen}
+          onOpenChange={setWalletModalOpen}
+        />
+      )}
     </>
   );
 }
