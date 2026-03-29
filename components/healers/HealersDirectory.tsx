@@ -189,6 +189,7 @@ export function HealersDirectory({
 
         {filteredHealers.length === 0 ? (
           <EmptyState
+            icon="👨‍⚕️"
             title="No healers match these filters"
             description="Try removing some active filters or adjusting your search phrase to see more traditional healers."
             illustration="consultations"
