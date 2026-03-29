@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { MapPin, CheckCircle2 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -36,7 +37,7 @@ function getInitials(name?: string, fallback?: string) {
   return (fallback ?? "").slice(0, 2).toUpperCase() || "--";
 }
 
-export function HealerCard({ healer, onBook }: HealerCardProps) {
+export const HealerCard = React.memo(function HealerCard({ healer, onBook }: HealerCardProps) {
   return (
     <article className="flex flex-col h-full rounded-3xl border border-terra/15 bg-white p-4 shadow-sm">
       <div className="flex items-start gap-3">
@@ -127,4 +128,4 @@ export function HealerCard({ healer, onBook }: HealerCardProps) {
       </div>
     </article>
   );
-}
+})

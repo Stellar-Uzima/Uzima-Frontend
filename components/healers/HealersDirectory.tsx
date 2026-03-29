@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Users } from "lucide-react";
 
@@ -165,6 +165,10 @@ export function HealersDirectory({
   const [regionFilter, setRegionFilter] = useState<string>("all");
   const [languageFilter, setLanguageFilter] = useState<string>("all");
 
+  const handleBook = useCallback((id: string) => {
+    router.push(`/consultations?healer=${id}`)
+  }, [router])
+
   const filteredHealers = useMemo(
     () =>
       healers.filter((healer) => {
@@ -287,7 +291,7 @@ export function HealersDirectory({
               <HealerCard
                 key={healer.id}
                 healer={healer}
-                onBook={(id) => router.push(`/consultations?healer=${id}`)}
+                onBook={handleBook}
               />
             ))}
           </section>

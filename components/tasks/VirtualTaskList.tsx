@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useCallback, useMemo } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 
 import { HealthTaskCard } from "@/components/tasks/HealthTaskCard";
@@ -36,6 +37,18 @@ function useTaskColumns() {
 export function VirtualTaskList({ tasks, categoryIcon, onTaskSelect }: VirtualTaskListProps) {
   const parentRef = React.useRef<HTMLDivElement>(null);
   const columns = useTaskColumns();
+
+  const handleTaskSelect = useCallback((taskId: string) => {
+    onTaskSelect(taskId)
+  }, [onTaskSelect])
+
+  const taskCallbacks = useMemo(() => {
+    const callbacks: Record<string, () => void> = {}
+    for (const task of tasks) {
+      callbacks[task.id] = () => handleTaskSelect(task.id)
+    }
+    return callbacks
+  }, [tasks, handleTaskSelect])
 
   const rows = React.useMemo(() => {
     const chunked: HealthTask[][] = [];
@@ -95,7 +108,7 @@ export function VirtualTaskList({ tasks, categoryIcon, onTaskSelect }: VirtualTa
                     category={task.category}
                     icon={categoryIcon[task.category] ?? "🩺"}
                     status="available"
-                    onClaim={() => onTaskSelect(task.id)}
+                    onClaim={taskCallbacks[task.id]}
                   />
                 ))}
               </div>

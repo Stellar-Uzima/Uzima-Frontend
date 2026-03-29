@@ -78,7 +78,7 @@ function getCategoryColor(category: string): string {
 // Component
 // ---------------------------------------------------------------------------
 
-export function HealthTaskCard({
+export const HealthTaskCard = React.memo(function HealthTaskCard({
   title,
   reward,
   category,
@@ -315,4 +315,4 @@ export function HealthTaskCard({
       </div>
     </div>
   )
-}
+})
