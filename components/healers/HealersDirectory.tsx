@@ -1,32 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Users } from "lucide-react";
+import { useMemo } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { Users, X } from "lucide-react";
 
-import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { HealerCard } from "@/components/healers/HealerCard";
+import { HealerFilters } from "@/components/healers/HealerFilters";
 import type { Healer, HealerRegion, HealerSpecialty } from "@/lib/mock/healers";
 
 interface HealersDirectoryProps {
@@ -36,123 +18,6 @@ interface HealersDirectoryProps {
   languages: string[];
 }
 
-interface FiltersProps {
-  selectedSpecialty: string;
-  selectedRegion: string;
-  selectedLanguage: string;
-  onSpecialtyChange: (value: string) => void;
-  onRegionChange: (value: string) => void;
-  onLanguageChange: (value: string) => void;
-  specialties: HealerSpecialty[];
-  regions: HealerRegion[];
-  languages: string[];
-  compact?: boolean;
-}
-
-function Filters({
-  selectedSpecialty,
-  selectedRegion,
-  selectedLanguage,
-  onSpecialtyChange,
-  onRegionChange,
-  onLanguageChange,
-  specialties,
-  regions,
-  languages,
-  compact,
-}: FiltersProps) {
-  const specialtyIsActive = selectedSpecialty !== "all";
-  const regionIsActive = selectedRegion !== "all";
-  const languageIsActive = selectedLanguage !== "all";
-
-  return (
-    <div
-      className={cn(
-        "flex flex-wrap gap-3 rounded-2xl border border-terra/15 bg-cream/80 p-3 sm:p-4",
-        compact && "flex-col items-stretch",
-      )}
-    >
-      <div className="flex items-center gap-2 text-[11px] font-semibold tracking-[0.18em] uppercase text-terra/80">
-        <span className="inline-block h-1.5 w-1.5 rounded-full bg-terra" />
-        <span>Filter healers</span>
-      </div>
-      <div className="flex flex-1 flex-wrap gap-3">
-        <div className="flex flex-col gap-1">
-          <span className="text-[11px] font-medium text-muted">Specialty</span>
-          <Select value={selectedSpecialty} onValueChange={onSpecialtyChange}>
-            <SelectTrigger
-              size="sm"
-              className={cn(
-                "min-w-[9rem] rounded-full border-earth/15 bg-transparent px-3 text-earth/80",
-                specialtyIsActive &&
-                  "border-earth/40 text-earth font-semibold shadow-[0_0_0_1px_rgba(46,21,3,0.04)]",
-              )}
-            >
-              <SelectValue placeholder="All specialties" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All specialties</SelectItem>
-              {specialties.map((specialty) => (
-                <SelectItem key={specialty} value={specialty}>
-                  {specialty}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <span className="text-[11px] font-medium text-muted">Region</span>
-          <Select value={selectedRegion} onValueChange={onRegionChange}>
-            <SelectTrigger
-              size="sm"
-              className={cn(
-                "min-w-[9rem] rounded-full border-earth/15 bg-transparent px-3 text-earth/80",
-                regionIsActive &&
-                  "border-earth/40 text-earth font-semibold shadow-[0_0_0_1px_rgba(46,21,3,0.04)]",
-              )}
-            >
-              <SelectValue placeholder="All regions" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All regions</SelectItem>
-              {regions.map((region) => (
-                <SelectItem key={region} value={region}>
-                  {region}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <span className="text-[11px] font-medium text-muted">Language</span>
-          <Select value={selectedLanguage} onValueChange={onLanguageChange}>
-            <SelectTrigger
-              size="sm"
-              className={cn(
-                "min-w-[9rem] rounded-full border-earth/15 bg-transparent px-3 text-earth/80",
-                languageIsActive &&
-                  "border-earth/40 text-earth font-semibold shadow-[0_0_0_1px_rgba(46,21,3,0.04)]",
-              )}
-            >
-              <SelectValue placeholder="Any language" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Any language</SelectItem>
-              {languages.map((language) => (
-                <SelectItem key={language} value={language}>
-                  {language}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export function HealersDirectory({
   healers,
   specialties,
@@ -160,36 +25,82 @@ export function HealersDirectory({
   languages,
 }: HealersDirectoryProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
 
-  const [specialtyFilter, setSpecialtyFilter] = useState<string>("all");
-  const [regionFilter, setRegionFilter] = useState<string>("all");
-  const [languageFilter, setLanguageFilter] = useState<string>("all");
+  const searchQuery = searchParams.get("search") || "";
+  const specialtyFilter = searchParams.get("specialty") || "all";
+  const regionFilter = searchParams.get("region") || "all";
+  const languageFilter = searchParams.get("language") || "all";
 
-  const filteredHealers = useMemo(
-    () =>
-      healers.filter((healer) => {
-        if (
-          specialtyFilter !== "all" &&
-          !healer.specialties.includes(specialtyFilter as HealerSpecialty)
-        ) {
+  const handleFilterChange = (key: string, value: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (!value || value === "all") {
+      params.delete(key);
+    } else {
+      params.set(key, value);
+    }
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const handleClearFilters = () => {
+    router.replace(pathname, { scroll: false });
+  };
+
+  const filteredHealers = useMemo(() => {
+    return healers.filter((healer) => {
+      // 1. Text Search Filter (name, community, specialty)
+      if (searchQuery.trim() !== "") {
+        const query = searchQuery.toLowerCase();
+        const matchesName = healer.name.toLowerCase().includes(query);
+        const matchesCommunity = healer.country.toLowerCase().includes(query);
+        const matchesSpecialty = healer.specialties.some((s) =>
+          s.toLowerCase().includes(query)
+        );
+        
+        if (!matchesName && !matchesCommunity && !matchesSpecialty) {
           return false;
         }
+      }
 
-        if (regionFilter !== "all" && healer.region !== regionFilter) {
-          return false;
-        }
+      // 2. Specialty Dropdown Filter
+      if (
+        specialtyFilter !== "all" &&
+        !healer.specialties.includes(specialtyFilter as HealerSpecialty)
+      ) {
+        return false;
+      }
 
-        if (
-          languageFilter !== "all" &&
-          !healer.languages.includes(languageFilter)
-        ) {
-          return false;
-        }
+      // 3. Region Filter
+      if (regionFilter !== "all" && healer.region !== regionFilter) {
+        return false;
+      }
 
-        return true;
-      }),
-    [healers, specialtyFilter, regionFilter, languageFilter],
-  );
+      // 4. Language Filter
+      if (
+        languageFilter !== "all" &&
+        !healer.languages.includes(languageFilter)
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [healers, searchQuery, specialtyFilter, regionFilter, languageFilter]);
+
+  const activeFilters = [];
+  if (searchQuery) {
+    activeFilters.push({ key: "search", label: `Search: "${searchQuery}"` });
+  }
+  if (specialtyFilter !== "all") {
+    activeFilters.push({ key: "specialty", label: specialtyFilter });
+  }
+  if (regionFilter !== "all") {
+    activeFilters.push({ key: "region", label: regionFilter });
+  }
+  if (languageFilter !== "all") {
+    activeFilters.push({ key: "language", label: languageFilter });
+  }
 
   return (
     <main className="bg-cream min-h-screen pt-28 pb-20">
@@ -222,64 +133,67 @@ export function HealersDirectory({
           </div>
         </section>
 
-        <div className="hidden sm:block">
-          <Filters
-            selectedSpecialty={specialtyFilter}
-            selectedRegion={regionFilter}
-            selectedLanguage={languageFilter}
-            onSpecialtyChange={setSpecialtyFilter}
-            onRegionChange={setRegionFilter}
-            onLanguageChange={setLanguageFilter}
-            specialties={specialties}
-            regions={regions}
-            languages={languages}
-          />
-        </div>
+        <HealerFilters
+          searchQuery={searchQuery}
+          specialtyFilter={specialtyFilter}
+          regionFilter={regionFilter}
+          languageFilter={languageFilter}
+          onFilterChange={handleFilterChange}
+          onClearFilters={handleClearFilters}
+          specialties={specialties}
+          regions={regions}
+          languages={languages}
+        />
 
-        <div className="sm:hidden">
-          <Accordion type="single" collapsible defaultValue="filters">
-            <AccordionItem value="filters">
-              <AccordionTrigger className="justify-between px-2 text-xs font-semibold tracking-[0.2em] uppercase text-terra/80">
-                Filters
-              </AccordionTrigger>
-              <AccordionContent>
-                <Filters
-                  selectedSpecialty={specialtyFilter}
-                  selectedRegion={regionFilter}
-                  selectedLanguage={languageFilter}
-                  onSpecialtyChange={setSpecialtyFilter}
-                  onRegionChange={setRegionFilter}
-                  onLanguageChange={setLanguageFilter}
-                  specialties={specialties}
-                  regions={regions}
-                  languages={languages}
-                  compact
-                />
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </div>
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between gap-3 text-xs text-muted">
+            <span>
+              Showing{" "}
+              <span className="font-semibold text-earth">
+                {filteredHealers.length}
+              </span>{" "}
+              healer{filteredHealers.length === 1 ? "" : "s"}
+            </span>
+            <span className="hidden sm:inline-flex items-center gap-1">
+              <Users className="h-3.5 w-3.5 text-terra/80" />
+              <span>Traditional healers only</span>
+            </span>
+          </div>
 
-        <div className="flex items-center justify-between gap-3 text-xs text-muted">
-          <span>
-            Showing{" "}
-            <span className="font-semibold text-earth">
-              {filteredHealers.length}
-            </span>{" "}
-            healer{filteredHealers.length === 1 ? "" : "s"}
-          </span>
-          <span className="hidden sm:inline-flex items-center gap-1">
-            <Users className="h-3.5 w-3.5 text-terra/80" />
-            <span>Traditional healers only</span>
-          </span>
+          {/* Active Filter Badges */}
+          {activeFilters.length > 0 && (
+             <div className="flex flex-wrap gap-2 items-center">
+               <span className="text-xs text-muted-foreground mr-1">Active Filters:</span>
+               {activeFilters.map((filter) => (
+                 <Badge
+                   key={filter.key}
+                   variant="secondary"
+                   className="bg-terra/10 hover:bg-terra/20 text-terra border-terra/20 rounded-full px-3 py-1 cursor-pointer flex items-center gap-1.5 transition-colors"
+                   onClick={() => handleFilterChange(filter.key, "")}
+                 >
+                   {filter.label}
+                   <X className="h-3 w-3 opacity-70 hover:opacity-100" />
+                 </Badge>
+               ))}
+               <Button
+                 variant="ghost"
+                 size="sm"
+                 className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground hover:bg-transparent -ml-1"
+                 onClick={handleClearFilters}
+               >
+                 Clear all
+               </Button>
+             </div>
+          )}
         </div>
 
         {filteredHealers.length === 0 ? (
           <EmptyState
+            icon="👨‍⚕️"
             title="No healers match these filters"
-            description="Try adjusting specialty, region, or language to see more traditional healers."
+            description="Try removing some active filters or adjusting your search phrase to see more traditional healers."
             illustration="consultations"
-            className="bg-white border-terra/10"
+            className="bg-zinc-50 border-terra/10"
           />
         ) : (
           <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

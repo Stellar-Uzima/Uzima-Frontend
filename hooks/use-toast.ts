@@ -5,11 +5,15 @@ import * as React from 'react'
 
 import type { ToastActionElement, ToastProps } from '@/components/ui/toast'
 
-const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 1000000
+const TOAST_LIMIT = 5
+const TOAST_REMOVE_DELAY = 4000 // auto-dismiss after 4 seconds
 
-type ToasterToast = ToastProps & {
+type ToastType = 'success' | 'error' | 'info' | 'reward'
+
+/** `type` omitted: HTML `<li type>` clashes with our toast category `type`. */
+type ToasterToast = Omit<ToastProps, "type"> & {
   id: string
+  type: ToastType
   title?: React.ReactNode
   description?: React.ReactNode
   action?: ToastActionElement
@@ -64,7 +68,7 @@ const addToRemoveQueue = (toastId: string) => {
     toastTimeouts.delete(toastId)
     dispatch({
       type: 'REMOVE_TOAST',
-      toastId: toastId,
+      toastId,
     })
   }, TOAST_REMOVE_DELAY)
 
@@ -90,8 +94,6 @@ export const reducer = (state: State, action: Action): State => {
     case 'DISMISS_TOAST': {
       const { toastId } = action
 
-      // ! Side effects ! - This could be extracted into a dismissToast() action,
-      // but I'll keep it here for simplicity
       if (toastId) {
         addToRemoveQueue(toastId)
       } else {
@@ -139,7 +141,7 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, 'id'>
 
-function toast({ ...props }: Toast) {
+function toast({ type, ...props }: Toast) {
   const id = genId()
 
   const update = (props: ToasterToast) =>
@@ -154,12 +156,18 @@ function toast({ ...props }: Toast) {
     toast: {
       ...props,
       id,
+      type,
       open: true,
       onOpenChange: (open) => {
         if (!open) dismiss()
       },
     },
   })
+
+  // auto-dismiss after 4s
+  setTimeout(() => {
+    dismiss()
+  }, TOAST_REMOVE_DELAY)
 
   return {
     id: id,
