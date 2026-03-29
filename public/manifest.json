@@ -45,18 +45,24 @@
       "form_factor": "wide"
     }
   ],
-  "shortcuts": [
+   "shortcuts": [
     {
-      "name": "Complete Tasks",
+      "name": "Tasks",
       "short_name": "Tasks",
-      "description": "View and complete health tasks",
-      "url": "/contribute/task",
-      "icons": [
-        {
-          "src": "/icon-192x192.png",
-          "sizes": "192x192"
-        }
-      ]
+      "url": "/tasks",
+      "icons": [{ "src": "/icons/tasks.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Healers",
+      "short_name": "Healers",
+      "url": "/healers",
+      "icons": [{ "src": "/icons/healers.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Rewards",
+      "short_name": "Rewards",
+      "url": "/rewards",
+      "icons": [{ "src": "/icons/rewards.png", "sizes": "192x192" }]
     }
   ],
   "related_applications": [],
