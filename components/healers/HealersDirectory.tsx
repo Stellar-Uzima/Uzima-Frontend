@@ -34,7 +34,7 @@ export function HealersDirectory({
   const languageFilter = searchParams.get("language") || "all";
 
   const handleBook = useCallback((id: string) => {
-    router.push(`/consultations?healer=${id}`)
+    router.push(`/services/consultations?healer=${id}`)
   }, [router])
 
   const handleFilterChange = (key: string, value: string) => {
