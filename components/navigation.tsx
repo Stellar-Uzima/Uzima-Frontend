@@ -14,7 +14,7 @@ import LanguageSelector from "@/components/ui/LanguageSelector";
 import { InstallButton } from "@/components/pwa/InstallPrompt";
 import { NotificationPanel } from "@/components/notifications/NotificationPanel";
 import { usePwaInstall } from "@/hooks/usePwaInstall";
-import { ThemeToggle } from "./theme-toggle"; // #198: Fix
+import { ThemeToggle } from "./theme-toggle";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -194,7 +194,7 @@ function MobileDrawer({
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-border">
+        <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-terra/10">
           <Link
             href="/"
             onClick={onClose}
@@ -281,8 +281,7 @@ function MobileDrawer({
           </div>
         </nav>
 
-        <div className="shrink-0 px-6 py-6 border-t border-border flex flex-col gap-5">
-          {/* #198: Added Theme Toggle inside Mobile Drawer */}
+        <div className="shrink-0 px-6 py-6 border-t border-terra/10 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-foreground">
               Appearance
@@ -299,6 +298,8 @@ function MobileDrawer({
               Install App
             </button>
           )}
+
+          <LanguageSelector />
 
           <div className="flex flex-col gap-3">
             {!isLoggedIn && (
@@ -344,24 +345,49 @@ export default function Navbar() {
     );
     if (sections.length === 0) return;
 
+    const isMobile = window.innerWidth < 768;
+    const topOffset = isMobile ? "80px" : "100px";
+    const bottomOffset = isMobile ? "35%" : "50%";
+    const visibilityThreshold = isMobile ? 0.15 : 0.3;
+
     const observer = new IntersectionObserver(
       (entries) => {
+        let maxRatio = 0;
+        let dominantSection = "";
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
+          if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
+            maxRatio = entry.intersectionRatio;
+            dominantSection = entry.target.id;
           }
         });
+        if (maxRatio > visibilityThreshold) {
+          setActiveSection(dominantSection);
+        }
       },
-      { threshold: 0.3, rootMargin: "-80px 0px -50% 0px" },
+      {
+        threshold: [0, 0.1, 0.15, 0.2, 0.3, 0.5, 0.7, 1.0],
+        rootMargin: `-${topOffset} 0px -${bottomOffset} 0px`,
+      },
     );
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    let rafId: number | null = null;
+    const handleScroll = () => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        setIsScrolled(window.scrollY > 80);
+        rafId = null;
+      });
+    };
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    handleScroll();
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   useEffect(() => {
@@ -399,16 +425,12 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-6 md:px-12 transition-all duration-300 ease-in-out border-b ${
-          isScrolled
-            ? "py-3 bg-background/90 backdrop-blur-md border-border shadow-sm"
-            : "py-5 bg-background border-transparent"
-        }`}
         ref={navRef}
-        className={`fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-6 md:px-12 bg-cream/94 backdrop-blur-md border-b border-terra/10 transition-all duration-300 ease-out ${isScrolled
+        className={`fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-6 md:px-12 bg-cream/94 backdrop-blur-md border-b border-terra/10 transition-all duration-300 ease-out ${
+          isScrolled
             ? "py-[0.95rem] md:py-[0.7rem] shadow-lg shadow-terra/5"
             : "py-[1.1rem] shadow-sm shadow-terra/0"
-          }`}
+        }`}
       >
         {/* ── Logo ── */}
         <Link href="/" className="flex items-center gap-2.5 no-underline">
@@ -486,10 +508,7 @@ export default function Navbar() {
           {isLoggedIn && xlmBalance !== null && (
             <XLMBalanceWidget balance={xlmBalance} />
           )}
-
-          {/* #198: Theme Toggle integrated for Desktop */}
           <ThemeToggle />
-
           <LanguageSelector />
           <NotificationPanel />
           <InstallButton />
@@ -509,7 +528,7 @@ export default function Navbar() {
           </a>
         </div>
 
-        {/* ── Mobile Actions ── */}
+        {/* ── Mobile Actions (Bell + Hamburger) ── */}
         <div className="flex items-center gap-2 md:hidden">
           <NotificationPanel />
           <HamburgerButton isOpen={drawerOpen} onClick={toggleDrawer} />

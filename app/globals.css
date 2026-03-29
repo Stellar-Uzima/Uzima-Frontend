@@ -256,7 +256,6 @@
   .text-pretty {
     text-wrap: pretty;
   }
-
 }
 
 @media (min-width: 768px) {
