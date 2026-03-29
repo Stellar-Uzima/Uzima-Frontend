@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { ErrorMessage } from "@/components/ui/ErrorMessage";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -83,11 +84,12 @@ export default function SignInPage() {
         </div>
 
         {/* Global Error Banner */}
-        {globalError && !forgotPasswordMode && (
-          <div className="mb-6 p-4 rounded-xl bg-red-50 text-red-600 flex items-start gap-3 text-sm border border-red-100" role="alert" aria-live="assertive">
-            <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-red-500" />
-            <span className="font-medium">{globalError}</span>
-          </div>
+        {!forgotPasswordMode && (
+          <ErrorMessage
+            message={globalError}
+            onDismiss={() => setGlobalError(null)}
+            className="mb-6"
+          />
         )}
 
         {forgotPasswordMode ? (
@@ -142,11 +144,12 @@ export default function SignInPage() {
                 aria-describedby={errors.email ? "email-error" : undefined}
                 className="w-full"
               />
-              {errors.email && (
-                <p id="email-error" className="text-sm text-red-500 mt-1" role="alert">
-                  {errors.email.message}
-                </p>
-              )}
+              <ErrorMessage
+                  id="email-error"
+                  message={errors.email?.message}
+                  size="sm"
+                  className="mt-1"
+                />
             </div>
 
             {/* Password Field */}
@@ -190,11 +193,12 @@ export default function SignInPage() {
                 </button>
               </div>
 
-              {errors.password && (
-                <p id="password-error" className="text-sm text-red-500 mt-1" role="alert">
-                  {errors.password.message}
-                </p>
-              )}
+              <ErrorMessage
+                  id="password-error"
+                  message={errors.password?.message}
+                  size="sm"
+                  className="mt-1"
+                />
             </div>
 
             {/* Submit Button */}
