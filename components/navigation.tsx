@@ -14,6 +14,7 @@ import LanguageSelector from "@/components/ui/LanguageSelector";
 import { InstallButton } from "@/components/pwa/InstallPrompt";
 import { NotificationPanel } from "@/components/notifications/NotificationPanel";
 import { usePwaInstall } from "@/hooks/usePwaInstall";
+import { ThemeToggle } from "./theme-toggle";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -22,7 +23,7 @@ interface NavLink {
   href: string;
 }
 
-interface ServiceLink extends NavLink { }
+interface ServiceLink extends NavLink {}
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -53,7 +54,7 @@ function XLMBalanceWidget({ balance }: { balance: number }) {
   return (
     <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-terra/10 border border-terra/20">
       <span className="text-terra text-xs font-semibold">★</span>
-      <span className="text-earth text-sm font-medium tabular-nums">
+      <span className="text-foreground text-sm font-medium tabular-nums">
         {balance.toLocaleString(undefined, {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
@@ -80,21 +81,24 @@ function HamburgerButton({
       aria-label={isOpen ? "Close menu" : "Open menu"}
       aria-expanded={isOpen}
       aria-controls="mobile-drawer"
-      className="relative flex items-center justify-center w-10 h-10 rounded-lg hover:bg-black/5 transition-colors focus:outline-none focus:ring-2 focus:ring-terra/30"
+      className="relative flex items-center justify-center w-10 h-10 rounded-lg hover:bg-foreground/5 transition-colors focus:outline-none focus:ring-2 focus:ring-terra/30"
     >
       <span className="sr-only">{isOpen ? "Close menu" : "Open menu"}</span>
       <span className="flex flex-col gap-1.5 w-5">
         <span
-          className={`block h-0.5 bg-black rounded-full transition-all duration-300 origin-center ${isOpen ? "rotate-45 translate-y-2" : ""
-            }`}
+          className={`block h-0.5 bg-foreground rounded-full transition-all duration-300 origin-center ${
+            isOpen ? "rotate-45 translate-y-2" : ""
+          }`}
         />
         <span
-          className={`block h-0.5 bg-black rounded-full transition-all duration-300 ${isOpen ? "opacity-0 scale-x-0" : ""
-            }`}
+          className={`block h-0.5 bg-foreground rounded-full transition-all duration-300 ${
+            isOpen ? "opacity-0 scale-x-0" : ""
+          }`}
         />
         <span
-          className={`block h-0.5 bg-black rounded-full transition-all duration-300 origin-center ${isOpen ? "-rotate-45 -translate-y-2" : ""
-            }`}
+          className={`block h-0.5 bg-foreground rounded-full transition-all duration-300 origin-center ${
+            isOpen ? "-rotate-45 -translate-y-2" : ""
+          }`}
         />
       </span>
     </button>
@@ -173,10 +177,11 @@ function MobileDrawer({
       <div
         aria-hidden="true"
         onClick={onClose}
-        className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity duration-300 md:hidden ${isOpen
-          ? "opacity-100 pointer-events-auto"
-          : "opacity-0 pointer-events-none"
-          }`}
+        className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
+          isOpen
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
+        }`}
       />
 
       <div
@@ -185,8 +190,9 @@ function MobileDrawer({
         role="dialog"
         aria-modal="true"
         aria-label="Navigation menu"
-        className={`fixed inset-0 z-50 flex flex-col bg-cream transition-transform duration-300 ease-in-out md:hidden overflow-hidden ${isOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+        className={`fixed inset-y-0 left-0 z-50 flex flex-col w-[280px] bg-background border-r border-border transition-transform duration-300 ease-in-out md:hidden overflow-hidden ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
         <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-terra/10">
           <Link
@@ -194,10 +200,10 @@ function MobileDrawer({
             onClick={onClose}
             className="flex items-center gap-2.5 no-underline"
           >
-            <div className="w-9 h-9 rounded-full bg-terra flex items-center justify-center text-gold text-sm font-semibold">
+            <div className="w-8 h-8 rounded-full bg-terra flex items-center justify-center text-gold text-xs font-semibold">
               ★
             </div>
-            <span className="font-serif font-bold text-earth text-xl tracking-tight">
+            <span className="font-serif font-bold text-foreground text-lg tracking-tight">
               Stellar Uzima
             </span>
           </Link>
@@ -207,11 +213,11 @@ function MobileDrawer({
             type="button"
             onClick={onClose}
             aria-label="Close menu"
-            className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-black/5 transition-colors focus:outline-none focus:ring-2 focus:ring-terra/30"
+            className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-foreground/5 transition-colors focus:outline-none focus:ring-2 focus:ring-terra/30"
           >
             <svg
-              width="20"
-              height="20"
+              width="18"
+              height="18"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -224,9 +230,9 @@ function MobileDrawer({
           </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-1">
+        <nav className="flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-1">
           {isLoggedIn && xlmBalance !== null && (
-            <div className="mb-4">
+            <div className="mb-4 px-2">
               <XLMBalanceWidget balance={xlmBalance} />
             </div>
           )}
@@ -241,22 +247,20 @@ function MobileDrawer({
                 key={link.href}
                 href={link.href}
                 onClick={onClose}
-                className={`flex items-center px-4 py-3.5 rounded-xl text-base font-medium transition-all duration-200
-                  ${isActive
-                    ? "bg-terra/10 text-terra font-semibold"
-                    : "text-earth hover:bg-terra/5 hover:text-terra"
+                className={`flex items-center px-4 py-3 rounded-xl text-base font-medium transition-all duration-200
+                  ${
+                    isActive
+                      ? "bg-terra/10 text-terra font-semibold"
+                      : "text-foreground hover:bg-terra/5 hover:text-terra"
                   }`}
               >
                 {link.label}
-                {isActive && (
-                  <span className="ml-auto w-1.5 h-1.5 rounded-full bg-terra" />
-                )}
               </a>
             );
           })}
 
-          <div className="mt-2">
-            <p className="px-4 py-2 text-xs font-semibold uppercase tracking-widest text-muted">
+          <div className="mt-4">
+            <p className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               Services
             </p>
             {SERVICE_LINKS.map((link) => (
@@ -264,10 +268,11 @@ function MobileDrawer({
                 key={link.href}
                 href={link.href}
                 onClick={onClose}
-                className={`flex items-center px-4 py-3.5 rounded-xl text-base font-medium transition-colors
-                  ${pathname === link.href
-                    ? "bg-terra/10 text-terra"
-                    : "text-earth hover:bg-terra/5 hover:text-terra"
+                className={`flex items-center px-4 py-3 rounded-xl text-base font-medium transition-colors
+                  ${
+                    pathname === link.href
+                      ? "bg-terra/10 text-terra"
+                      : "text-foreground hover:bg-terra/5 hover:text-terra"
                   }`}
               >
                 {link.label}
@@ -277,13 +282,20 @@ function MobileDrawer({
         </nav>
 
         <div className="shrink-0 px-6 py-6 border-t border-terra/10 flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-foreground">
+              Appearance
+            </span>
+            <ThemeToggle />
+          </div>
+
           {!isInstalled && deferredPrompt && (
             <button
               onClick={handleInstall}
               className="flex items-center gap-2 text-terra text-sm font-medium hover:opacity-80 transition-opacity w-fit"
             >
               <Download className="w-4 h-4" />
-              Install App for offline access
+              Install App
             </button>
           )}
 
@@ -294,7 +306,7 @@ function MobileDrawer({
               <Link
                 href="/signin"
                 onClick={onClose}
-                className="w-full text-center text-earth font-medium text-sm hover:text-terra transition-colors px-5 py-2 border border-earth/20 rounded-full"
+                className="w-full text-center text-foreground font-medium text-sm hover:text-terra transition-colors px-5 py-2.5 border border-border rounded-full"
               >
                 Sign In
               </Link>
@@ -343,7 +355,7 @@ export default function Navbar() {
         let maxRatio = 0;
         let dominantSection = "";
         entries.forEach((entry) => {
-          if (entry.intersectionRatio > maxRatio) {
+          if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
             maxRatio = entry.intersectionRatio;
             dominantSection = entry.target.id;
           }
@@ -410,13 +422,6 @@ export default function Navbar() {
   const closeDrawer = useCallback(() => setDrawerOpen(false), []);
   const toggleDrawer = useCallback(() => setDrawerOpen((prev) => !prev), []);
 
-  const isLinkActive = (href: string) => {
-    if (href.startsWith("#")) {
-      return `#${activeSection}` === href;
-    }
-    return pathname === href;
-  };
-
   return (
     <>
       <nav
@@ -425,14 +430,14 @@ export default function Navbar() {
           isScrolled
             ? "py-[0.95rem] md:py-[0.7rem] shadow-lg shadow-terra/5"
             : "py-[1.1rem] shadow-sm shadow-terra/0"
-          }`}
+        }`}
       >
         {/* ── Logo ── */}
         <Link href="/" className="flex items-center gap-2.5 no-underline">
           <div className="w-9 h-9 rounded-full bg-terra flex items-center justify-center text-gold text-sm font-semibold">
             ★
           </div>
-          <span className="font-serif font-bold text-earth text-xl tracking-tight">
+          <span className="font-serif font-bold text-foreground text-xl tracking-tight">
             Stellar Uzima
           </span>
         </Link>
@@ -440,13 +445,15 @@ export default function Navbar() {
         {/* ── Desktop nav links ── */}
         <ul className="hidden md:flex items-center gap-8 list-none">
           {NAV_LINKS.map((link) => {
-            const active = isLinkActive(link.href);
+            const active = link.href.startsWith("#")
+              ? `#${activeSection}` === link.href
+              : pathname === link.href;
             return (
               <li key={link.href}>
                 <a
                   href={link.href}
                   className={`relative no-underline text-sm font-medium transition-all duration-200
-                    ${active ? "text-terra" : "text-muted hover:text-terra"}`}
+                    ${active ? "text-terra" : "text-muted-foreground hover:text-terra"}`}
                 >
                   {link.label}
                   {active && (
@@ -460,7 +467,7 @@ export default function Navbar() {
           <li>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="no-underline text-muted text-sm font-medium hover:text-terra transition-colors cursor-pointer flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-terra/30 rounded">
+                <button className="no-underline text-muted-foreground text-sm font-medium hover:text-terra transition-colors cursor-pointer flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-terra/30 rounded">
                   Services
                   <svg
                     width="12"
@@ -478,14 +485,14 @@ export default function Navbar() {
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="end"
-                className="w-48 bg-white border border-terra/10 rounded-lg shadow-lg"
+                className="w-48 bg-card border border-border rounded-lg shadow-lg"
               >
                 {SERVICE_LINKS.map((link) => (
                   <DropdownMenuItem key={link.href} asChild>
                     <Link
                       href={link.href}
                       className={`flex items-center gap-2 px-4 py-2 text-sm cursor-pointer
-                        ${pathname === link.href ? "text-terra font-medium" : "text-earth hover:bg-terra/10"}`}
+                        ${pathname === link.href ? "text-terra font-medium" : "text-foreground hover:bg-accent"}`}
                     >
                       {link.label}
                     </Link>
@@ -501,14 +508,14 @@ export default function Navbar() {
           {isLoggedIn && xlmBalance !== null && (
             <XLMBalanceWidget balance={xlmBalance} />
           )}
+          <ThemeToggle />
           <LanguageSelector />
-          {/* NotificationPanel for Desktop */}
           <NotificationPanel />
           <InstallButton />
           {!isLoggedIn && (
             <Link
               href="/signin"
-              className="text-earth font-medium text-sm hover:text-terra transition-colors px-2"
+              className="text-foreground font-medium text-sm hover:text-terra transition-colors px-2"
             >
               Sign In
             </Link>
@@ -523,7 +530,6 @@ export default function Navbar() {
 
         {/* ── Mobile Actions (Bell + Hamburger) ── */}
         <div className="flex items-center gap-2 md:hidden">
-          {/* NotificationPanel for Mobile Only */}
           <NotificationPanel />
           <HamburgerButton isOpen={drawerOpen} onClick={toggleDrawer} />
         </div>
