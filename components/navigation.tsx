@@ -421,7 +421,8 @@ export default function Navbar() {
     <>
       <nav
         ref={navRef}
-        className={`fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-6 md:px-12 bg-cream/94 backdrop-blur-md border-b border-terra/10 transition-all duration-300 ease-out ${isScrolled
+        className={`fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-6 md:px-12 bg-cream/94 backdrop-blur-md border-b border-terra/10 transition-all duration-300 ease-out ${
+          isScrolled
             ? "py-[0.95rem] md:py-[0.7rem] shadow-lg shadow-terra/5"
             : "py-[1.1rem] shadow-sm shadow-terra/0"
           }`}
