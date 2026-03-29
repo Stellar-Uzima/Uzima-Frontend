@@ -8,6 +8,7 @@ export interface HealthTask {
   category: string;
   rewardXLM: number;
   status: HealthTaskStatus;
+  createdAt: string;
   whyItMatters: string;
   steps: {
     title: string;
@@ -16,7 +17,6 @@ export interface HealthTask {
   proofType: TaskProofType;
   isTraditional: boolean;
   culture?: string;
-  createdAt: string;
 }
 
 export const mockTasks: HealthTask[] = [
@@ -26,6 +26,7 @@ export const mockTasks: HealthTask[] = [
     category: "Nutrition",
     rewardXLM: 5,
     status: "available",
+    createdAt: "2026-01-15T10:00:00.000Z",
     whyItMatters: "Proper hydration supports all bodily functions and helps maintain energy levels throughout the day.",
     steps: [
       { title: "Track water intake", description: "Record glasses of water consumed" },
@@ -33,7 +34,6 @@ export const mockTasks: HealthTask[] = [
     ],
     proofType: "self-report",
     isTraditional: false,
-    createdAt: "2024-03-15T10:00:00Z",
   },
   {
     id: "neighbourhood-walk-photo",
@@ -41,6 +41,7 @@ export const mockTasks: HealthTask[] = [
     category: "Exercise",
     rewardXLM: 8,
     status: "available",
+    createdAt: "2026-02-01T14:30:00.000Z",
     whyItMatters: "Regular walking improves cardiovascular health and mental wellbeing.",
     steps: [
       { title: "Plan your route", description: "Choose a safe 20-minute walking path" },
@@ -48,7 +49,6 @@ export const mockTasks: HealthTask[] = [
     ],
     proofType: "photo",
     isTraditional: false,
-    createdAt: "2024-03-14T09:00:00Z",
   },
   {
     id: "traditional-remedy-log",
@@ -56,6 +56,7 @@ export const mockTasks: HealthTask[] = [
     category: "Traditional Medicine",
     rewardXLM: 10,
     status: "claimed",
+    createdAt: "2025-12-20T09:00:00.000Z",
     whyItMatters: "Documenting traditional remedies helps preserve cultural knowledge and track effectiveness.",
     steps: [
       { title: "Choose a remedy", description: "Select a traditional remedy you've used" },
@@ -64,7 +65,6 @@ export const mockTasks: HealthTask[] = [
     proofType: "self-report",
     isTraditional: true,
     culture: "East African",
-    createdAt: "2024-03-13T08:00:00Z",
   },
   {
     id: "meditation-session",

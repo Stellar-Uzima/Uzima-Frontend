@@ -21,6 +21,9 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { HealthTask } from "@/lib/mock/tasks";
+// --- ADDED THIS IMPORT ---
+import { BreadcrumbNav } from "@/components/ui/breadcrumb";
+import { ErrorMessage } from "@/components/ui/ErrorMessage";
 
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
 
@@ -137,6 +140,15 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
   return (
     <main className="min-h-screen bg-cream">
       <div className="pt-28 pb-16 px-4 sm:px-6">
+        <div className="max-w-4xl mx-auto space-y-6">
+          {/* --- REPLACED STATIC BUTTON WITH DYNAMIC BREADCRUMB --- */}
+          <BreadcrumbNav 
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Health Tasks", href: "/tasks" },
+              { label: task.title }, 
+            ]} 
+          />
         {/* Increased max-width to allow room for two-column desktop layout */}
         <div className="max-w-7xl mx-auto space-y-6">
           <button
@@ -314,11 +326,11 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                       />
                     </label>
 
-                    {uploadError && (
-                      <p className="text-xs font-medium text-red-600">
-                        {uploadError}
-                      </p>
-                    )}
+                    <ErrorMessage
+                      message={uploadError}
+                      onDismiss={() => setUploadError(null)}
+                      size="sm"
+                    />
 
                     {previewUrl && (
                       <div className="mt-2 flex">
@@ -374,24 +386,28 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                         <p className="text-[11px] text-earth/80">
                           Reward will appear in your balance shortly.
                         </p>
-                {previewUrl && (
-                  <div className="mt-2 flex">
-                    <div className="inline-flex flex-col items-center rounded-2xl border border-terra/15 bg-cream/90 p-3 sm:p-4">
-                      <div className="relative">
-                        <Image
-                          src={previewUrl}
-                          alt="Uploaded photographic proof for the task"
-                          width={96}
-                          height={96}
-                          unoptimized
-                          loading="lazy"
-                          className="h-20 w-20 sm:h-24 sm:w-24 rounded-xl object-cover border border-terra/20"
-                        />
-                        <div className="absolute -top-2 -left-2 flex h-7 w-7 items-center justify-center rounded-full bg-earth/90 text-cream shadow">
-                          <FileImage className="h-4 w-4" />
-                        </div>
                       </div>
                     </div>
+                    {previewUrl && (
+                      <div className="mt-2 flex">
+                        <div className="inline-flex flex-col items-center rounded-2xl border border-terra/15 bg-cream/90 p-3 sm:p-4">
+                          <div className="relative">
+                            <Image
+                              src={previewUrl}
+                              alt="Uploaded photographic proof for the task"
+                              width={96}
+                              height={96}
+                              unoptimized
+                              loading="lazy"
+                              className="h-20 w-20 sm:h-24 sm:w-24 rounded-xl object-cover border border-terra/20"
+                            />
+                            <div className="absolute -top-2 -left-2 flex h-7 w-7 items-center justify-center rounded-full bg-earth/90 text-cream shadow">
+                              <FileImage className="h-4 w-4" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                     <Button
                       type="button"
                       size="sm"

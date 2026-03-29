@@ -2,6 +2,7 @@
 
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { MapPin, CheckCircle2 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -146,7 +147,12 @@ export const HealerCard = memo(function HealerCard({
 
         <div className="flex-1 space-y-1">
           <div className="flex items-center gap-2 min-w-0">
-            <h2 className="text-sm font-semibold text-earth truncate">{healer.name}</h2>
+            <Link
+              href={`/healers/${healer.id}`}
+              className="truncate text-sm font-semibold text-earth transition-colors hover:text-terra"
+            >
+              {healer.name}
+            </Link>
           </div>
 
           <div className="flex items-center gap-2 text-xs text-muted">
@@ -208,13 +214,23 @@ export const HealerCard = memo(function HealerCard({
           </TooltipContent>
         </Tooltip>
 
-        <Button
-          size="sm"
-          className="rounded-full bg-terra text-xs font-semibold text-white hover:bg-earth whitespace-nowrap"
-          onClick={handleBook}
-        >
-          Book session
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            asChild
+            size="sm"
+            variant="outline"
+            className="rounded-full border-terra/20 bg-white text-xs font-semibold text-terra hover:bg-terra/5"
+          >
+            <Link href={`/healers/${healer.id}`}>View profile</Link>
+          </Button>
+          <Button
+            size="sm"
+            className="rounded-full bg-terra text-xs font-semibold text-white hover:bg-earth whitespace-nowrap"
+            onClick={handleBook}
+          >
+            Book session
+          </Button>
+        </div>
       </div>
     </article>
   );

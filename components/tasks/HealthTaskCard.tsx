@@ -1,37 +1,30 @@
 "use client";
 
 import * as React from "react";
-import Image from 'next/image';
+import Image from "next/image";
 import { Check, Loader2, Sparkles, ArrowRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
 export type HealthTaskStatus = "available" | "completed" | "claimed";
 
 export interface HealthTaskCardProps {
+  taskId: string;
   title: string;
   reward: number;
   category: string;
   status: HealthTaskStatus;
   icon: string;
+  isBookmarked?: boolean;
+  onToggleBookmark?: (taskId: string) => void;
   onClaim?: () => void;
   className?: string;
 }
 
-// ---------------------------------------------------------------------------
-// Animation state machine
-// ---------------------------------------------------------------------------
 type AnimState = "idle" | "loading" | "animating" | "done";
 
-// ---------------------------------------------------------------------------
-// Confetti particle config (Unchanged)
-// ---------------------------------------------------------------------------
 const PARTICLE_COUNT = 10;
 const PARTICLES = Array.from({ length: PARTICLE_COUNT }, (_, i) => {
   const angle = (360 / PARTICLE_COUNT) * i;
@@ -68,7 +61,7 @@ function getCategoryColor(category: string): string {
   return CATEGORY_COLORS[category] ?? "bg-[#8A6040]/10 text-[#8A6040]";
 }
 
-export function HealthTaskCard({
+export const HealthTaskCard = React.memo(function HealthTaskCard({
   title,
   reward,
   category,
@@ -76,6 +69,9 @@ export function HealthTaskCard({
   icon,
   onClaim,
   className,
+  taskId,
+  isBookmarked = false,
+  onToggleBookmark,
 }: HealthTaskCardProps) {
   const [animState, setAnimState] = React.useState<AnimState>("idle");
   const hasAnimated = React.useRef(false);
@@ -122,14 +118,11 @@ export function HealthTaskCard({
       data-slot="health-task-card"
       data-status={displayStatus}
       className={cn(
-        // BASE TRANSITION (200ms ease-out)
         "group relative flex flex-col rounded-2xl border bg-[#FFFDF5] p-5 transition-all duration-200 ease-out",
 
         isAvailable && [
           "border-[#E8D4C0] shadow-sm cursor-pointer",
-          // #178: Card Lift (-3px) & Soft Shadow
           "hover:border-[#C05A2B]/40 hover:shadow-md hover:-translate-y-[3px]",
-          // #178: Active press down (+1px)
           "active:translate-y-[1px] active:shadow-sm",
         ],
         isCompleted && "border-[#C05A2B]/40 bg-[#C05A2B]/[0.03]",
@@ -140,7 +133,6 @@ export function HealthTaskCard({
         className,
       )}
     >
-      {/* ── Confetti Particles (Unchanged) ── */}
       {isAnimating && (
         <span
           aria-hidden="true"
@@ -166,7 +158,6 @@ export function HealthTaskCard({
       )}
 
       <div className="flex items-start gap-4">
-        {/* Icon */}
         <div
           className={cn(
             "relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-2xl transition-colors",
@@ -176,15 +167,15 @@ export function HealthTaskCard({
           )}
         >
           {isImageIcon ? (
-            <Image 
-              src={icon} 
-              alt={`${title} task category icon`} 
+            <Image
+              src={icon}
+              alt={`${title} task category icon`}
               width={28}
               height={28}
-              unoptimized={icon.startsWith('http')}
+              unoptimized={icon.startsWith("http")}
               loading="lazy"
-              className="h-7 w-7 object-contain" 
-              aria-hidden="true" 
+              className="h-7 w-7 object-contain"
+              aria-hidden="true"
             />
           ) : (
             <span aria-hidden="true">{icon}</span>
@@ -203,7 +194,6 @@ export function HealthTaskCard({
           )}
         </div>
 
-        {/* Title & category */}
         <div className="min-w-0 flex-1">
           <h3
             className={cn(
@@ -223,9 +213,7 @@ export function HealthTaskCard({
           </span>
         </div>
 
-        {/* Right Section: Reward & Arrow */}
         <div className="flex flex-col items-end gap-2 shrink-0">
-          {/* #178: Reward badge scales (1.05) on card hover */}
           <Badge
             className={cn(
               "gap-1 rounded-full border-0 px-3 py-1 text-xs font-bold tabular-nums transition-all duration-200 ease-out",
@@ -240,7 +228,6 @@ export function HealthTaskCard({
             {reward} XLM
           </Badge>
 
-          {/* #178: Arrow indicator appears on hover */}
           {isAvailable && (
             <ArrowRight className="h-4 w-4 text-[#C05A2B] opacity-0 -translate-x-1 transition-all duration-200 ease-out group-hover:opacity-100 group-hover:translate-x-0" />
           )}
@@ -299,4 +286,4 @@ export function HealthTaskCard({
       </div>
     </div>
   );
-}
+});
