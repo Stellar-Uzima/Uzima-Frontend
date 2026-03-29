@@ -1,5 +1,7 @@
-import dynamic from "next/dynamic";
+"use client";
 
+import dynamic from "next/dynamic";
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import {
@@ -8,12 +10,17 @@ import {
   healerSpecialties,
   mockHealers,
 } from "@/lib/mock/healers";
-import { Suspense } from "react";
+import Spinner from "@/components/Spinner";
 
 const HealersDirectory = dynamic(
-  () => import("@/components/healers/HealersDirectory").then((mod) => mod.HealersDirectory),
+  () =>
+    import("@/components/healers/HealersDirectory").then(
+      (mod) => mod.HealersDirectory,
+    ),
   {
-    loading: () => <div className="min-h-[420px] bg-cream" aria-hidden="true" />,
+    loading: () => (
+      <div className="min-h-[420px] bg-cream" aria-hidden="true" />
+    ),
   },
 );
 
@@ -25,30 +32,50 @@ export async function generateMetadata() {
   };
 }
 
-// Fallback skeleton while Suspense handles searchParams hook on the client
 function HealersDirectoryFallback() {
   return (
     <div className="min-h-screen pt-28 pb-20 bg-cream flex items-center justify-center">
       <div className="animate-pulse flex flex-col items-center">
-        <div className="h-8 w-8 rounded-full border-2 border-terra border-t-transparent animate-spin"></div>
-        <p className="mt-4 text-terra font-semibold tracking-widest uppercase text-xs">Loading Directory...</p>
+        <div className="h-8 w-8 rounded-full border-2 border-terra border-t-transparent animate-spin" />
+        <p className="mt-4 text-terra font-semibold tracking-widest uppercase text-xs">
+          Loading Directory...
+        </p>
       </div>
     </div>
   );
 }
 
 export default function HealersPage() {
+  const {
+    items: healers,
+    loading,
+    hasMore,
+  } = useInfiniteScroll(
+    async (page: number) => {
+      // In production, replace with API call:
+      // const res = await fetch(`/api/healers?page=${page}&limit=12`);
+      // return res.json();
+      const start = (page - 1) * 12;
+      const end = start + 12;
+      return mockHealers.slice(start, end);
+    },
+    1,
+    12,
+  );
+
   return (
     <>
       <Navigation />
-      <Suspense fallback={<HealersDirectoryFallback />}>
-        <HealersDirectory
-          healers={mockHealers}
-          specialties={healerSpecialties}
-          regions={healerRegions}
-          languages={healerLanguages}
-        />
-      </Suspense>
+      <HealersDirectory
+        healers={healers}
+        specialties={healerSpecialties}
+        regions={healerRegions}
+        languages={healerLanguages}
+      />
+      {loading && <Spinner />}
+      {!hasMore && (
+        <p className="text-center mt-4 text-gray-600">All healers loaded</p>
+      )}
       <Footer />
     </>
   );
