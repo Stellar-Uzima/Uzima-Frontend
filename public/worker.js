@@ -1,30 +1,21 @@
-/// <reference lib="webworker" />
-
-declare const self: ServiceWorkerGlobalScope;
-const APP_VERSION = "2.0.3"; //update this value to trigger the update banner for testing
-//update this value to trigger the update banner for testing
-const UPDATE_VERSION = "2.0.1";
-
-export {};
-
-self.addEventListener('install', (event: ExtendableEvent) => {
+self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(self.skipWaiting());
 });
 
-self.addEventListener('activate', (event: ExtendableEvent) => {
+self.addEventListener('activate', (event) => {
   event.waitUntil(self.clients.claim());
 });
 
-self.addEventListener('message', (event: ExtendableMessageEvent) => {
+self.addEventListener('message', (event) => {
   if (event.data?.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
 });
 
-self.addEventListener('push', (event: PushEvent) => {
+self.addEventListener('push', (event) => {
   const handlePush = async () => {
-    let data: { type?: string; title?: string; body?: string; url?: string } = {};
+    let data = {};
 
     try {
       data = event.data?.json() ?? {};
@@ -56,17 +47,16 @@ self.addEventListener('push', (event: PushEvent) => {
   event.waitUntil(handlePush());
 });
 
-self.addEventListener('notificationclick', (event: NotificationEvent) => {
+self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  const url: string = event.notification.data?.url ?? '/dashboard';
+  const url = event.notification.data?.url ?? '/dashboard';
 
   const handleClick = async () => {
     const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
-
     for (const client of clients) {
       if ('navigate' in client) {
-        await (client as WindowClient).navigate(url);
+        await client.navigate(url);
         await client.focus();
         return;
       }

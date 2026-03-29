@@ -22,18 +22,43 @@ const NotificationPanelContent: React.FC = () => {
   const togglePanel = () => setOpen(!open);
 
   return (
-    <>
-      {/* TRIGGER BUTTON: Stays inside the Navbar (z-30) */}
-      <button 
-        onClick={togglePanel}
-        className="relative p-2 focus:outline-none focus:ring-2 focus:ring-terra/30 rounded-lg" 
-        aria-label="Open Notifications"
-      >
-        <span className="text-xl">🔔</span>
-        {unreadCount > 0 && (
-          <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold border-2 border-cream">
-            {unreadCount > 9 ? '9+' : unreadCount}
-          </span>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button aria-label="Notifications" className="relative">
+          🔔
+          {unreadCount > 0 && (
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+          )}
+        </button>
+      </PopoverTrigger>
+
+      <PopoverContent className="w-80 max-h-[400px] overflow-auto bg-white shadow-lg rounded-md p-2">
+        <div className="flex justify-between items-center px-2 py-1 font-semibold">
+          <span>Notifications</span>
+          {unreadCount > 0 && (
+            <button onClick={markAllAsRead} className="text-blue-500 text-sm">Mark all as read</button>
+          )}
+        </div>
+        <div>
+          {notifications.length === 0 ? (
+            <div className="p-4 text-center text-gray-400">No notifications yet</div>
+          ) : (
+            notifications.slice(0, 10).map(n => (
+              <NotificationItem
+                key={n.id}
+                notification={n}
+                onClick={() => markAsRead(n.id)}
+                onDelete={() => deleteNotification(n.id)}
+              />
+            ))
+          )}
+        </div>
+        {notifications.length > 0 && (
+          <div className="p-2 text-center">
+            <Link href="/notifications" className="text-blue-500 text-sm">View all</Link>
+          </div>
         )}
       </button>
 

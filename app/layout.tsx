@@ -1,10 +1,13 @@
-import type { Metadata } from "next";
-import { Analytics } from "@vercel/analytics/next";
-import "./globals.css";
-import Footer from "../components/footer";
-import { OfflineBanner } from "@/components/pwa/OfflineBanner";
-import { InstallPrompt } from "@/components/pwa/InstallPrompt";
-import { Providers } from "@/providers/providers";
+import type { Metadata } from 'next'
+import { Analytics } from '@vercel/analytics/next'
+import './globals.css'
+import Footer from '../components/footer';
+import { OfflineBanner } from '@/components/pwa/OfflineBanner';
+import { InstallPrompt } from '@/components/pwa/InstallPrompt';
+import { UpdateBanner } from '@/components/ui/UpdateBanner';
+import ServiceWorkerProvider from '@/components/ServiceWorkerProvider';
+import { Providers } from '@/providers/providers';
+
 
 export const metadata: Metadata = {
   title: "Stellar Uzima — Your Health. Your Wealth. Your Community.",
@@ -67,11 +70,11 @@ export default function RootLayout({
           }}
         />
       </head>
-      {/* 
-          FIX: Added 'bg-background' and 'text-foreground'. 
-          This ensures the body actually uses the colors defined in globals.css 
-      */}
-      <body className="min-h-screen bg-background text-foreground font-sans antialiased transition-colors duration-300 ease-in-out">
+      <body
+        className={`${playfair.variable} ${dmSans.variable} ${fraunces.variable} font-sans antialiased`}
+      >
+        <UpdateBanner />
+        <ServiceWorkerProvider />
         <Providers>
           <OfflineBanner />
           <div className="offline-banner-offset">
