@@ -8,6 +8,7 @@ export interface HealthTask {
   category: string;
   rewardXLM: number;
   status: HealthTaskStatus;
+  createdAt: string;
   whyItMatters: string;
   steps: {
     title: string;
@@ -25,6 +26,7 @@ export const mockTasks: HealthTask[] = [
     category: "Nutrition",
     rewardXLM: 5,
     status: "available", // ADDED
+    createdAt: "2026-01-15T10:00:00.000Z",
     whyItMatters: "...",
     steps: [/* ... */],
     proofType: "self-report",
@@ -36,6 +38,7 @@ export const mockTasks: HealthTask[] = [
     category: "Exercise",
     rewardXLM: 8,
     status: "available", // ADDED
+    createdAt: "2026-02-01T14:30:00.000Z",
     whyItMatters: "...",
     steps: [/* ... */],
     proofType: "photo",
@@ -47,6 +50,7 @@ export const mockTasks: HealthTask[] = [
     category: "Traditional Medicine",
     rewardXLM: 10,
     status: "claimed", // ADDED (as an example)
+    createdAt: "2025-12-20T09:00:00.000Z",
     whyItMatters: "...",
     steps: [/* ... */],
     proofType: "self-report",
