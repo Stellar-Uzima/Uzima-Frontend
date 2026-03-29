@@ -4,6 +4,8 @@ import dynamic from "next/dynamic";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
+// ISSUE #179: Import the reusable BreadcrumbNav component
+import { BreadcrumbNav } from "@/components/ui/breadcrumb";
 import {
   healerLanguages,
   healerRegions,
@@ -66,6 +68,25 @@ export default function HealersPage() {
   return (
     <>
       <Navigation />
+      {/* ISSUE #179: Breadcrumb navigation for the Healers Directory */}
+      <main className="bg-cream pt-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
+          <BreadcrumbNav 
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Healers" },
+            ]} 
+          />
+        </div>
+
+        <HealersDirectory
+          healers={mockHealers}
+          specialties={healerSpecialties}
+          regions={healerRegions}
+          languages={healerLanguages}
+        />
+      </main>
+
       <HealersDirectory
         healers={healers}
         specialties={healerSpecialties}
