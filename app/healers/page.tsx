@@ -32,9 +32,25 @@ export async function generateMetadata() {
   };
 }
 
+function HealersDirectoryFallback() {
+  return (
+    <div className="min-h-screen pt-28 pb-20 bg-cream flex items-center justify-center">
+      <div className="animate-pulse flex flex-col items-center">
+        <div className="h-8 w-8 rounded-full border-2 border-terra border-t-transparent animate-spin" />
+        <p className="mt-4 text-terra font-semibold tracking-widest uppercase text-xs">
+          Loading Directory...
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function HealersPage() {
-  // Infinite scroll hook: loads 12 healers per batch
-  const { items: healers, loading, hasMore } = useInfiniteScroll(
+  const {
+    items: healers,
+    loading,
+    hasMore,
+  } = useInfiniteScroll(
     async (page: number) => {
       // In production, replace with API call:
       // const res = await fetch(`/api/healers?page=${page}&limit=12`);
