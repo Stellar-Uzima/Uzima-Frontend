@@ -1,6 +1,28 @@
-const sw = self as unknown as ServiceWorkerGlobalScope;
+/// <reference lib="webworker" />
 
-sw.addEventListener('push', (event) => {
+declare const self: ServiceWorkerGlobalScope;
+const APP_VERSION = "2.0.3"; //update this value to trigger the update banner for testing
+//update this value to trigger the update banner for testing
+const UPDATE_VERSION = "2.0.1";
+
+export {};
+
+self.addEventListener('install', (event: ExtendableEvent) => {
+  self.skipWaiting();
+  event.waitUntil(self.skipWaiting());
+});
+
+self.addEventListener('activate', (event: ExtendableEvent) => {
+  event.waitUntil(self.clients.claim());
+});
+
+self.addEventListener('message', (event: ExtendableMessageEvent) => {
+  if (event.data?.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
+self.addEventListener('push', (event: PushEvent) => {
   const handlePush = async () => {
     let data: { type?: string; title?: string; body?: string; url?: string } = {};
 
@@ -22,7 +44,7 @@ sw.addEventListener('push', (event) => {
 
     const notificationUrl = url ?? mappedUrl;
 
-    await sw.registration.showNotification(title, {
+    await self.registration.showNotification(title, {
       body,
       icon: '/icon-192x192.png',
       badge: '/icon-192x192.png',
@@ -34,13 +56,13 @@ sw.addEventListener('push', (event) => {
   event.waitUntil(handlePush());
 });
 
-sw.addEventListener('notificationclick', (event) => {
+self.addEventListener('notificationclick', (event: NotificationEvent) => {
   event.notification.close();
 
   const url: string = event.notification.data?.url ?? '/dashboard';
 
   const handleClick = async () => {
-    const clients = await sw.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
 
     for (const client of clients) {
       if ('navigate' in client) {
@@ -50,7 +72,7 @@ sw.addEventListener('notificationclick', (event) => {
       }
     }
 
-    await sw.clients.openWindow(url);
+    await self.clients.openWindow(url);
   };
 
   event.waitUntil(handleClick());

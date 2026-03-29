@@ -4,12 +4,14 @@ import withPWAInit from "@ducanh2912/next-pwa";
 
 const withPWA = withPWAInit({
   dest: "public",
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === "development",
+  customWorkerSrc: "sw.js",
   cacheOnFrontEndNav: true,
   aggressiveFrontEndNavCaching: true,
   reloadOnOnline: true,
   swcMinify: true,
-  disable: false,
-  customWorkerSrc: "worker",
   workboxOptions: {
     disableDevLogs: true,
   },
@@ -53,6 +55,9 @@ class BuildStatsPlugin {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    turbopack: {}, // Silences the warning/error
+  },
   typescript: {
     ignoreBuildErrors: false,
   },
@@ -61,6 +66,10 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "flagcdn.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images.pexels.com",
       },
     ],
   },
