@@ -5,6 +5,8 @@ import './globals.css'
 import Footer from '../components/footer';
 import { OfflineBanner } from '@/components/pwa/OfflineBanner';
 import { InstallPrompt } from '@/components/pwa/InstallPrompt';
+import { UpdateBanner } from '@/components/ui/UpdateBanner';
+import ServiceWorkerProvider from '@/components/ServiceWorkerProvider';
 import { Providers } from '@/providers/providers';
 
 const playfair = Playfair_Display({
@@ -60,7 +62,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="theme-color" content="#B84E20" />
         <meta name="mobile-web-app-capable" content="yes" />
@@ -69,13 +71,17 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Stellar Uzima" />
         <link rel="apple-touch-icon" href="/apple-icon.png" />
       </head>
-      <body className={`${playfair.variable} ${dmSans.variable} ${fraunces.variable} font-sans antialiased`}>
+      <body
+        className={`${playfair.variable} ${dmSans.variable} ${fraunces.variable} font-sans antialiased`}
+      >
+        <UpdateBanner />
+        <ServiceWorkerProvider />
         <Providers>
           <OfflineBanner />
           {children}
           <InstallPrompt />
           <Analytics />
-          <Footer/>
+          <Footer />
         </Providers>
       </body>
     </html>

@@ -2,7 +2,7 @@
 
 export default function HeroSection() {
   return (
-    <section className="min-h-screen pt-20 px-6 sm:px-12 md:px-16 lg:px-20 py-16 sm:py-20 md:py-28 relative overflow-hidden bg-cream">
+    <section className="min-h-screen px-6 sm:px-12 md:px-16 lg:px-20 py-16 sm:py-20 md:py-28 relative overflow-hidden bg-cream">
       {/* Decorative gradient orbs */}
       <div className="absolute top-1/4 right-0 w-1/2 h-4/5 pointer-events-none"
         style={{
