@@ -10,38 +10,39 @@ import { Providers } from '@/providers/providers';
 
 
 export const metadata: Metadata = {
-  title: 'Stellar Uzima — Your Health. Your Wealth. Your Community.',
-  description: 'Earn, learn, and grow with Stellar Uzima. Transform your health, wealth, and community with blockchain-powered rewards.',
-  generator: 'v0.app',
-  manifest: '/manifest.json',
+  title: "Stellar Uzima — Your Health. Your Wealth. Your Community.",
+  description:
+    "Earn, learn, and grow with Stellar Uzima. Transform your health, wealth, and community with blockchain-powered rewards.",
+  generator: "v0.app",
+  manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'default',
-    title: 'Stellar Uzima',
+    statusBarStyle: "default",
+    title: "Stellar Uzima",
   },
   icons: {
     icon: [
       {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
+        url: "/icon-light-32x32.png",
+        media: "(prefers-color-scheme: light)",
       },
       {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
+        url: "/icon-dark-32x32.png",
+        media: "(prefers-color-scheme: dark)",
       },
       {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
+        url: "/icon.svg",
+        type: "image/svg+xml",
       },
     ],
-    apple: '/apple-icon.png',
+    apple: "/apple-icon.png",
   },
-}
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -52,6 +53,22 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Stellar Uzima" />
         <link rel="apple-touch-icon" href="/apple-icon.png" />
+
+        {/* --- #198: Anti-Flash Theme Script --- */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                let theme = localStorage.getItem('theme');
+                let supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+                if (!theme && supportDarkMode) theme = 'dark';
+                if (!theme) theme = 'light';
+                document.documentElement.classList.remove('light', 'dark');
+                document.documentElement.classList.add(theme);
+              } catch (e) {}
+            `,
+          }}
+        />
       </head>
       <body
         className={`${playfair.variable} ${dmSans.variable} ${fraunces.variable} font-sans antialiased`}
@@ -70,5 +87,5 @@ export default function RootLayout({
         </Providers>
       </body>
     </html>
-  )
+  );
 }

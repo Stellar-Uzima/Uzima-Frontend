@@ -5,10 +5,11 @@ import { createPortal } from 'react-dom';
 import { useNotificationContext } from '../../context/NotificationContext';
 import { NotificationItem } from './NotificationItem';
 import { PushNotificationSetup } from './PushNotificationSetup';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { X } from 'lucide-react'; 
 import Link from 'next/link';
 
-export const NotificationPanel: React.FC = () => {
+const NotificationPanelContent: React.FC = () => {
   const { notifications, unreadCount, markAsRead, markAllAsRead, deleteNotification } = useNotificationContext();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -150,3 +151,9 @@ export const NotificationPanel: React.FC = () => {
     </>
   );
 };
+
+export const NotificationPanel: React.FC = () => (
+  <ErrorBoundary componentName="NotificationPanel">
+    <NotificationPanelContent />
+  </ErrorBoundary>
+);

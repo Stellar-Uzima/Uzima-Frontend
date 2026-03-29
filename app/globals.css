@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 :root {
-  /* Stellar Uzima Brand Colors */
+  /* Stellar Uzima Brand Colors (Light Mode Defaults) */
   --earth: #2e1503;
   --terra: #b84e20;
   --amber: #e08b2e;
@@ -22,23 +22,24 @@
   --navbar-height: 0px;
 
   /* Design Token Aliases */
-  --background: #fdf5e8;
-  --foreground: #2e1503;
-  --card: #fffdf5;
-  --card-foreground: #2e1503;
-  --popover: #fffdf5;
-  --popover-foreground: #2e1503;
-  --primary: #b84e20;
-  --primary-foreground: #fffdf5;
-  --secondary: #5a7a4a;
-  --secondary-foreground: #fffdf5;
-  --muted: #8a6040;
-  --muted-foreground: #8a6040;
-  --accent: #e08b2e;
-  --accent-foreground: #fffdf5;
-  --destructive: #b84e20;
-  --destructive-foreground: #fffdf5;
+  --background: var(--cream);
+  --foreground: var(--earth);
+  --card: var(--white);
+  --card-foreground: var(--earth);
+  --popover: var(--white);
+  --popover-foreground: var(--earth);
+  --primary: var(--terra);
+  --primary-foreground: var(--white);
+  --secondary: var(--sage);
+  --secondary-foreground: var(--white);
+  --muted-foreground: var(--muted);
+  --accent: var(--amber);
+  --accent-foreground: var(--white);
+  --destructive: var(--terra);
+  --destructive-foreground: var(--white);
   --border: #e8d4c0;
+  --input: var(--white);
+  --ring: var(--terra);
   --input: #fffdf5;
   --ring: #b84e20;
   --navbar-height: 80px;
@@ -46,20 +47,28 @@
 }
 
 .dark {
-  --background: #1a0d05;
-  --foreground: #fdf5e8;
+  /* DYNAMIC BRAND SWAP: 
+     By redefining these here, any component using 'bg-cream' 
+     will automatically turn dark! 
+  */
+  --cream: #1a0d05; /* Cream becomes the dark background */
+  --earth: #fdf5e8; /* Earth becomes the light text */
+  --white: #2a1508; /* White surfaces become dark card surfaces */
+  
+  --background: var(--cream);
+  --foreground: var(--earth);
 
-  --card: #2a1508;
-  --card-foreground: #fdf5e8;
+  --card: var(--white);
+  --card-foreground: var(--earth);
 
-  --popover: #2a1508;
-  --popover-foreground: #fdf5e8;
+  --popover: var(--white);
+  --popover-foreground: var(--earth);
 
-  --primary: #e07040;
+  --primary: #e07040; /* Brighter Terra for dark mode contrast */
   --primary-foreground: #1a0d05;
 
-  --secondary: #5a7a4a;
-  --secondary-foreground: #fdf5e8;
+  --secondary: var(--sage);
+  --secondary-foreground: var(--earth);
 
   --muted: #3a1e0a;
   --muted-foreground: #c4956a;
@@ -67,11 +76,8 @@
   --accent: #e07040;
   --accent-foreground: #1a0d05;
 
-  --destructive: #e07040;
-  --destructive-foreground: #fdf5e8;
-
   --border: #3a1e0a;
-  --input: #2a1508;
+  --input: var(--white);
   --ring: #e07040;
 }
 
@@ -81,15 +87,12 @@
   0% {
     transform: translateX(0);
   }
-
   30% {
     transform: translateX(4px);
   }
-
   60% {
     transform: translateX(-2px);
   }
-
   100% {
     transform: translateX(0);
   }
@@ -100,12 +103,10 @@
     transform: scale(1);
     box-shadow: 0 0 0 0 rgba(240, 192, 80, 0);
   }
-
   40% {
     transform: scale(1.2);
     box-shadow: 0 0 8px 4px rgba(240, 192, 80, 0.45);
   }
-
   100% {
     transform: scale(1);
     box-shadow: 0 0 0 0 rgba(240, 192, 80, 0);
@@ -117,12 +118,10 @@
     transform: scale(0) rotate(-15deg);
     opacity: 0;
   }
-
   60% {
     transform: scale(1.15) rotate(4deg);
     opacity: 1;
   }
-
   100% {
     transform: scale(1) rotate(0deg);
     opacity: 1;
@@ -134,38 +133,45 @@
     transform: translate(0, 0) scale(1);
     opacity: 1;
   }
-
   100% {
     transform: var(--dx, 40px) var(--dy, -60px) scale(0.3);
     opacity: 0;
   }
 }
 
-@keyframes task-card-fade-complete {
-  from {
-    opacity: 1;
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* --- #198: Smooth border and outline transitions --- */
+    @apply border-border outline-ring/50 transition-colors duration-300 ease-in-out;
   }
 
-  to {
-    opacity: 1;
+  html {
+    scroll-behavior: smooth;
+    /* --- #198: Root transition for background-color variable --- */
+    @apply transition-colors duration-300 ease-in-out;
   }
 
-  /* card stays visible; border/style handled by class swap */
+  body {
+    /* --- #198: Global background and text transitions --- */
+    @apply bg-background text-foreground font-sans transition-colors duration-300 ease-in-out;
+    overflow-x: hidden;
+  }
 }
 
 @layer utilities {
   .animate-task-ping {
     animation: task-ping 0.35s ease-in-out forwards;
   }
-
   .animate-task-badge-pulse {
     animation: task-badge-pulse 0.55s ease-in-out forwards;
   }
-
   .animate-task-check-pop {
-    animation: task-check-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    animation: task-check-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)
+      forwards;
   }
-
   .animate-task-confetti {
     animation: task-confetti-burst 0.7s ease-out forwards;
   }
@@ -198,11 +204,9 @@
   .text-balance {
     text-wrap: balance;
   }
-
   .text-pretty {
     text-wrap: pretty;
   }
-
 }
 
 @media (min-width: 768px) {
@@ -212,52 +216,14 @@
 }
 
 @keyframes flameFlicker {
-
   0%,
   100% {
     transform: translateY(0) scale(1);
     filter: drop-shadow(0 6px 8px rgba(176, 78, 32, 0.35));
   }
-
   50% {
     transform: translateY(-2px) scale(1.03);
     filter: drop-shadow(0 10px 14px rgba(240, 192, 80, 0.45));
-  }
-}
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeRight {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes float {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-6px);
   }
 }
 
@@ -266,7 +232,6 @@
     opacity: 0;
     transform: translateY(30px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -278,7 +243,6 @@
     opacity: 0;
     transform: translateX(-30px);
   }
-
   to {
     opacity: 1;
     transform: translateX(0);
@@ -290,7 +254,6 @@
     opacity: 0;
     transform: scale(0.95);
   }
-
   to {
     opacity: 1;
     transform: scale(1);
@@ -301,62 +264,47 @@
   .animate-slideUp {
     animation: slideUp 0.6s ease-out forwards;
   }
-
   .animate-slideInLeft {
     animation: slideInLeft 0.6s ease-out forwards;
   }
-
   .animate-scaleIn {
     animation: scaleIn 0.6s ease-out forwards;
   }
-
   .stagger-1 {
     animation-delay: 0.1s;
   }
-
   .stagger-2 {
     animation-delay: 0.2s;
   }
-
   .stagger-3 {
     animation-delay: 0.3s;
   }
-
   .stagger-4 {
     animation-delay: 0.4s;
   }
-
   .stagger-5 {
     animation-delay: 0.5s;
   }
-
   .animate-flicker {
     animation: flameFlicker 1.5s ease-in-out infinite;
   }
 }
 
-@keyframes confettiFall {
-  0% {
-    transform: translateY(-100vh) rotate(0deg);
-    opacity: 0;
-  }
-
-  10% {
-    opacity: 1;
-  }
-
-  100% {
-    transform: translateY(110vh) rotate(720deg);
-    opacity: 0.9;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
+  /* --- #198: Disable theme and micro-animations for accessibility --- */
+  *,
+  html,
+  body {
+    transition: none !important;
+    animation: none !important;
+  }
 
   .animate-flicker,
   .animate-slideUp,
   .animate-slideInLeft,
-  .animate-scaleIn {
+  .animate-scaleIn,
+  .animate-task-ping,
+  .animate-task-badge-pulse {
     animation: none !important;
   }
   .stagger-1 {
