@@ -21,6 +21,8 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { HealthTask } from "@/lib/mock/tasks";
+// --- ADDED THIS IMPORT ---
+import { BreadcrumbNav } from "@/components/ui/breadcrumb";
 
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
 
@@ -137,6 +139,15 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
   return (
     <main className="min-h-screen bg-cream">
       <div className="pt-28 pb-16 px-4 sm:px-6">
+        <div className="max-w-4xl mx-auto space-y-6">
+          {/* --- REPLACED STATIC BUTTON WITH DYNAMIC BREADCRUMB --- */}
+          <BreadcrumbNav 
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Health Tasks", href: "/tasks" },
+              { label: task.title }, 
+            ]} 
+          />
         {/* Increased max-width to allow room for two-column desktop layout */}
         <div className="max-w-7xl mx-auto space-y-6">
           <button

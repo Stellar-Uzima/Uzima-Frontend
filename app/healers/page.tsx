@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
+import { BreadcrumbNav } from "@/components/ui/breadcrumb";
 import {
   healerLanguages,
   healerRegions,
@@ -46,9 +47,20 @@ const HealersDirectory = dynamic(
   },
 );
 
+export async function generateMetadata() {
+  return {
+    title: "Traditional Healers Directory | Stellar Uzima",
+    description:
+      "Browse verified traditional healers across Africa. Filter by specialty, region, and language to find herbalists, spiritual healers, midwives, and more.",
+  };
+}
+
 export default function HealersPage() {
-  // Infinite scroll hook: loads 12 healers per batch
-  const { items: healers, loading, hasMore } = useInfiniteScroll(
+  const {
+    items: healers,
+    loading,
+    hasMore,
+  } = useInfiniteScroll(
     async (page: number) => {
       // In production, replace with API call:
       // const res = await fetch(`/api/healers?page=${page}&limit=12`);
@@ -64,16 +76,26 @@ export default function HealersPage() {
   return (
     <>
       <Navigation />
-      <HealersDirectory
-        healers={healers}
-        specialties={healerSpecialties}
-        regions={healerRegions}
-        languages={healerLanguages}
-      />
-      {loading && <Spinner />}
-      {!hasMore && (
-        <p className="text-center mt-4 text-gray-600">All healers loaded</p>
-      )}
+      <main className="bg-cream pt-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
+          <BreadcrumbNav
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Healers" },
+            ]}
+          />
+        </div>
+        <HealersDirectory
+          healers={healers}
+          specialties={healerSpecialties}
+          regions={healerRegions}
+          languages={healerLanguages}
+        />
+        {loading && <Spinner />}
+        {!hasMore && (
+          <p className="text-center mt-4 text-gray-600">All healers loaded</p>
+        )}
+      </main>
       <Footer />
     </>
   );
