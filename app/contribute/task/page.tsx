@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useForm, FormProvider, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { z } from "zod";
 import {
   Card,
   CardContent,

@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { Playfair_Display, DM_Sans, Fraunces } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import Footer from '../components/footer';
@@ -9,23 +8,6 @@ import { UpdateBanner } from '@/components/ui/UpdateBanner';
 import ServiceWorkerProvider from '@/components/ServiceWorkerProvider';
 import { Providers } from '@/providers/providers';
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-playfair",
-  weight: ["400", "700", "900"],
-});
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  variable: "--font-dm-sans",
-  weight: ["300", "400", "500"],
-});
-
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  variable: "--font-fraunces",
-  weight: ["300", "700"],
-});
 
 export const metadata: Metadata = {
   title: 'Stellar Uzima — Your Health. Your Wealth. Your Community.',
@@ -78,7 +60,10 @@ export default function RootLayout({
         <ServiceWorkerProvider />
         <Providers>
           <OfflineBanner />
-          {children}
+          <div className="offline-banner-offset">
+            {children}
+            <Footer/>
+          </div>
           <InstallPrompt />
           <Analytics />
           <Footer />

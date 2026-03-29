@@ -41,6 +41,8 @@
   --border: #e8d4c0;
   --input: #fffdf5;
   --ring: #b84e20;
+  --navbar-height: 80px;
+  --offline-banner-offset: 0px;
 }
 
 .dark {
@@ -76,44 +78,94 @@
 /* ── Task completion micro-animation keyframes ─────────────────────── */
 
 @keyframes task-ping {
-  0%   { transform: translateX(0); }
-  30%  { transform: translateX(4px); }
-  60%  { transform: translateX(-2px); }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(0);
+  }
+
+  30% {
+    transform: translateX(4px);
+  }
+
+  60% {
+    transform: translateX(-2px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
 }
 
 @keyframes task-badge-pulse {
-  0%   { transform: scale(1);   box-shadow: 0 0 0 0 rgba(240,192,80,0); }
-  40%  { transform: scale(1.2); box-shadow: 0 0 8px 4px rgba(240,192,80,0.45); }
-  100% { transform: scale(1);   box-shadow: 0 0 0 0 rgba(240,192,80,0); }
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(240, 192, 80, 0);
+  }
+
+  40% {
+    transform: scale(1.2);
+    box-shadow: 0 0 8px 4px rgba(240, 192, 80, 0.45);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(240, 192, 80, 0);
+  }
 }
 
 @keyframes task-check-pop {
-  0%   { transform: scale(0) rotate(-15deg); opacity: 0; }
-  60%  { transform: scale(1.15) rotate(4deg); opacity: 1; }
-  100% { transform: scale(1) rotate(0deg);   opacity: 1; }
+  0% {
+    transform: scale(0) rotate(-15deg);
+    opacity: 0;
+  }
+
+  60% {
+    transform: scale(1.15) rotate(4deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
 }
 
 @keyframes task-confetti-burst {
-  0%   { transform: translate(0, 0) scale(1); opacity: 1; }
-  100% { transform: var(--dx, 40px) var(--dy, -60px) scale(0.3); opacity: 0; }
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: var(--dx, 40px) var(--dy, -60px) scale(0.3);
+    opacity: 0;
+  }
 }
 
 @keyframes task-card-fade-complete {
-  from { opacity: 1; }
-  to   { opacity: 1; } /* card stays visible; border/style handled by class swap */
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 1;
+  }
+
+  /* card stays visible; border/style handled by class swap */
 }
 
 @layer utilities {
   .animate-task-ping {
     animation: task-ping 0.35s ease-in-out forwards;
   }
+
   .animate-task-badge-pulse {
     animation: task-badge-pulse 0.55s ease-in-out forwards;
   }
+
   .animate-task-check-pop {
-    animation: task-check-pop 0.3s cubic-bezier(0.175,0.885,0.32,1.275) forwards;
+    animation: task-check-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
   }
+
   .animate-task-confetti {
     animation: task-confetti-burst 0.7s ease-out forwards;
   }
@@ -150,11 +202,27 @@
   .text-pretty {
     text-wrap: pretty;
   }
+
+}
+
+@media (min-width: 768px) {
+  :root {
+    --navbar-height: 100px;
+  }
 }
 
 @keyframes flameFlicker {
-  0%, 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 6px 8px rgba(176, 78, 32, 0.35)); }
-  50% { transform: translateY(-2px) scale(1.03); filter: drop-shadow(0 10px 14px rgba(240, 192, 80, 0.45)); }
+
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 6px 8px rgba(176, 78, 32, 0.35));
+  }
+
+  50% {
+    transform: translateY(-2px) scale(1.03);
+    filter: drop-shadow(0 10px 14px rgba(240, 192, 80, 0.45));
+  }
 }
 
 @keyframes fadeUp {
@@ -162,6 +230,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -173,6 +242,7 @@
     opacity: 0;
     transform: translateX(20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -180,10 +250,12 @@
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-6px);
   }
@@ -194,6 +266,7 @@
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -205,6 +278,7 @@
     opacity: 0;
     transform: translateX(-30px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -216,6 +290,7 @@
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -235,11 +310,25 @@
     animation: scaleIn 0.6s ease-out forwards;
   }
 
-  .stagger-1 { animation-delay: 0.1s; }
-  .stagger-2 { animation-delay: 0.2s; }
-  .stagger-3 { animation-delay: 0.3s; }
-  .stagger-4 { animation-delay: 0.4s; }
-  .stagger-5 { animation-delay: 0.5s; }
+  .stagger-1 {
+    animation-delay: 0.1s;
+  }
+
+  .stagger-2 {
+    animation-delay: 0.2s;
+  }
+
+  .stagger-3 {
+    animation-delay: 0.3s;
+  }
+
+  .stagger-4 {
+    animation-delay: 0.4s;
+  }
+
+  .stagger-5 {
+    animation-delay: 0.5s;
+  }
 
   .animate-flicker {
     animation: flameFlicker 1.5s ease-in-out infinite;
@@ -247,12 +336,23 @@
 }
 
 @keyframes confettiFall {
-  0% { transform: translateY(-100vh) rotate(0deg); opacity: 0; }
-  10% { opacity: 1; }
-  100% { transform: translateY(110vh) rotate(720deg); opacity: 0.9; }
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(110vh) rotate(720deg);
+    opacity: 0.9;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .animate-flicker,
   .animate-slideUp,
   .animate-slideInLeft,
@@ -262,15 +362,19 @@
   .stagger-1 {
     animation-delay: 0.1s;
   }
+
   .stagger-2 {
     animation-delay: 0.2s;
   }
+
   .stagger-3 {
     animation-delay: 0.3s;
   }
+
   .stagger-4 {
     animation-delay: 0.4s;
   }
+
   .stagger-5 {
     animation-delay: 0.5s;
   }

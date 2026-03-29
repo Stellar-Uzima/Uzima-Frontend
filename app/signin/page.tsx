@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { z } from "zod";
 import { Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";

@@ -25,6 +25,9 @@
     "paths": {
       "@/*": [
         "./*"
+      ],
+      "@tanstack/react-virtual": [
+        "./vendor/tanstack-react-virtual"
       ]
     }
   },
