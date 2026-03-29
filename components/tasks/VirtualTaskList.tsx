@@ -1,10 +1,10 @@
 "use client";
 import * as React from "react";
+import { useCallback, useMemo } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { HealthTaskCard } from "@/components/tasks/HealthTaskCard";
 import type { HealthTask } from "@/lib/mock/tasks";
 
-// Issue #215 — Add Task Bookmarking
 interface VirtualTaskListProps {
   tasks: HealthTask[];
   categoryIcon: Record<string, string>;
@@ -38,6 +38,18 @@ export function VirtualTaskList({
 }: VirtualTaskListProps) {
   const parentRef = React.useRef<HTMLDivElement>(null);
   const columns = useTaskColumns();
+
+  const handleTaskSelect = useCallback((taskId: string) => {
+    onTaskSelect(taskId)
+  }, [onTaskSelect])
+
+  const taskCallbacks = useMemo(() => {
+    const callbacks: Record<string, () => void> = {}
+    for (const task of tasks) {
+      callbacks[task.id] = () => handleTaskSelect(task.id)
+    }
+    return callbacks
+  }, [tasks, handleTaskSelect])
 
   const rows = React.useMemo(() => {
     const chunked: HealthTask[][] = [];
@@ -94,8 +106,7 @@ export function VirtualTaskList({
                     category={task.category}
                     icon={categoryIcon[task.category] ?? "🩺"}
                     status="available"
-                    onClaim={() => onTaskSelect(task.id)}
-                    // Issue #215 — Bookmark props
+                    onClaim={taskCallbacks[task.id]}
                     taskId={task.id}
                     isBookmarked={bookmarkedIds?.has(task.id) ?? false}
                     onToggleBookmark={onToggleBookmark}
