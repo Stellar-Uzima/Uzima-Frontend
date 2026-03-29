@@ -35,26 +35,21 @@ function TasksContent() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // 1. Local State (Ensures immediate re-render)
   const [cat, setCat] = useState(searchParams.get("category") || "All");
   const [stat, setStat] = useState(searchParams.get("status") || "All");
   const [sort, setSort] = useState(searchParams.get("sort") || "newest");
 
-  // 2. Sync Local State with URL (for back/forward buttons)
   useEffect(() => {
     setCat(searchParams.get("category") || "All");
     setStat(searchParams.get("status") || "All");
     setSort(searchParams.get("sort") || "newest");
   }, [searchParams]);
 
-  // 3. Update Function
   const handleFilterChange = (key: string, value: string) => {
-    // Update local state first for instant UI response
     if (key === "category") setCat(value);
     if (key === "status") setStat(value);
     if (key === "sort") setSort(value);
 
-    // Update URL
     const params = new URLSearchParams(searchParams.toString());
     if (value === "All") params.delete(key);
     else params.set(key, value);
@@ -62,13 +57,11 @@ function TasksContent() {
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  // 4. Filtering Logic
   const filteredTasks = useMemo(() => {
     let result = [...mockTasks];
 
     if (cat !== "All") {
       result = result.filter((task) => {
-        // If user clicks "Traditional" pill, look for "Traditional Medicine" in data
         if (cat === "Traditional")
           return task.category === "Traditional Medicine";
         return task.category === cat;
@@ -76,13 +69,9 @@ function TasksContent() {
     }
 
     if (stat !== "All") {
-      result = result.filter((task) => {
-        // Ensure "Available" (UI) matches "available" (Data)
-        return task.status === stat.toLowerCase();
-      });
+      result = result.filter((task) => task.status === stat.toLowerCase());
     }
 
-    // 4. Apply Sort
     result.sort((a, b) => {
       switch (sort) {
         case "reward-desc":
@@ -101,16 +90,7 @@ function TasksContent() {
   }, [cat, stat, sort]);
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8">
-      <header className="space-y-3">
-        <p className="text-xs font-semibold tracking-[0.2em] uppercase text-terra/80">
-          Daily Health Tasks
-        </p>
-        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-earth tracking-tight">
-          Earn XLM for caring for your health
-        </h1>
-      </header>
-
+    <>
       <TaskFilters
         activeCategory={cat}
         activeStatus={stat}
@@ -144,7 +124,7 @@ function TasksContent() {
           />
         )}
       </section>
-    </div>
+    </>
   );
 }
 
@@ -153,13 +133,29 @@ export default function TasksPage() {
     <>
       <Navigation />
       <main className="pt-28 pb-20 px-4 sm:px-6 bg-cream min-h-screen">
-        <Suspense
-          fallback={
-            <div className="h-96 w-full bg-white/50 rounded-3xl animate-pulse" />
-          }
-        >
-          <TasksContent />
-        </Suspense>
+        <div className="max-w-5xl mx-auto space-y-8">
+          <header className="space-y-3">
+            <p className="text-xs font-semibold tracking-[0.2em] uppercase text-terra/80">
+              Daily Health Tasks
+            </p>
+            <h1 className="font-serif text-3xl sm:text-4xl font-bold text-earth tracking-tight">
+              Earn XLM for caring for your health
+            </h1>
+            <p className="text-sm sm:text-base text-muted max-w-2xl">
+              Choose a task that fits your day, follow the simple health steps,
+              and complete it honestly to unlock your Stellar Lumens (XLM)
+              reward.
+            </p>
+          </header>
+
+          <Suspense
+            fallback={
+              <div className="h-96 w-full bg-white/50 rounded-3xl animate-pulse" />
+            }
+          >
+            <TasksContent />
+          </Suspense>
+        </div>
       </main>
       <Footer />
     </>
