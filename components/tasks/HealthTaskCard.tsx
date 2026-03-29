@@ -1,10 +1,8 @@
 "use client";
 
 import * as React from "react";
+import Image from 'next/image';
 import { Check, Loader2, Sparkles, ArrowRight } from "lucide-react";
-import * as React from 'react'
-import Image from 'next/image'
-import { Check, Loader2, Sparkles } from 'lucide-react'
 
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -178,11 +176,6 @@ export function HealthTaskCard({
           )}
         >
           {isImageIcon ? (
-            <img
-              src={icon}
-              alt=""
-              className="h-7 w-7 object-contain"
-              aria-hidden="true"
             <Image 
               src={icon} 
               alt={`${title} task category icon`} 

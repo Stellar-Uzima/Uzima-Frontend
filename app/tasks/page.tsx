@@ -11,12 +11,19 @@ import { Button } from "@/components/ui/button";
 import { mockTasks } from "@/lib/mock/tasks";
 import { TaskFilters } from "@/components/tasks/TaskFilters";
 
-const VirtualTaskList = dynamic(
-  () => import("@/components/tasks").then((mod) => mod.VirtualTaskList),
+const PaginatedTaskList = dynamic(
+  () => import("@/components/tasks").then((mod) => mod.PaginatedTaskList),
   {
     ssr: false,
     loading: () => (
-      <div className="h-[420px] rounded-2xl bg-white/70" aria-hidden="true" />
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-6">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div key={i} className="h-[240px] rounded-2xl bg-white/70 animate-pulse" />
+          ))}
+        </div>
+        <div className="h-16 bg-white/50 rounded-lg animate-pulse" />
+      </div>
     ),
   },
 );
@@ -39,12 +46,16 @@ function TasksContent() {
   const [cat, setCat] = useState(searchParams.get("category") || "All");
   const [stat, setStat] = useState(searchParams.get("status") || "All");
   const [sort, setSort] = useState(searchParams.get("sort") || "newest");
+  const [currentPage, setCurrentPage] = useState(
+    parseInt(searchParams.get("page") || "1", 10)
+  );
 
   // 2. Sync Local State with URL (for back/forward buttons)
   useEffect(() => {
     setCat(searchParams.get("category") || "All");
     setStat(searchParams.get("status") || "All");
     setSort(searchParams.get("sort") || "newest");
+    setCurrentPage(parseInt(searchParams.get("page") || "1", 10));
   }, [searchParams]);
 
   // 3. Update Function
@@ -54,15 +65,41 @@ function TasksContent() {
     if (key === "status") setStat(value);
     if (key === "sort") setSort(value);
 
+    // Reset to page 1 when filters change
+    setCurrentPage(1);
+
     // Update URL
     const params = new URLSearchParams(searchParams.toString());
     if (value === "All") params.delete(key);
     else params.set(key, value);
+    
+    // Remove page param when resetting to page 1
+    params.delete("page");
 
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  // 4. Filtering Logic
+  // 4. Handle page changes
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    
+    const params = new URLSearchParams(searchParams.toString());
+    if (page === 1) {
+      params.delete("page");
+    } else {
+      params.set("page", page.toString());
+    }
+    
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    
+    // Scroll to top of task list
+    const taskSection = document.querySelector('[data-task-section]');
+    if (taskSection) {
+      taskSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  // 5. Filtering Logic
   const filteredTasks = useMemo(() => {
     let result = [...mockTasks];
 
@@ -82,7 +119,7 @@ function TasksContent() {
       });
     }
 
-    // 4. Apply Sort
+    // 6. Apply Sort
     result.sort((a, b) => {
       switch (sort) {
         case "reward-desc":
@@ -101,7 +138,7 @@ function TasksContent() {
   }, [cat, stat, sort]);
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8">
+    <div className="max-w-6xl mx-auto space-y-8">
       <header className="space-y-3">
         <p className="text-xs font-semibold tracking-[0.2em] uppercase text-terra/80">
           Daily Health Tasks
@@ -119,16 +156,20 @@ function TasksContent() {
         onClearAll={() => {
           setCat("All");
           setStat("All");
+          setCurrentPage(1);
           router.push(pathname);
         }}
       />
 
-      <section className="min-h-[400px]">
+      <section className="min-h-[400px]" data-task-section>
         {filteredTasks.length > 0 ? (
-          <VirtualTaskList
+          <PaginatedTaskList
             tasks={filteredTasks}
             categoryIcon={categoryIcon}
             onTaskSelect={(taskId) => router.push(`/tasks/${taskId}`)}
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
+            itemsPerPage={12}
           />
         ) : (
           <div className="flex flex-col items-center justify-center py-20 rounded-3xl border border-dashed border-terra/20 bg-white/50 text-center">
@@ -139,6 +180,7 @@ function TasksContent() {
               onClick={() => {
                 setCat("All");
                 setStat("All");
+                setCurrentPage(1);
                 router.push(pathname);
               }}
               className="mt-4 rounded-full"
