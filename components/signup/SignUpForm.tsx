@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { ErrorMessage } from "@/components/ui/ErrorMessage";
 
 import {
   Form,
@@ -236,19 +237,11 @@ export default function SignUpForm() {
       </div>
 
       {/* ── Global error banner (server-level errors e.g. duplicate email) ── */}
-      {globalError && (
-        <div
-          role="alert"
-          aria-live="assertive"
-          className="mb-6 p-4 rounded-xl bg-red-50 text-red-600 flex items-start gap-3 text-sm border border-red-100"
-        >
-          <AlertCircle
-            className="w-5 h-5 shrink-0 mt-0.5 text-red-500"
-            aria-hidden="true"
-          />
-          <span className="font-medium">{globalError}</span>
-        </div>
-      )}
+      <ErrorMessage
+        message={globalError}
+        onDismiss={() => setGlobalError(null)}
+        className="mb-6"
+      />
 
       <Form {...form}>
         <form
