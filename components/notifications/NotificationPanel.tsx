@@ -5,10 +5,10 @@ import { createPortal } from 'react-dom';
 import { useNotificationContext } from '../../context/NotificationContext';
 import { NotificationItem } from './NotificationItem';
 import { PushNotificationSetup } from './PushNotificationSetup';
-import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { X } from 'lucide-react'; 
 import Link from 'next/link';
 import { EmptyState } from '../ui/EmptyState';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 const NotificationPanelContent: React.FC = () => {
   const { notifications, unreadCount, markAsRead, markAllAsRead, deleteNotification } = useNotificationContext();
@@ -61,7 +61,7 @@ const NotificationPanelContent: React.FC = () => {
             <Link href="/notifications" className="text-blue-500 text-sm">View all</Link>
           </div>
         )}
-      </button>
+      </PopoverContent>
 
       {/* PORTAL: Teleports the overlay and panel to document.body to escape Navbar clipping */}
       {mounted && createPortal(

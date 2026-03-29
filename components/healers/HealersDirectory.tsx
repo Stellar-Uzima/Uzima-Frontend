@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Users, X } from "lucide-react";
 
@@ -33,6 +33,10 @@ export function HealersDirectory({
   const regionFilter = searchParams.get("region") || "all";
   const languageFilter = searchParams.get("language") || "all";
 
+  const handleBook = useCallback((id: string) => {
+    router.push(`/consultations?healer=${id}`)
+  }, [router])
+
   const handleFilterChange = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams);
     if (!value || value === "all") {
@@ -49,7 +53,6 @@ export function HealersDirectory({
 
   const filteredHealers = useMemo(() => {
     return healers.filter((healer) => {
-      // 1. Text Search Filter (name, community, specialty)
       if (searchQuery.trim() !== "") {
         const query = searchQuery.toLowerCase();
         const matchesName = healer.name.toLowerCase().includes(query);
@@ -63,7 +66,6 @@ export function HealersDirectory({
         }
       }
 
-      // 2. Specialty Dropdown Filter
       if (
         specialtyFilter !== "all" &&
         !healer.specialties.includes(specialtyFilter as HealerSpecialty)
@@ -71,12 +73,10 @@ export function HealersDirectory({
         return false;
       }
 
-      // 3. Region Filter
       if (regionFilter !== "all" && healer.region !== regionFilter) {
         return false;
       }
 
-      // 4. Language Filter
       if (
         languageFilter !== "all" &&
         !healer.languages.includes(languageFilter)
@@ -160,7 +160,6 @@ export function HealersDirectory({
             </span>
           </div>
 
-          {/* Active Filter Badges */}
           {activeFilters.length > 0 && (
              <div className="flex flex-wrap gap-2 items-center">
                <span className="text-xs text-muted-foreground mr-1">Active Filters:</span>
@@ -201,7 +200,7 @@ export function HealersDirectory({
               <HealerCard
                 key={healer.id}
                 healer={healer}
-                onBook={(id) => router.push(`/consultations?healer=${id}`)}
+                onBook={handleBook}
               />
             ))}
           </section>

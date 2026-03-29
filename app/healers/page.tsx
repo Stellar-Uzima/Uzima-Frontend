@@ -47,13 +47,7 @@ const HealersDirectory = dynamic(
   },
 );
 
-export async function generateMetadata() {
-  return {
-    title: "Traditional Healers Directory | Stellar Uzima",
-    description:
-      "Browse verified traditional healers across Africa. Filter by specialty, region, and language to find herbalists, spiritual healers, midwives, and more.",
-  };
-}
+// Note: metadata must not be exported from a client component
 
 export default function HealersPage() {
   const {

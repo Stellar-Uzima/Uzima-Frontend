@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import type { HealthTask } from "@/lib/mock/tasks";
 // --- ADDED THIS IMPORT ---
 import { BreadcrumbNav } from "@/components/ui/breadcrumb";
+import { ErrorMessage } from "@/components/ui/ErrorMessage";
 
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
 
@@ -325,11 +326,11 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                       />
                     </label>
 
-                    {uploadError && (
-                      <p className="text-xs font-medium text-red-600">
-                        {uploadError}
-                      </p>
-                    )}
+                    <ErrorMessage
+                      message={uploadError}
+                      onDismiss={() => setUploadError(null)}
+                      size="sm"
+                    />
 
                     {previewUrl && (
                       <div className="mt-2 flex">
