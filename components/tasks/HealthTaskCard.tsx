@@ -66,6 +66,9 @@ export const HealthTaskCard = React.memo(function HealthTaskCard({
   icon,
   onClaim,
   className,
+  taskId,
+  isBookmarked = false,
+  onToggleBookmark,
 }: HealthTaskCardProps) {
   const [animState, setAnimState] = React.useState<AnimState>("idle");
   const hasAnimated = React.useRef(false);
