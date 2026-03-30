@@ -11,11 +11,14 @@ import { Button } from "@/components/ui/button";
 export type HealthTaskStatus = "available" | "completed" | "claimed";
 
 export interface HealthTaskCardProps {
+  taskId: string;
   title: string;
   reward: number;
   category: string;
   status: HealthTaskStatus;
   icon: string;
+  isBookmarked?: boolean;
+  onToggleBookmark?: (taskId: string) => void;
   onClaim?: () => void;
   className?: string;
 }

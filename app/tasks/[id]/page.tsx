@@ -65,15 +65,3 @@ export default async function TaskPage({ params }: { params: { id: string } }) {
   return <TaskWizardWrapper task={task} />;
 }
 
-  return (
-    <>
-      <Navigation />
-      {/* Breadcrumb logic is handled inside TaskDetailPage 
-          to ensure proper layout alignment within its pt-28 container.
-      */}
-      <TaskDetailPage task={task} />
-      <Footer />
-    </>
-  );
-}
-
