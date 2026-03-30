@@ -1,5 +1,8 @@
 "use client";
 
+import { memo, useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { MapPin, CheckCircle2 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -10,7 +13,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { StarRating } from "@/components/ui/StarRating";
 import type { Healer } from "@/lib/mock/healers";
 
@@ -36,26 +39,120 @@ function getInitials(name?: string, fallback?: string) {
   return (fallback ?? "").slice(0, 2).toUpperCase() || "--";
 }
 
-export function HealerCard({ healer, onBook }: HealerCardProps) {
+function HealerAvatar({ healer }: { healer: Healer }) {
+  const [loaded, setLoaded] = useState(false);
+  const initials = getInitials(healer.name);
+
+  if (!healer.imageUrl) {
+    return (
+      <div className="relative h-11 w-11 rounded-2xl border border-terra/15 bg-terra/10 flex items-center justify-center flex-shrink-0">
+        <span className="text-xs font-semibold text-earth">{initials}</span>
+      </div>
+    );
+  }
+
   return (
-    <article className="flex flex-col h-full rounded-3xl border border-terra/15 bg-white p-4 shadow-sm">
+    <div className="relative h-11 w-11 rounded-2xl border border-terra/15 bg-terra/5 flex-shrink-0 overflow-hidden">
+      {!loaded && (
+        <Skeleton className="absolute inset-0 rounded-2xl" />
+      )}
+      <Image
+        src={healer.imageUrl}
+        alt={healer.name}
+        width={44}
+        height={44}
+        loading="lazy"
+        className={cn(
+          "object-cover rounded-2xl transition-opacity duration-300",
+          loaded ? "opacity-100" : "opacity-0",
+        )}
+        onLoad={() => setLoaded(true)}
+      />
+      {!loaded && (
+        <span className="absolute inset-0 flex items-center justify-center text-xs font-semibold text-earth bg-terra/10 rounded-2xl">
+          {initials}
+        </span>
+      )}
+    </div>
+  );
+}
+
+function HealerCardSkeleton() {
+  return (
+    <article className="flex flex-col h-full rounded-3xl border border-terra/15 bg-white p-4 shadow-sm" aria-hidden="true">
       <div className="flex items-start gap-3">
-        <Avatar className="h-11 w-11 rounded-2xl border border-terra/15 bg-terra/5 flex-shrink-0">
-          {healer.imageUrl && (
-            <AvatarImage
-              src={healer.imageUrl}
-              alt={healer.name}
-              className="object-cover"
-            />
-          )}
-          <AvatarFallback className="bg-terra/10 text-xs font-semibold text-earth">
-            {getInitials(healer.name)}
-          </AvatarFallback>
-        </Avatar>
+        <Skeleton className="h-11 w-11 rounded-2xl flex-shrink-0" />
+        <div className="flex-1 space-y-2">
+          <Skeleton className="h-4 w-28 rounded" />
+          <Skeleton className="h-3 w-36 rounded" />
+        </div>
+      </div>
+      <div className="mt-3 space-y-3 flex-1">
+        <Skeleton className="h-3 w-32 rounded" />
+        <div className="flex gap-1.5">
+          <Skeleton className="h-5 w-20 rounded-full" />
+          <Skeleton className="h-5 w-16 rounded-full" />
+        </div>
+        <Skeleton className="h-3 w-40 rounded" />
+      </div>
+      <div className="mt-4 flex items-center justify-between gap-2 pt-2">
+        <Skeleton className="h-5 w-16 rounded-full" />
+        <Skeleton className="h-8 w-24 rounded-full" />
+      </div>
+    </article>
+  );
+}
+
+export const HealerCard = memo(function HealerCard({
+  healer,
+  onBook,
+}: HealerCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const handleBook = useCallback(() => {
+    onBook(healer.id);
+  }, [onBook, healer.id]);
+
+  if (!isVisible) {
+    return (
+      <div ref={cardRef}>
+        <HealerCardSkeleton />
+      </div>
+    );
+  }
+
+  return (
+    <article ref={cardRef} className="flex flex-col h-full rounded-3xl border border-terra/15 bg-white p-4 shadow-sm">
+      <div className="flex items-start gap-3">
+        <HealerAvatar healer={healer} />
 
         <div className="flex-1 space-y-1">
           <div className="flex items-center gap-2 min-w-0">
-            <h2 className="text-sm font-semibold text-earth truncate">{healer.name}</h2>
+            <Link
+              href={`/healers/${healer.id}`}
+              className="truncate text-sm font-semibold text-earth transition-colors hover:text-terra"
+            >
+              {healer.name}
+            </Link>
           </div>
 
           <div className="flex items-center gap-2 text-xs text-muted">
@@ -117,14 +214,24 @@ export function HealerCard({ healer, onBook }: HealerCardProps) {
           </TooltipContent>
         </Tooltip>
 
-        <Button
-          size="sm"
-          className="rounded-full bg-terra text-xs font-semibold text-white hover:bg-earth whitespace-nowrap"
-          onClick={() => onBook(healer.id)}
-        >
-          Book session
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            asChild
+            size="sm"
+            variant="outline"
+            className="rounded-full border-terra/20 bg-white text-xs font-semibold text-terra hover:bg-terra/5"
+          >
+            <Link href={`/healers/${healer.id}`}>View profile</Link>
+          </Button>
+          <Button
+            size="sm"
+            className="rounded-full bg-terra text-xs font-semibold text-white hover:bg-earth whitespace-nowrap"
+            onClick={handleBook}
+          >
+            Book session
+          </Button>
+        </div>
       </div>
     </article>
   );
-}
+});
