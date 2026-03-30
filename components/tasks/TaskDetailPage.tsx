@@ -20,6 +20,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { TaskCommunity } from "@/components/tasks/TaskCommunity";
 import type { HealthTask } from "@/lib/mock/tasks";
 // --- ADDED THIS IMPORT ---
 import { BreadcrumbNav } from "@/components/ui/breadcrumb";
