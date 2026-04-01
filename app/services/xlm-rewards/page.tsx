@@ -1,5 +1,6 @@
 import Navigation from '@/components/navigation'
 import Footer from '@/components/footer'
+import { EmptyState } from '@/components/ui/EmptyState'
 
 export default function XLMRewardsPage() {
   const rewardCategories = [
@@ -206,6 +207,24 @@ export default function XLMRewardsPage() {
                 <p className="text-sm text-muted">No delays or waiting periods</p>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Reward History Section */}
+        <section className="px-6 md:px-20 py-20 bg-white border-t border-terra/5">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="font-serif text-4xl font-bold text-earth mb-12 text-center">
+              Your Reward History
+            </h2>
+            
+            <EmptyState
+              icon="💰"
+              title="No rewards yet"
+              description="You haven't earned any XLM rewards yet. Start completing health tasks or community activities to see your earnings grow here!"
+              ctaLabel="View Available Tasks"
+              onCtaClick={() => window.location.href = '/tasks'}
+              className="bg-cream/30 border-terra/10"
+            />
           </div>
         </section>
 

@@ -1,5 +1,6 @@
 'use client'
 
+import type { ReactNode } from 'react'
 import { useToast } from '@/hooks/use-toast'
 import {
   Toast,
@@ -8,6 +9,7 @@ import {
   ToastProvider,
   ToastTitle,
   ToastViewport,
+  type ToastProps,
 } from '@/components/ui/toast'
 
 export function Toaster() {
@@ -15,9 +17,17 @@ export function Toaster() {
 
   return (
     <ToastProvider>
-      {toasts.map(function ({ id, title, description, action, ...props }) {
+      {toasts.map((toast) => {
+        const { id, title, description, action, type: _type, ...rest } =
+          toast as unknown as {
+            id: string
+            title?: ReactNode
+            description?: ReactNode
+            action?: ReactNode
+            type: string
+          } & ToastProps
         return (
-          <Toast key={id} {...props}>
+          <Toast key={id} {...rest}>
             <div className="grid gap-1">
               {title && <ToastTitle>{title}</ToastTitle>}
               {description && (

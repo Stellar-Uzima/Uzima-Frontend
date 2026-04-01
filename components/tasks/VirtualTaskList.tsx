@@ -1,8 +1,7 @@
 "use client";
-
 import * as React from "react";
+import { useCallback, useMemo } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
-
 import { HealthTaskCard } from "@/components/tasks/HealthTaskCard";
 import type { HealthTask } from "@/lib/mock/tasks";
 
@@ -10,40 +9,53 @@ interface VirtualTaskListProps {
   tasks: HealthTask[];
   categoryIcon: Record<string, string>;
   onTaskSelect: (taskId: string) => void;
+  bookmarkedIds?: Set<string>;
+  onToggleBookmark?: (taskId: string) => void;
 }
 
 function useTaskColumns() {
   const [columns, setColumns] = React.useState(1);
-
   React.useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 640px)");
-
     const updateColumns = () => {
       setColumns(mediaQuery.matches ? 2 : 1);
     };
-
     updateColumns();
     mediaQuery.addEventListener("change", updateColumns);
-
     return () => {
       mediaQuery.removeEventListener("change", updateColumns);
     };
   }, []);
-
   return columns;
 }
 
-export function VirtualTaskList({ tasks, categoryIcon, onTaskSelect }: VirtualTaskListProps) {
+export function VirtualTaskList({
+  tasks,
+  categoryIcon,
+  onTaskSelect,
+  bookmarkedIds,
+  onToggleBookmark,
+}: VirtualTaskListProps) {
   const parentRef = React.useRef<HTMLDivElement>(null);
   const columns = useTaskColumns();
 
+  const handleTaskSelect = useCallback((taskId: string) => {
+    onTaskSelect(taskId)
+  }, [onTaskSelect])
+
+  const taskCallbacks = useMemo(() => {
+    const callbacks: Record<string, () => void> = {}
+    for (const task of tasks) {
+      callbacks[task.id] = () => handleTaskSelect(task.id)
+    }
+    return callbacks
+  }, [tasks, handleTaskSelect])
+
   const rows = React.useMemo(() => {
     const chunked: HealthTask[][] = [];
-
     for (let i = 0; i < tasks.length; i += columns) {
       chunked.push(tasks.slice(i, i + columns));
     }
-
     return chunked;
   }, [columns, tasks]);
 
@@ -75,7 +87,6 @@ export function VirtualTaskList({ tasks, categoryIcon, onTaskSelect }: VirtualTa
       >
         {rowVirtualizer.getVirtualItems().map((virtualRow) => {
           const rowTasks = rows[virtualRow.index] ?? [];
-
           return (
             <div
               key={virtualRow.key}
@@ -95,7 +106,10 @@ export function VirtualTaskList({ tasks, categoryIcon, onTaskSelect }: VirtualTa
                     category={task.category}
                     icon={categoryIcon[task.category] ?? "🩺"}
                     status="available"
-                    onClaim={() => onTaskSelect(task.id)}
+                    onClaim={taskCallbacks[task.id]}
+                    taskId={task.id}
+                    isBookmarked={bookmarkedIds?.has(task.id) ?? false}
+                    onToggleBookmark={onToggleBookmark}
                   />
                 ))}
               </div>
