@@ -102,11 +102,7 @@ function HamburgerButton({
       aria-label={isOpen ? "Close menu" : "Open menu"}
       aria-expanded={isOpen}
       aria-controls="mobile-drawer"
-<<<<<<< HEAD
-      className="relative flex items-center justify-center w-10 h-10 rounded-lg hover:bg-black/5 transition-colors focus:outline-none focus:ring-2 focus:ring-terra/30 lg:hidden"
-=======
       className="relative flex items-center justify-center w-10 h-10 rounded-lg hover:bg-foreground/5 transition-colors focus:outline-none focus:ring-2 focus:ring-terra/30"
->>>>>>> main
     >
       <span className="sr-only">{isOpen ? "Close menu" : "Open menu"}</span>
       <span className="flex flex-col gap-1.5 w-5">
@@ -204,12 +200,8 @@ function MobileDrawer({
       <div
         aria-hidden="true"
         onClick={onClose}
-<<<<<<< HEAD
-        className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${isOpen
-=======
-        className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
+        className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
           isOpen
->>>>>>> main
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
         }`}
@@ -221,14 +213,9 @@ function MobileDrawer({
         role="dialog"
         aria-modal="true"
         aria-label="Navigation menu"
-<<<<<<< HEAD
-        className={`fixed inset-0 z-50 flex flex-col bg-cream transition-transform duration-300 ease-in-out lg:hidden overflow-hidden ${isOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
-=======
-        className={`fixed inset-y-0 left-0 z-50 flex flex-col w-[280px] bg-background border-r border-border transition-transform duration-300 ease-in-out md:hidden overflow-hidden ${
+        className={`fixed inset-y-0 left-0 z-50 flex flex-col w-[280px] bg-background border-r border-border transition-transform duration-300 ease-in-out lg:hidden overflow-hidden ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
->>>>>>> main
       >
         <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-terra/10">
           <Link
@@ -249,11 +236,7 @@ function MobileDrawer({
             type="button"
             onClick={onClose}
             aria-label="Close menu"
-<<<<<<< HEAD
-            className="flex items-center justify-center w-10 h-10 rounded-lg bg-black text-white hover:bg-white hover:text-black hover:border-black border border-transparent transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-terra/30"
-=======
             className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-foreground/5 transition-colors focus:outline-none focus:ring-2 focus:ring-terra/30"
->>>>>>> main
           >
             <svg
               width="18"
@@ -396,18 +379,10 @@ export default function Navbar() {
     );
     if (sections.length === 0) return;
 
-<<<<<<< HEAD
-    // Mobile-optimized detection settings
     const isMobile = window.innerWidth < 1024;
-    const topOffset = isMobile ? "80px" : "100px"; // Account for navbar height
-    const bottomOffset = isMobile ? "35%" : "50%"; // Less aggressive on mobile
-    const visibilityThreshold = isMobile ? 0.15 : 0.3; // Lower threshold for mobile
-=======
-    const isMobile = window.innerWidth < 768;
     const topOffset = isMobile ? "80px" : "100px";
     const bottomOffset = isMobile ? "35%" : "50%";
     const visibilityThreshold = isMobile ? 0.15 : 0.3;
->>>>>>> main
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -559,12 +534,7 @@ export default function Navbar() {
         </ul>
 
         {/* ── Desktop right side ── */}
-<<<<<<< HEAD
         <div className="hidden lg:flex items-center gap-4">
-          {/* XLM balance widget — only when logged in */}
-=======
-        <div className="hidden md:flex items-center gap-4">
->>>>>>> main
           {isLoggedIn && xlmBalance !== null && (
             <XLMBalanceWidget balance={xlmBalance} />
           )}
@@ -596,7 +566,7 @@ export default function Navbar() {
         </div>
 
         {/* ── Mobile Actions (Bell + Hamburger) ── */}
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-2 lg:hidden">
           <NotificationPanel />
           <HamburgerButton isOpen={drawerOpen} onClick={toggleDrawer} />
         </div>
@@ -622,3 +592,5 @@ export default function Navbar() {
     </>
   );
 }
+
+
