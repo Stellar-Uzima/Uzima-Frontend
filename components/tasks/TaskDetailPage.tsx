@@ -20,7 +20,10 @@ import {
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { TaskCommunity } from "@/components/tasks/TaskCommunity";
 import type { HealthTask } from "@/lib/mock/tasks";
+import { BreadcrumbNav } from "@/components/ui/breadcrumb";
+import { ErrorMessage } from "@/components/ui/ErrorMessage";
 
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
 
@@ -137,16 +140,24 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
   return (
     <main className="min-h-screen bg-cream">
       <div className="pt-28 pb-16 px-4 sm:px-6">
-        {/* Increased max-width to allow room for two-column desktop layout */}
-        <div className="max-w-7xl mx-auto space-y-6">
-          <button
-            type="button"
-            onClick={handleBack}
-            className="inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-earth transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            <span>Back to Tasks</span>
-          </button>
+        <div className="max-w-4xl mx-auto space-y-6">
+          <BreadcrumbNav
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Health Tasks", href: "/tasks" },
+              { label: task.title },
+            ]}
+          />
+
+          <div className="max-w-7xl mx-auto space-y-6">
+            <button
+              type="button"
+              onClick={handleBack}
+              className="inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-earth transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              <span>Back to Tasks</span>
+            </button>
 
           {/* HEADER SECTION */}
           <section className="rounded-3xl border border-terra/10 bg-white px-5 py-6 sm:px-8 sm:py-7 shadow-sm">
@@ -314,11 +325,11 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                       />
                     </label>
 
-                    {uploadError && (
-                      <p className="text-xs font-medium text-red-600">
-                        {uploadError}
-                      </p>
-                    )}
+                    <ErrorMessage
+                      message={uploadError}
+                      onDismiss={() => setUploadError(null)}
+                      size="sm"
+                    />
 
                     {previewUrl && (
                       <div className="mt-2 flex">
@@ -376,13 +387,12 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                         </p>
                       </div>
                     </div>
-
                     {previewUrl && (
                       <div className="mt-2 flex">
                         <div className="inline-flex flex-col items-center rounded-2xl border border-terra/15 bg-cream/90 p-3 sm:p-4">
                           <div className="relative">
                             <Image
-                              src={previewUrl}
+                              src={previewUrl ?? ""}
                               alt="Uploaded photographic proof for the task"
                               width={96}
                               height={96}
@@ -400,7 +410,6 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                         </div>
                       </div>
                     )}
-
                     <Button
                       type="button"
                       size="sm"
@@ -415,6 +424,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                 )}
               </section>
             </div>
+          </div>
           </div>
         </div>
       </div>

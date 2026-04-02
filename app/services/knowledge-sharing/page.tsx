@@ -1,5 +1,7 @@
 import Navigation from '@/components/navigation'
 import Footer from '@/components/footer'
+// ISSUE #179: Import the reusable BreadcrumbNav component
+import { BreadcrumbNav } from "@/components/ui/breadcrumb"
 
 export default function KnowledgeSharingPage() {
   const resources = [
@@ -57,6 +59,17 @@ export default function KnowledgeSharingPage() {
       <Navigation />
       
       <main className="pt-32">
+        {/* ISSUE #179: Breadcrumb navigation for nested service page */}
+        <div className="max-w-7xl mx-auto px-20 mb-6">
+          <BreadcrumbNav 
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Services", href: "/services" },
+              { label: "Knowledge Sharing" },
+            ]} 
+          />
+        </div>
+
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-sage/10 to-terra/10 px-20 py-20">
           <div className="max-w-7xl mx-auto">

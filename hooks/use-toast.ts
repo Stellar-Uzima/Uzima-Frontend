@@ -10,7 +10,8 @@ const TOAST_REMOVE_DELAY = 4000 // auto-dismiss after 4 seconds
 
 type ToastType = 'success' | 'error' | 'info' | 'reward'
 
-type ToasterToast = ToastProps & {
+/** `type` omitted: HTML `<li type>` clashes with our toast category `type`. */
+type ToasterToast = Omit<ToastProps, "type"> & {
   id: string
   variant?: ToastType
   title?: React.ReactNode
@@ -67,7 +68,7 @@ const addToRemoveQueue = (toastId: string) => {
     toastTimeouts.delete(toastId)
     dispatch({
       type: 'REMOVE_TOAST',
-      toastId: toastId,
+      toastId,
     })
   }, TOAST_REMOVE_DELAY)
 

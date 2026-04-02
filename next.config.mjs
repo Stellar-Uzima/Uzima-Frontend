@@ -6,12 +6,14 @@ const appVersion = process.env.npm_package_version ?? "0.1.0";
 
 const withPWA = withPWAInit({
   dest: "public",
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === "development",
+  customWorkerSrc: "worker",
   cacheOnFrontEndNav: true,
   aggressiveFrontEndNavCaching: true,
   reloadOnOnline: true,
   swcMinify: true,
-  disable: false,
-  customWorkerSrc: "worker",
   fallbacks: {
     document: "/~offline",
   },
