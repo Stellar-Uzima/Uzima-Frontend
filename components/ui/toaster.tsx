@@ -18,14 +18,12 @@ export function Toaster() {
   return (
     <ToastProvider>
       {toasts.map((toast) => {
-        const { id, title, description, action, type: _type, ...rest } =
-          toast as unknown as {
-            id: string
-            title?: ReactNode
-            description?: ReactNode
-            action?: ReactNode
-            type: string
-          } & ToastProps
+        const { id, title, description, action, ...rest } = toast as {
+          id: string
+          title?: ReactNode
+          description?: ReactNode
+          action?: ReactNode
+        } & ToastProps
         return (
           <Toast key={id} {...rest}>
             <div className="grid gap-1">

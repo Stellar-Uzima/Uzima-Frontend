@@ -41,14 +41,15 @@ export function usePushNotifications(): UsePushNotificationsReturn {
 
     const init = async () => {
       try {
-        await navigator.serviceWorker.register('/sw.js');
+        const registration =
+          (await navigator.serviceWorker.getRegistration()) ??
+          (await navigator.serviceWorker.register('/sw.js'));
 
         if (Notification.permission === 'denied') {
           setStatus('denied');
           return;
         }
 
-        const registration = await navigator.serviceWorker.ready;
         const subscription = await registration.pushManager.getSubscription();
         setStatus(subscription ? 'subscribed' : 'unsubscribed');
       } catch (err) {

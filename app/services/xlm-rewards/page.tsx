@@ -222,7 +222,7 @@ export default function XLMRewardsPage() {
               title="No rewards yet"
               description="You haven't earned any XLM rewards yet. Start completing health tasks or community activities to see your earnings grow here!"
               ctaLabel="View Available Tasks"
-              onCtaClick={() => window.location.href = '/tasks'}
+              ctaHref="/tasks"
               className="bg-cream/30 border-terra/10"
             />
           </div>

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { HealthTaskCard } from "@/components/tasks/HealthTaskCard";
-import { Pagination } from "@/components/ui/Pagination";
+import { Pagination } from "@/components/ui/pagination";
 import type { HealthTask } from "@/lib/mock/tasks";
 
 interface PaginatedTaskListProps {
@@ -38,6 +38,7 @@ export function PaginatedTaskList({
         {currentTasks.map((task) => (
           <HealthTaskCard
             key={task.id}
+            taskId={task.id}
             title={task.title}
             reward={task.rewardXLM}
             category={task.category}

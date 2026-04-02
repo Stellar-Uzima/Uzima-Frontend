@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Check, Loader2, Sparkles, ArrowRight } from "lucide-react";
+import { ArrowRight, Check, Loader2, Sparkles } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -88,7 +88,8 @@ export const HealthTaskCard = React.memo(function HealthTaskCard({
   const isAvailable = displayStatus === "available";
   const isCompleted = displayStatus === "completed";
   const isClaimed = displayStatus === "claimed";
-  const isImageIcon = icon?.startsWith("/") || icon?.startsWith("http");
+  const isRemoteImageIcon = icon?.startsWith("http");
+  const isImageIcon = icon?.startsWith("/") || isRemoteImageIcon;
 
   function handleMarkComplete() {
     if (hasAnimated.current || animState !== "idle") return;

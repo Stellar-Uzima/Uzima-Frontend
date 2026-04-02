@@ -9,10 +9,10 @@ export interface TaskWizardProps {
     description: string;
     whyItMatters: string;
     instructions: string[];
-    proofType: "photo" | "self_report";
+    proofType: "photo" | "self-report";
     rewardXLM: number;
   };
-  onSubmit: (data: { proofType: "photo" | "self_report"; file?: File; confirmed?: boolean }) => void;
+  onSubmit: (data: { proofType: "photo" | "self-report"; file?: File; confirmed?: boolean }) => void;
   onClose?: () => void;
 }
 
@@ -241,7 +241,7 @@ export function TaskWizard({ task, onSubmit, onClose }: TaskWizardProps) {
     if (step === 1) return true;
     if (step === 2) {
       if (task.proofType === "photo") return file !== null;
-      if (task.proofType === "self_report") return confirmed;
+      if (task.proofType === "self-report") return confirmed;
     }
     return false;
   };
@@ -275,7 +275,7 @@ export function TaskWizard({ task, onSubmit, onClose }: TaskWizardProps) {
       <div className="flex-1 px-5 py-6 overflow-y-auto">
         {step === 1 && <StepLearn task={task} />}
         {step === 2 && task.proofType === "photo" && <PhotoUpload file={file} onFileSelect={setFile} />}
-        {step === 2 && task.proofType === "self_report" && <SelfReport confirmed={confirmed} onToggle={() => setConfirmed((c) => !c)} />}
+        {step === 2 && task.proofType === "self-report" && <SelfReport confirmed={confirmed} onToggle={() => setConfirmed((c) => !c)} />}
         {step === 3 && <ClaimReward reward={task.rewardXLM} onSubmit={handleSubmit} loading={loading} />}
       </div>
       {step < 3 && (

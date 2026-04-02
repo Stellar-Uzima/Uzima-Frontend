@@ -6,7 +6,7 @@ interface Task {
   description: string;
   whyItMatters: string;
   instructions: string[];
-  proofType: "photo" | "self_report";
+  proofType: "photo" | "self-report";
   rewardXLM: number;
 }
 
@@ -39,7 +39,7 @@ async function getTask(id: string): Promise<Task | null> {
         "Take reading and note: systolic / diastolic / pulse.",
         "Record in your health diary or app.",
       ],
-      proofType: "self_report",
+      proofType: "self-report",
       rewardXLM: 0.25,
     },
   };
@@ -47,8 +47,13 @@ async function getTask(id: string): Promise<Task | null> {
   return tasks[id] ?? null;
 }
 
-export default async function TaskPage({ params }: { params: { id: string } }) {
-  const task = await getTask(params.id);
+export default async function TaskPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const task = await getTask(id);
 
   if (!task) {
     return (
@@ -64,4 +69,3 @@ export default async function TaskPage({ params }: { params: { id: string } }) {
 
   return <TaskWizardWrapper task={task} />;
 }
-

@@ -144,7 +144,6 @@ function TasksContent() {
           Earn XLM for caring for your health
         </h1>
       </header>
->>>>>>> 94a5fc4f899111af488e5c1229d65547ffd56e90
       <TaskFilters
         activeCategory={cat}
         activeStatus={stat}

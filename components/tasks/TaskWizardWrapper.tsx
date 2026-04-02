@@ -9,7 +9,7 @@ interface Task {
   description: string;
   whyItMatters: string;
   instructions: string[];
-  proofType: "photo" | "self_report";
+  proofType: "photo" | "self-report";
   rewardXLM: number;
 }
 
@@ -17,7 +17,7 @@ export default function TaskWizardWrapper({ task }: { task: Task }) {
   const router = useRouter();
 
   const handleSubmit = async (data: {
-    proofType: "photo" | "self_report";
+    proofType: "photo" | "self-report";
     file?: File;
     confirmed?: boolean;
   }) => {
@@ -29,7 +29,7 @@ export default function TaskWizardWrapper({ task }: { task: Task }) {
         const res = await fetch(`/api/tasks/${task.id}/submit`, { method: "POST", body: formData });
         if (!res.ok) throw new Error("Failed to submit photo proof");
       }
-      if (data.proofType === "self_report" && data.confirmed) {
+      if (data.proofType === "self-report" && data.confirmed) {
         const res = await fetch(`/api/tasks/${task.id}/submit`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },

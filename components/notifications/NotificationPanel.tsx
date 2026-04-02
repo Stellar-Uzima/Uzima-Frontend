@@ -7,6 +7,7 @@ import { NotificationItem } from './NotificationItem';
 import { PushNotificationSetup } from './PushNotificationSetup';
 import { X } from 'lucide-react'; 
 import Link from 'next/link';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { EmptyState } from '../ui/EmptyState';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
@@ -19,8 +20,6 @@ const NotificationPanelContent: React.FC = () => {
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  const togglePanel = () => setOpen(!open);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -151,7 +150,7 @@ const NotificationPanelContent: React.FC = () => {
         </>,
         document.body
       )}
-    </>
+    </Popover>
   );
 };
 
