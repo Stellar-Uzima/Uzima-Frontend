@@ -2,18 +2,36 @@ import fs from "node:fs";
 import path from "node:path";
 import withPWAInit from "@ducanh2912/next-pwa";
 
+const appVersion = process.env.npm_package_version ?? "0.1.0";
+
 const withPWA = withPWAInit({
   dest: "public",
   register: true,
   skipWaiting: true,
   disable: process.env.NODE_ENV === "development",
-  customWorkerSrc: "sw.js",
+  customWorkerSrc: "worker",
   cacheOnFrontEndNav: true,
   aggressiveFrontEndNavCaching: true,
   reloadOnOnline: true,
   swcMinify: true,
+  fallbacks: {
+    document: "/~offline",
+  },
   workboxOptions: {
     disableDevLogs: true,
+    additionalManifestEntries: [
+      { url: "/~offline", revision: appVersion },
+      { url: "/tasks", revision: appVersion },
+      { url: "/dashboard", revision: appVersion },
+      { url: "/services/knowledge-sharing", revision: appVersion },
+      { url: "/knowledge", revision: appVersion },
+      { url: "/icon-192x192.png", revision: appVersion },
+      { url: "/icon-512x512.png", revision: appVersion },
+      { url: "/icon.svg", revision: appVersion },
+      { url: "/screenshot-mobile.svg", revision: appVersion },
+      { url: "/screenshot-desktop.svg", revision: appVersion },
+      { url: "/manifest.json", revision: appVersion },
+    ],
   },
 });
 
@@ -55,9 +73,7 @@ class BuildStatsPlugin {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    turbopack: {}, // Silences the warning/error
-  },
+  // Next 16 rejects the old experimental `turbopack` flag during builds.
   typescript: {
     ignoreBuildErrors: false,
   },

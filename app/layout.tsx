@@ -1,12 +1,26 @@
 import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
+import { DM_Sans, Fraunces, Playfair_Display } from 'next/font/google'
 import './globals.css'
 import Footer from '../components/footer';
-import { OfflineBanner } from '@/components/pwa/OfflineBanner';
-import { InstallPrompt } from '@/components/pwa/InstallPrompt';
+import { PwaShell } from '@/components/pwa/PwaShell';
 import { UpdateBanner } from '@/components/ui/UpdateBanner';
-import ServiceWorkerProvider from '@/components/ServiceWorkerProvider';
 import { Providers } from '@/providers/providers';
+
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-playfair',
+})
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  variable: '--font-dm-sans',
+})
+
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  variable: '--font-fraunces',
+})
 
 
 export const metadata: Metadata = {
@@ -76,18 +90,15 @@ export default function RootLayout({
         className={`${playfair.variable} ${dmSans.variable} ${fraunces.variable} font-sans antialiased`}
       >
         <UpdateBanner />
-        <ServiceWorkerProvider />
         <Providers>
-          <OfflineBanner />
+          <PwaShell />
           <div className="offline-banner-offset">
             <PageTransition>
               {children}
             </PageTransition>
             <Footer/>
           </div>
-          <InstallPrompt />
           <Analytics />
-          <Footer />
         </Providers>
       </body>
     </html>

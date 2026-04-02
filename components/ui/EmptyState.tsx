@@ -1,4 +1,5 @@
 import * as React from 'react'
+import Link from 'next/link'
 
 import { cn } from '@/lib/utils'
 import { Button } from './button'
@@ -9,6 +10,7 @@ export interface EmptyStateProps {
   title: string
   description: string
   ctaLabel?: string
+  ctaHref?: string
   onCtaClick?: () => void
   icon?: React.ReactNode | string
   illustration?: EmptyStateIllustration
@@ -140,6 +142,7 @@ export function EmptyState({
   title,
   description,
   ctaLabel,
+  ctaHref,
   onCtaClick,
   icon,
   illustration,
@@ -192,7 +195,16 @@ export function EmptyState({
         </p>
 
         {/* Optional CTA Button */}
-        {ctaLabel && onCtaClick && (
+        {ctaLabel && ctaHref && (
+          <Button
+            asChild
+            className="mt-6 h-12 rounded-full bg-terra px-10 font-bold text-white shadow-lg shadow-terra/15 transition-all hover:scale-[1.02] hover:bg-terra/90 active:scale-[0.98]"
+            size="lg"
+          >
+            <Link href={ctaHref}>{ctaLabel}</Link>
+          </Button>
+        )}
+        {ctaLabel && onCtaClick && !ctaHref && (
           <Button
             onClick={onCtaClick}
             className="mt-6 rounded-full px-10 bg-terra hover:bg-terra/90 text-white font-bold shadow-lg shadow-terra/15 transition-all hover:scale-[1.02] active:scale-[0.98] h-12"

@@ -14,7 +14,7 @@ interface TaskFormData {
   title: string;
   category: string;
   xlmReward: number;
-  proofType: "self_report" | "photo";
+  proofType: "self-report" | "photo";
   whyItMatters: string;
   steps: { title: string; description?: string }[];
   isTraditional: boolean;
@@ -29,7 +29,7 @@ export default function CreateTaskPage() {
     title: "",
     category: "",
     xlmReward: 0,
-    proofType: "self_report",
+    proofType: "self-report",
     whyItMatters: "",
     steps: [],
     isTraditional: false,
@@ -57,7 +57,7 @@ export default function CreateTaskPage() {
       title: "",
       category: "",
       xlmReward: 0,
-      proofType: "self_report",
+      proofType: "self-report",
       whyItMatters: "",
       steps: [{ title: "", description: "" }],
       isTraditional: false,
@@ -167,7 +167,7 @@ export default function CreateTaskPage() {
                       <div className="text-right">
                         <p className="font-bold text-[#C05A2B]">{template.xlmReward} XLM</p>
                         <p className="text-xs text-muted capitalize">
-                          {template.proofType.replace('_', ' ')}
+                           {template.proofType.replace('-', ' ')}
                         </p>
                       </div>
                     </div>
@@ -271,7 +271,7 @@ export default function CreateTaskPage() {
                         className="w-full px-4 py-2 border border-[#E8D4C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C05A2B]"
                         required
                       >
-                        <option value="self_report">Self Report</option>
+                         <option value="self-report">Self Report</option>
                         <option value="photo">Photo</option>
                       </select>
                     </div>

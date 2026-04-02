@@ -20,7 +20,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     category: 'nutrition',
     title: 'Daily Hydration Check',
     xlmReward: 0.2,
-    proofType: 'self_report',
+    proofType: 'self-report',
     whyItMatters: 'Proper hydration supports all bodily functions and helps maintain energy levels throughout the day.',
     steps: [
       { title: 'Track water intake', description: 'Record glasses of water consumed' },
@@ -46,7 +46,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     category: 'exercise',
     title: '30-Minute Walk',
     xlmReward: 0.5,
-    proofType: 'self_report',
+    proofType: 'self-report',
     whyItMatters: 'Regular walking improves cardiovascular health and mental wellbeing.',
     steps: [
       { title: 'Plan your route', description: 'Choose a safe 30-minute walking path' },
@@ -72,7 +72,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     category: 'traditional',
     title: 'Traditional Remedy Log',
     xlmReward: 0.3,
-    proofType: 'self_report',
+    proofType: 'self-report',
     whyItMatters: 'Documenting traditional remedies helps preserve cultural knowledge and track effectiveness.',
     steps: [
       { title: 'Choose a remedy', description: 'Select a traditional remedy you\'ve used' },
@@ -100,7 +100,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     category: 'mental_health',
     title: '10-Minute Mindfulness Meditation',
     xlmReward: 0.6,
-    proofType: 'self_report',
+    proofType: 'self-report',
     whyItMatters: 'Regular meditation reduces stress and improves mental clarity.',
     steps: [
       { title: 'Find quiet space', description: 'Choose a comfortable, quiet location' },
@@ -112,7 +112,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     category: 'mental_health',
     title: 'Gratitude Journal Entry',
     xlmReward: 0.5,
-    proofType: 'self_report',
+    proofType: 'self-report',
     whyItMatters: 'Gratitude practice improves mental health and life satisfaction.',
     steps: [
       { title: 'List 3 things', description: 'Write down three things you\'re grateful for' },
@@ -126,7 +126,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     category: 'hygiene',
     title: 'Proper Hand Washing Routine',
     xlmReward: 0.4,
-    proofType: 'self_report',
+    proofType: 'self-report',
     whyItMatters: 'Proper hand hygiene prevents the spread of infections and diseases.',
     steps: [
       { title: 'Wash for 20 seconds', description: 'Use soap and warm water' },
@@ -152,7 +152,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     category: 'maternal',
     title: 'Take Prenatal Vitamins',
     xlmReward: 0.7,
-    proofType: 'self_report',
+    proofType: 'self-report',
     whyItMatters: 'Prenatal vitamins support healthy pregnancy and fetal development.',
     steps: [
       { title: 'Take with food', description: 'Take vitamins with a meal to reduce nausea' },
