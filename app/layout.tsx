@@ -53,6 +53,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { PageTransition } from '@/components/layout/PageTransition';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -91,7 +93,9 @@ export default function RootLayout({
         <Providers>
           <PwaShell />
           <div className="offline-banner-offset">
-            {children}
+            <PageTransition>
+              {children}
+            </PageTransition>
             <Footer/>
           </div>
           <Analytics />

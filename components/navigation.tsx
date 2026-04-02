@@ -205,7 +205,7 @@ function MobileDrawer({
       <div
         aria-hidden="true"
         onClick={onClose}
-        className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
+        className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
           isOpen
             ? "pointer-events-auto opacity-100"
             : "pointer-events-none opacity-0"
@@ -218,7 +218,7 @@ function MobileDrawer({
         role="dialog"
         aria-modal="true"
         aria-label="Navigation menu"
-        className={`fixed inset-y-0 left-0 z-50 flex w-[280px] flex-col overflow-hidden border-r border-border bg-background transition-transform duration-300 ease-in-out md:hidden ${
+        className={`fixed inset-y-0 left-0 z-50 flex flex-col w-[280px] bg-background border-r border-border transition-transform duration-300 ease-in-out lg:hidden overflow-hidden ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -374,7 +374,7 @@ export default function Navbar() {
     );
     if (sections.length === 0) return;
 
-    const isMobile = window.innerWidth < 768;
+    const isMobile = window.innerWidth < 1024;
     const topOffset = isMobile ? "80px" : "100px";
     const bottomOffset = isMobile ? "35%" : "50%";
     const visibilityThreshold = isMobile ? 0.15 : 0.3;
@@ -459,25 +459,47 @@ export default function Navbar() {
   const toggleDrawer = useCallback(() => setDrawerOpen((prev) => !prev), []);
 
   return (
-    <NotificationProvider>
-      <>
-        <nav
-          ref={navRef}
-          className={`fixed left-0 right-0 z-30 flex items-center justify-between border-b border-terra/10 bg-cream/94 px-6 backdrop-blur-md transition-all duration-300 ease-out md:px-12 ${
-            isScrolled
-              ? "py-[0.95rem] shadow-lg shadow-terra/5 md:py-[0.7rem]"
-              : "py-[1.1rem] shadow-sm shadow-terra/0"
-          }`}
-          style={{ top: "var(--update-banner-height, 0px)" }}
-        >
-          <Link href="/" className="flex items-center gap-2.5 no-underline">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-terra text-sm font-semibold text-gold">
-              ★
-            </div>
-            <span className="font-serif text-xl font-bold tracking-tight text-foreground">
-              Stellar Uzima
-            </span>
-          </Link>
+    <>
+      <nav
+        ref={navRef}
+        className={`fixed left-0 right-0 z-30 flex items-center justify-between px-6 md:px-12 bg-cream/94 backdrop-blur-md border-b border-terra/10 transition-all duration-300 ease-out ${
+          isScrolled
+            ? "py-[0.95rem] md:py-[0.7rem] shadow-lg shadow-terra/5"
+            : "py-[1.1rem] shadow-sm shadow-terra/0"
+        }`}
+        style={{ top: 'var(--update-banner-height, 0px)' }}
+      >
+        {/* ── Logo ── */}
+        <Link href="/" className="flex items-center gap-2.5 no-underline">
+          <div className="w-9 h-9 rounded-full bg-terra flex items-center justify-center text-gold text-sm font-semibold">
+            ★
+          </div>
+          <span className="font-serif font-bold text-foreground text-xl tracking-tight">
+            Stellar Uzima
+          </span>
+        </Link>
+
+        {/* ── Desktop nav links ── */}
+        <ul className="hidden lg:flex items-center gap-8 list-none">
+          {NAV_LINKS.map((link) => {
+            const active = link.href.startsWith("#")
+              ? `#${activeSection}` === link.href
+              : pathname === link.href;
+            return (
+              <li key={link.href}>
+                <a
+                  href={link.href}
+                  className={`relative no-underline text-sm font-medium transition-all duration-200
+                    ${active ? "text-terra" : "text-muted-foreground hover:text-terra"}`}
+                >
+                  {link.label}
+                  {active && (
+                    <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-terra rounded-full" />
+                  )}
+                </a>
+              </li>
+            );
+          })}
 
           <ul className="hidden list-none items-center gap-8 md:flex">
             {NAV_LINKS.map((link) => {
@@ -517,45 +539,35 @@ export default function Navbar() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     >
-                      <path d="m6 9 6 6 6-6" />
-                    </svg>
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  className="w-48 rounded-lg border border-border bg-card shadow-lg"
-                >
-                  {SERVICE_LINKS.map((link) => (
-                    <DropdownMenuItem key={link.href} asChild>
-                      <Link
-                        href={link.href}
-                        className={`flex items-center gap-2 px-4 py-2 text-sm ${
-                          pathname === link.href
-                            ? "font-medium text-terra"
-                            : "text-foreground hover:bg-accent"
-                        }`}
-                      >
-                        {link.label}
-                      </Link>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </li>
-          </ul>
+                      {link.label}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </li>
+        </ul>
 
-          <div className="hidden items-center gap-4 md:flex">
-            {isLoggedIn && xlmBalance !== null && (
-              <XLMBalanceWidget balance={xlmBalance} />
-            )}
-            <ThemeToggle />
-            <LanguageSelector />
-            <NotificationPanel />
-            <InstallButton />
-            <button
-              type="button"
-              onClick={() => setWalletModalOpen(true)}
-              className="px-2 text-sm font-medium text-terra transition-opacity hover:opacity-80"
+        {/* ── Desktop right side ── */}
+        <div className="hidden lg:flex items-center gap-4">
+          {isLoggedIn && xlmBalance !== null && (
+            <XLMBalanceWidget balance={xlmBalance} />
+          )}
+          <ThemeToggle />
+          <LanguageSelector />
+          <NotificationPanel />
+          <InstallButton />
+          <button
+            type="button"
+            onClick={() => setWalletModalOpen(true)}
+            className="text-terra font-medium text-sm hover:opacity-80 transition-opacity px-2"
+          >
+            Connect wallet
+          </button>
+          {!isLoggedIn && (
+            <Link
+              href="/signin"
+              className="text-foreground font-medium text-sm hover:text-terra transition-colors px-2"
             >
               Connect wallet
             </button>
@@ -575,11 +587,23 @@ export default function Navbar() {
             </a>
           </div>
 
-          <div className="flex items-center gap-2 md:hidden">
-            <NotificationPanel />
-            <HamburgerButton isOpen={drawerOpen} onClick={toggleDrawer} />
-          </div>
-        </nav>
+        {/* ── Mobile Actions (Bell + Hamburger) ── */}
+        <div className="flex items-center gap-2 lg:hidden">
+          <NotificationPanel />
+          <HamburgerButton isOpen={drawerOpen} onClick={toggleDrawer} />
+        </div>
+      </nav>
+
+      {/* ── Mobile drawer ── */}
+      <MobileDrawer
+        isOpen={drawerOpen}
+        onClose={closeDrawer}
+        pathname={pathname}
+        isLoggedIn={isLoggedIn}
+        xlmBalance={xlmBalance}
+        activeSection={activeSection}
+        onOpenWallet={() => setWalletModalOpen(true)}
+      />
 
         <MobileDrawer
           isOpen={drawerOpen}
@@ -601,3 +625,5 @@ export default function Navbar() {
     </NotificationProvider>
   );
 }
+
+
