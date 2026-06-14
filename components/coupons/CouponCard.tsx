@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // --- The 5 pieces of info our coupon needs ---
 interface CouponCardProps {
@@ -9,13 +9,6 @@ interface CouponCardProps {
   expiresAt: string;
   specialist: string;
   status: "active" | "used" | "expired";
-}
-
-// --- Helper: Is the coupon expiring within 7 days? ---
-function isExpiringSoon(expiresAt: string): boolean {
-  const expiry = new Date(expiresAt);
-  const daysLeft = (expiry.getTime() - Date.now()) / 86_400_000;
-  return daysLeft > 0 && daysLeft <= 7;
 }
 
 // --- Helper: Format date nicely e.g. "Mar 1, 2026" ---
@@ -36,12 +29,22 @@ export function CouponCard({
   status,
 }: CouponCardProps) {
   const [copied, setCopied] = useState(false);
+  const [expiringSoon, setExpiringSoon] = useState(false);
 
   // "used" and "expired" cards should look greyed out
   const isInactive = status === "used" || status === "expired";
 
-  // Should we show a warning about expiry?
-  const expiringSoon = status === "active" && isExpiringSoon(expiresAt);
+  // Compute expiry warning only on the client to avoid hydration mismatch.
+  useEffect(() => {
+    if (status !== "active") {
+      setExpiringSoon(false);
+      return;
+    }
+
+    const expiry = new Date(expiresAt);
+    const daysLeft = (expiry.getTime() - Date.now()) / 86_400_000;
+    setExpiringSoon(daysLeft > 0 && daysLeft <= 7);
+  }, [expiresAt, status]);
 
   // What happens when someone clicks "Copy"
   const handleCopy = async () => {

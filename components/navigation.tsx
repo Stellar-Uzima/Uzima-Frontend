@@ -6,7 +6,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Download } from "lucide-react";
 
-import { NotificationProvider } from "@/context/NotificationContext";
 import LanguageSelector from "@/components/ui/LanguageSelector";
 import {
   DropdownMenu,
@@ -501,29 +500,6 @@ export default function Navbar() {
             );
           })}
 
-          <ul className="hidden list-none items-center gap-8 md:flex">
-            {NAV_LINKS.map((link) => {
-              const active = link.href.startsWith("#")
-                ? `#${activeSection}` === link.href
-                : pathname === link.href;
-
-              return (
-                <li key={link.href}>
-                  <a
-                    href={link.href}
-                    className={`relative text-sm font-medium transition-all duration-200 ${
-                      active ? "text-terra" : "text-muted-foreground hover:text-terra"
-                    }`}
-                  >
-                    {link.label}
-                    {active && (
-                      <span className="absolute left-0 right-0 -bottom-1 h-0.5 rounded-full bg-terra" />
-                    )}
-                  </a>
-                </li>
-              );
-            })}
-
             <li>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -539,14 +515,22 @@ export default function Navbar() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     >
-                      {link.label}
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </li>
-        </ul>
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="rounded-xl border-terra/10">
+                  {SERVICE_LINKS.map((service) => (
+                    <DropdownMenuItem asChild key={service.href} className="cursor-pointer">
+                      <Link href={service.href} className="block w-full">
+                        {service.label}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </li>
+          </ul>
 
         {/* ── Desktop right side ── */}
         <div className="hidden lg:flex items-center gap-4">
@@ -565,26 +549,21 @@ export default function Navbar() {
             Connect wallet
           </button>
           {!isLoggedIn && (
-            <Link
-              href="/signin"
-              className="text-foreground font-medium text-sm hover:text-terra transition-colors px-2"
-            >
-              Connect wallet
-            </button>
-            {!isLoggedIn && (
+            <>
               <Link
                 href="/signin"
-                className="px-2 text-sm font-medium text-foreground transition-colors hover:text-terra"
+                className="text-foreground font-medium text-sm hover:text-terra transition-colors px-2"
               >
                 Sign In
               </Link>
-            )}
-            <a
-              href="/signup"
-              className="rounded-full bg-terra px-5 py-2 text-sm font-medium text-white transition-all hover:bg-earth hover:shadow-lg hover:shadow-terra/30"
-            >
-              Join Now
-            </a>
+              <Link
+                href="/signup"
+                className="rounded-full bg-terra px-5 py-2 text-sm font-medium text-white transition-all hover:bg-earth hover:shadow-lg hover:shadow-terra/30"
+              >
+                Join Now
+              </Link>
+            </>
+          )}
           </div>
 
         {/* ── Mobile Actions (Bell + Hamburger) ── */}
@@ -605,25 +584,13 @@ export default function Navbar() {
         onOpenWallet={() => setWalletModalOpen(true)}
       />
 
-        <MobileDrawer
-          isOpen={drawerOpen}
-          onClose={closeDrawer}
-          pathname={pathname}
-          isLoggedIn={isLoggedIn}
-          xlmBalance={xlmBalance}
-          activeSection={activeSection}
-          onOpenWallet={() => setWalletModalOpen(true)}
+      {walletModalOpen && (
+        <WalletConnectModal
+          open={walletModalOpen}
+          onOpenChange={setWalletModalOpen}
         />
-
-        {walletModalOpen && (
-          <WalletConnectModal
-            open={walletModalOpen}
-            onOpenChange={setWalletModalOpen}
-          />
-        )}
-      </>
-    </NotificationProvider>
+      )}
+    </>
   );
 }
-
 

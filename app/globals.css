@@ -191,7 +191,13 @@
   body {
     @apply bg-background text-foreground font-sans;
     overflow-x: hidden;
-   
+    transition: padding-top 0.2s ease;
+  }
+
+  .offline-banner-offset {
+    padding-top: calc(
+      var(--navbar-height) + var(--update-banner-height) + var(--offline-banner-offset)
+    );
     transition: padding-top 0.2s ease;
   }
 
