@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 
 import Navigation from "@/components/navigation";
-import Spinner from "@/components/Spinner";
+import { HealerCardSkeleton } from "@/components/healers/HealerCard";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import {
   healerLanguages,
@@ -27,7 +27,6 @@ const HealersDirectory = dynamic(
 export function HealersPageClient() {
   const { items: healers, loading, hasMore } = useInfiniteScroll(
     async (page: number) => {
-      // Kept as a client-side mock loader until the real API is wired in.
       const start = (page - 1) * 12;
       const end = start + 12;
       return mockHealers.slice(start, end);
@@ -39,17 +38,34 @@ export function HealersPageClient() {
   return (
     <>
       <Navigation />
-      <HealersDirectory
-        healers={healers}
-        specialties={healerSpecialties}
-        regions={healerRegions}
-        languages={healerLanguages}
-      />
-      {loading && <Spinner />}
-      {!hasMore && (
-        <p className="mt-4 text-center text-gray-600">All healers loaded</p>
+      {loading && healers.length === 0 ? (
+        // Initial load — show skeleton grid instead of blank screen
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-32 pb-20">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-6">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <HealerCardSkeleton key={i} />
+            ))}
+          </div>
+        </div>
+      ) : (
+        <HealersDirectory
+          healers={healers}
+          specialties={healerSpecialties}
+          regions={healerRegions}
+          languages={healerLanguages}
+        />
       )}
-      {/* Footer remains in the root layout, so we avoid loading a duplicate here. */}
+      {/* Subsequent page loads — spinner at bottom while more cards fetch */}
+      {loading && healers.length > 0 && (
+        <div className="flex justify-center py-8">
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-terra border-t-transparent" aria-label="Loading more healers" />
+        </div>
+      )}
+      {!hasMore && healers.length > 0 && (
+        <p className="mt-4 pb-8 text-center text-sm text-muted">
+          All healers loaded
+        </p>
+      )}
     </>
   );
 }

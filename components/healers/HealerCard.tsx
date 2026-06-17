@@ -77,7 +77,7 @@ function HealerAvatar({ healer }: { healer: Healer }) {
   );
 }
 
-function HealerCardSkeleton() {
+export function HealerCardSkeleton() {
   return (
     <article className="flex flex-col h-full rounded-3xl border border-terra/15 bg-white p-4 shadow-sm" aria-hidden="true">
       <div className="flex items-start gap-3">
