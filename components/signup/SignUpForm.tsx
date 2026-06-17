@@ -336,21 +336,24 @@ export default function SignUpForm() {
           <FormField
             control={form.control}
             name="fullName"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className="text-earth font-medium text-sm">
-                  Full Name
+                <FormLabel className="text-earth font-medium text-sm" htmlFor="fullName">
+                  Full Name <span className="text-rose-500" aria-hidden="true">*</span>
                 </FormLabel>
                 <FormControl>
                   <Input
+                    id="fullName"
                     placeholder="Legend4tech"
                     autoComplete="name"
                     className="rounded-xl"
                     disabled={isLoading}
+                    aria-required="true"
+                    aria-invalid={!!fieldState.error}
                     {...field}
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage role="alert" />
               </FormItem>
             )}
           />
@@ -364,12 +367,13 @@ export default function SignUpForm() {
 
               return (
                 <FormItem>
-                  <FormLabel className="text-earth font-medium text-sm">
-                    Email Address
+                  <FormLabel className="text-earth font-medium text-sm" htmlFor="email">
+                    Email Address <span className="text-rose-500" aria-hidden="true">*</span>
                   </FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
+                        id="email"
                         type="email"
                         placeholder="you@example.com"
                         autoComplete="email"
@@ -378,6 +382,9 @@ export default function SignUpForm() {
                           showValid && "border-emerald-500 ring-emerald-500/20",
                         )}
                         disabled={isLoading}
+                        aria-required="true"
+                        aria-invalid={!!fieldState.error}
+                        aria-describedby={fieldState.error ? "email-error" : undefined}
                         {...field}
                       />
                       {showValid && (
@@ -388,7 +395,7 @@ export default function SignUpForm() {
                       )}
                     </div>
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage id="email-error" role="alert" />
                 </FormItem>
               );
             }}
@@ -397,22 +404,25 @@ export default function SignUpForm() {
           <FormField
             control={form.control}
             name="phone"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className="text-earth font-medium text-sm">
-                  Phone Number
+                <FormLabel className="text-earth font-medium text-sm" htmlFor="phone">
+                  Phone Number <span className="text-rose-500" aria-hidden="true">*</span>
                 </FormLabel>
                 <FormControl>
                   <Input
+                    id="phone"
                     type="tel"
                     placeholder="+234 801 234 5678"
                     autoComplete="tel"
                     className="rounded-xl"
                     disabled={isLoading}
+                    aria-required="true"
+                    aria-invalid={!!fieldState.error}
                     {...field}
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage role="alert" />
               </FormItem>
             )}
           />
@@ -424,8 +434,8 @@ export default function SignUpForm() {
             name="country"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-earth font-medium text-sm">
-                  Country
+                <FormLabel className="text-earth font-medium text-sm" htmlFor="country">
+                  Country <span className="text-rose-500" aria-hidden="true">*</span>
                 </FormLabel>
                 <Select
                   onValueChange={field.onChange}
@@ -433,7 +443,7 @@ export default function SignUpForm() {
                   disabled={isLoading}
                 >
                   <FormControl>
-                    <SelectTrigger className="rounded-xl w-full">
+                    <SelectTrigger id="country" className="rounded-xl w-full" aria-required="true">
                       <SelectValue placeholder="Select your country" />
                     </SelectTrigger>
                   </FormControl>
@@ -445,7 +455,7 @@ export default function SignUpForm() {
                     ))}
                   </SelectContent>
                 </Select>
-                <FormMessage />
+                <FormMessage role="alert" />
               </FormItem>
             )}
           />
@@ -455,19 +465,23 @@ export default function SignUpForm() {
           <FormField
             control={form.control}
             name="password"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className="text-earth font-medium text-sm">
-                  Password
+                <FormLabel className="text-earth font-medium text-sm" htmlFor="password">
+                  Password <span className="text-rose-500" aria-hidden="true">*</span>
                 </FormLabel>
                 <FormControl>
                   <div className="relative">
                     <Input
+                      id="password"
                       type={showPassword ? "text" : "password"}
                       placeholder="Min. 8 characters"
                       autoComplete="new-password"
                       className="rounded-xl pr-10"
                       disabled={isLoading}
+                      aria-required="true"
+                      aria-describedby="password-hint password-strength"
+                      aria-invalid={!!fieldState.error}
                       {...field}
                     />
                     <button
@@ -486,7 +500,15 @@ export default function SignUpForm() {
                     </button>
                   </div>
                 </FormControl>
-                <div className="mt-3 rounded-2xl px-3 py-3 text-sm">
+                <div id="password-hint" className="sr-only">
+                  Password must be at least 8 characters with a mix of uppercase, lowercase, numbers, and special characters.
+                </div>
+                <div
+                  id="password-strength"
+                  className="mt-3 rounded-2xl px-3 py-3 text-sm"
+                  role="status"
+                  aria-live="polite"
+                >
                   <div className="flex items-center justify-between gap-3 text-xs text-muted">
                     <span>Password strength</span>
                     <span
@@ -505,7 +527,7 @@ export default function SignUpForm() {
                     />
                   </div>
                 </div>
-                <FormMessage />
+                <FormMessage role="alert" />
               </FormItem>
             )}
           />
@@ -514,14 +536,15 @@ export default function SignUpForm() {
           <FormField
             control={form.control}
             name="confirmPassword"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className="text-earth font-medium text-sm">
-                  Confirm Password
+                <FormLabel className="text-earth font-medium text-sm" htmlFor="confirmPassword">
+                  Confirm Password <span className="text-rose-500" aria-hidden="true">*</span>
                 </FormLabel>
                 <FormControl>
                   <div className="relative">
                     <Input
+                      id="confirmPassword"
                       type={showConfirmPassword ? "text" : "password"}
                       placeholder="Re-enter your password"
                       autoComplete="new-password"
@@ -532,6 +555,8 @@ export default function SignUpForm() {
                           : "",
                       )}
                       disabled={isLoading}
+                      aria-required="true"
+                      aria-invalid={!!fieldState.error}
                       {...field}
                     />
                     <button
@@ -567,7 +592,7 @@ export default function SignUpForm() {
                     )}
                   </div>
                 </FormControl>
-                <FormMessage />
+                <FormMessage role="alert" />
               </FormItem>
             )}
           />
@@ -582,15 +607,21 @@ export default function SignUpForm() {
                 <div className="flex items-start gap-3">
                   <FormControl>
                     <Checkbox
+                      id="terms"
                       checked={!!field.value}
                       onCheckedChange={(checked) =>
                         field.onChange(checked === true)
                       }
                       disabled={isLoading}
                       className="mt-0.5 data-[state=checked]:bg-terra data-[state=checked]:border-terra"
+                      aria-required="true"
+                      aria-describedby="terms-error"
                     />
                   </FormControl>
-                  <FormLabel className="text-sm text-muted leading-relaxed cursor-pointer font-normal">
+                  <FormLabel
+                    htmlFor="terms"
+                    className="text-sm text-muted leading-relaxed cursor-pointer font-normal"
+                  >
                     By signing up you agree to our{" "}
                     <Link
                       href="/terms"
@@ -608,7 +639,7 @@ export default function SignUpForm() {
                     .
                   </FormLabel>
                 </div>
-                <FormMessage />
+                <FormMessage id="terms-error" role="alert" />
               </FormItem>
             )}
           />
@@ -618,6 +649,7 @@ export default function SignUpForm() {
             type="submit"
             disabled={isLoading}
             className="w-full bg-terra hover:bg-earth text-white rounded-full py-6 mt-2 text-base font-semibold transition-all hover:shadow-lg hover:shadow-terra/30 hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+            aria-label={isLoading ? "Submitting sign up form" : "Create account"}
           >
             {isLoading ? (
               <>
