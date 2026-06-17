@@ -59,4 +59,4 @@ export function PwaShell() {
       */}
     </>
   );
-}git checkout -b feat/284-global-network-status-indicator
+}
