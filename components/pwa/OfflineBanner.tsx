@@ -51,7 +51,9 @@ export function OfflineBanner() {
 
       reconnectTimeoutRef.current = setTimeout(() => {
         setShowBanner(false);
-        setHasBeenOffline(false);
+        // Delay clearing hasBeenOffline until after the CSS transition finishes
+        // (300 ms matches the `duration-300` on the banner's transform).
+        setTimeout(() => setHasBeenOffline(false), 300);
       }, 5000);
     };
 
@@ -135,13 +137,20 @@ export function OfflineBanner() {
     }
   };
 
-  if (!showBanner && isOnline) {
+  // Only unmount after the slide-out transition has completed.
+  // Keeping the node in the DOM while `showBanner` is false lets the
+  // `-translate-y-full` class animate the banner off screen rather than
+  // snapping it away immediately.
+  if (!showBanner && !hasBeenOffline) {
     return null;
   }
 
   return (
     <div
       ref={bannerRef}
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
       className={cn(
         "fixed left-0 right-0 z-20 transform transition-all duration-300",
         showBanner ? "translate-y-0" : "-translate-y-full"
@@ -162,15 +171,17 @@ export function OfflineBanner() {
               <>
                 <Wifi className="h-5 w-5 flex-shrink-0" />
                 <span>
-                  <strong>You&apos;re back online!</strong> Syncing your data...
+                  <strong>You&apos;re back online!</strong> Syncing your
+                  data&hellip;
                 </span>
               </>
             ) : (
               <>
                 <WifiOff className="h-5 w-5 flex-shrink-0 animate-pulse" />
                 <span>
-                  <strong>You&apos;re offline</strong> - Tasks you complete will
-                  be saved and synced automatically when you reconnect
+                  <strong>You&apos;re offline</strong> &ndash; Tasks you
+                  complete will be saved and synced automatically when you
+                  reconnect.
                 </span>
               </>
             )}
@@ -179,7 +190,7 @@ export function OfflineBanner() {
           <button
             onClick={handleDismiss}
             className="flex-shrink-0 rounded p-1 transition-colors hover:bg-black/10"
-            aria-label="Close banner"
+            aria-label="Dismiss network status banner"
           >
             <X className="h-4 w-4" />
           </button>
