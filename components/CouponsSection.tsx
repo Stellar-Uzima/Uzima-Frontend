@@ -1,123 +1,89 @@
-import { CouponCard } from "./coupons/CouponCard";
-export default function CouponsSection() {
-  const coupons = [
-    {
-      icon: "🏥",
-      title: "Health Check-Up",
-      description: "Free medical consultation and health screening",
-      reward: "500 XLM",
-      color: "terra",
-    },
-    {
-      icon: "📚",
-      title: "Premium Course Bundle",
-      description: "Access to 50+ wealth-building courses",
-      reward: "750 XLM",
-      color: "sage",
-    },
-    {
-      icon: "✈️",
-      title: "Community Travel Fund",
-      description: "Subsidized group trips and experiences",
-      reward: "1000 XLM",
-      color: "gold",
-    },
-  ];
+"use client";
+
+import { useState, useEffect } from "react";
+
+// Inline coupon card to avoid import issues
+function CouponCard({ code, discount, expiresAt, specialist, description }: any) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
-    <section className="bg-forest text-cream px-6 sm:px-12 md:px-16 lg:px-20 py-16 sm:py-20 md:py-28 relative overflow-hidden">
-      {/* Decorative gradient */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 60% 60% at 80% 50%, rgba(90,122,74,0.2) 0%, transparent 70%)",
-        }}
-      />
+    <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+      <div className="flex justify-between items-start">
+        <div>
+          <span className="text-2xl font-bold text-yellow-400">{code}</span>
+          <p className="text-sm text-gray-300 mt-1">{specialist}</p>
+        </div>
+        <span className="bg-green-500 text-white text-xs px-3 py-1 rounded-full">
+          {discount}
+        </span>
+      </div>
+      <p className="text-gray-200 mt-3 text-sm">{description}</p>
+      <div className="mt-4 text-xs text-gray-400">
+        Expires: {isClient ? new Date(expiresAt).toLocaleDateString() : expiresAt}
+      </div>
+    </div>
+  );
+}
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Left - Text */}
-          <div className="order-1 lg:order-1">
-            <div className="flex items-center gap-2 text-gold/90 font-bold text-xs uppercase tracking-widest mb-2">
-              <span>✦</span>
-              <span>Redeem Rewards</span>
-            </div>
+export default function CouponsSection() {
+  const [isClient, setIsClient] = useState(false);
 
-            <h2
-              className="font-serif font-bold text-cream leading-tight mb-4"
-              style={{
-                fontSize: "clamp(1.8rem, 3vw, 2.8rem)",
-                letterSpacing: "-0.02em",
-              }}
-            >
-              Exclusive <em className="italic text-gold">Benefits</em>
-            </h2>
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
-            <p className="text-base text-cream/65 leading-loose max-w-sm">
-              Use your earned XLM tokens to unlock exclusive benefits and
-              transform your life.
-            </p>
+  if (!isClient) {
+    return (
+      <section className="bg-green-900 text-white py-16 md:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold">Health Coupons</h2>
+            <p className="text-gray-300 mt-2">Loading coupons...</p>
           </div>
-
-          {/* Right - Coupon cards */}
-          <div className="order-2 lg:order-2 flex flex-col gap-8 items-center lg:items-start">
-            <div className="w-full max-w-sm lg:max-w-none">
-              <CouponCard
-                code="HEALTH50"
-                discount="50% off"
-                expiresAt="2026-02-25"
-                specialist="General Practitioner"
-                status="active"
-              />
-            </div>
-            <div className="flex flex-col gap-4 w-full">
-            {coupons.map((coupon, i) => {
-              const colorClasses = {
-                terra: "border-terra/30 bg-terra/20",
-                sage: "border-sage/30 bg-sage/20",
-                gold: "border-gold/25 bg-gold/12",
-              };
-
-              const accentColors = {
-                terra: "#B84E20",
-                sage: "#5A7A4A",
-                gold: "#F0C050",
-              };
-
-              return (
-                <div
-                  key={i}
-                  className={`rounded-4xl p-6 flex items-center gap-5 border relative overflow-hidden ${colorClasses[coupon.color as keyof typeof colorClasses]}`}
-                >
-                  {/* Left accent bar */}
-                  <div
-                    className="absolute left-0 top-0 bottom-0 w-1"
-                    style={{
-                      backgroundColor:
-                        accentColors[coupon.color as keyof typeof accentColors],
-                    }}
-                  />
-
-                  <span className="text-3xl flex-shrink-0">{coupon.icon}</span>
-
-                  <div className="flex-1">
-                    <div className="font-bold text-cream mb-0.5">
-                      {coupon.title}
-                    </div>
-                    <div className="text-xs text-cream/60">
-                      {coupon.description}
-                    </div>
-                  </div>
-
-                  <div className="font-bold text-lg text-gold whitespace-nowrap">
-                    {coupon.reward}
-                  </div>
-                </div>
-              );
-            })}
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-white/10 rounded-xl p-6 animate-pulse h-40"></div>
+            ))}
           </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="bg-green-900 text-white py-16 md:py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold">Health Coupons</h2>
+          <p className="text-gray-300 mt-2">Exclusive discounts on health services</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <CouponCard
+            code="HEALTH50"
+            discount="50% off"
+            expiresAt="2026-02-25"
+            specialist="General Practitioner"
+            description="Get 50% off your first consultation"
+          />
+          <CouponCard
+            code="WELLNESS30"
+            discount="30% off"
+            expiresAt="2026-03-15"
+            specialist="Mental Health"
+            description="30% off mental health sessions"
+          />
+          <CouponCard
+            code="FAMILY20"
+            discount="20% off"
+            expiresAt="2026-04-01"
+            specialist="Family Medicine"
+            description="20% off family health packages"
+          />
         </div>
       </div>
     </section>

@@ -1,9 +1,24 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import Navigation from "@/components/navigation";
 import DailyProgressCard from "@/components/dashboard/DailyProgressCard";
 import { EarningsChartLoader } from "@/components/dashboard/EarningsChartLoader";
+import DashboardStatsSkeleton from "@/components/ui/skeletons/DashboardStatsSkeleton";
 
 export default function DashboardPage() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    console.log("🔄 Dashboard loading started");
+    const timer = setTimeout(() => {
+      console.log("✅ Dashboard loading complete");
+      setIsLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col pt-20">
       <Navigation />
@@ -17,16 +32,22 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <DailyProgressCard
-              completedToday={3}
-              totalTasks={5}
-              xlmEarned={12}
-              streak={4}
-            />
-
-            <EarningsChartLoader />
-          </div>
+          {isLoading ? (
+            <>
+              <div className="text-center text-blue-500 py-4">Loading dashboard...</div>
+              <DashboardStatsSkeleton />
+            </>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <DailyProgressCard
+                completedToday={3}
+                totalTasks={5}
+                xlmEarned={12}
+                streak={4}
+              />
+              <EarningsChartLoader />
+            </div>
+          )}
         </div>
       </main>
     </div>
