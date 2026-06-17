@@ -3,12 +3,11 @@
 import { Suspense, useMemo, useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import * as React from "react";
-import { Bookmark, ListFilter } from "lucide-react";
+import { Bookmark } from "lucide-react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
-import { Button } from "@/components/ui/button";
 import { mockTasks } from "@/lib/mock/tasks";
 import { useBookmarks } from "@/hooks/useBookmarks";
 import { HealthTaskCard } from "@/components/tasks/HealthTaskCard";
@@ -43,6 +42,7 @@ const categoryIcon: Record<string, string> = {
 };
 
 type Tab = "all" | "saved"
+
 function TasksContent() {
   const router = useRouter();
   const pathname = usePathname();
@@ -67,47 +67,41 @@ function TasksContent() {
     if (key === "status") setStat(value);
     if (key === "sort") setSort(value);
 
-    // Reset to page 1 when filters change
     setCurrentPage(1);
 
     const params = new URLSearchParams(searchParams.toString());
     if (value === "All") params.delete(key);
     else params.set(key, value);
-    
-    // Remove page param when resetting to page 1
+
     params.delete("page");
 
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  // Handle page changes
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    
+
     const params = new URLSearchParams(searchParams.toString());
     if (page === 1) {
       params.delete("page");
     } else {
       params.set("page", page.toString());
     }
-    
+
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
-    
-    // Scroll to top of task list
+
     const taskSection = document.querySelector('[data-task-section]');
     if (taskSection) {
       taskSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
-  // Filtering Logic
   const filteredTasks = useMemo(() => {
     let result = [...mockTasks];
 
     if (cat !== "All") {
       result = result.filter((task) => {
-        if (cat === "Traditional")
-          return task.category === "Traditional Medicine";
+        if (cat === "Traditional") return task.category === "Traditional Medicine";
         return task.category === cat;
       });
     }
@@ -116,7 +110,6 @@ function TasksContent() {
       result = result.filter((task) => task.status === stat.toLowerCase());
     }
 
-    // Apply Sort
     result.sort((a, b) => {
       switch (sort) {
         case "reward-desc":
@@ -125,14 +118,19 @@ function TasksContent() {
           return a.category.localeCompare(b.category);
         case "newest":
         default:
-          return (
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          );
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       }
     });
 
     return result;
   }, [cat, stat, sort]);
+
+  const clearFilters = () => {
+    setCat("All");
+    setStat("All");
+    setCurrentPage(1);
+    router.push(pathname);
+  };
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">
@@ -144,17 +142,13 @@ function TasksContent() {
           Earn XLM for caring for your health
         </h1>
       </header>
+
       <TaskFilters
         activeCategory={cat}
         activeStatus={stat}
         activeSort={sort}
         onFilterChange={handleFilterChange}
-        onClearAll={() => {
-          setCat("All");
-          setStat("All");
-          setCurrentPage(1);
-          router.push(pathname);
-        }}
+        onClearAll={clearFilters}
       />
 
       <section className="min-h-[400px]" data-task-section>
@@ -168,22 +162,13 @@ function TasksContent() {
             itemsPerPage={12}
           />
         ) : (
-          <div className="flex flex-col items-center justify-center py-20 rounded-3xl border border-dashed border-terra/20 bg-white/50 text-center">
-            <ListFilter className="h-10 w-10 text-terra/20 mb-4" />
-            <h3 className="text-earth font-bold text-lg">No tasks found</h3>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setCat("All");
-                setStat("All");
-                setCurrentPage(1);
-                router.push(pathname);
-              }}
-              className="mt-4 rounded-full"
-            >
-              Clear all filters
-            </Button>
-          </div>
+          <EmptyState
+            illustration="tasks"
+            title="No tasks found"
+            description="No tasks match your current filters. Try adjusting your search or clear all filters to see everything available."
+            ctaLabel="Clear all filters"
+            onCtaClick={clearFilters}
+          />
         )}
       </section>
     </div>
@@ -192,18 +177,19 @@ function TasksContent() {
 
 export default function TasksPage() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = React.useState<Tab>("all")
-  const { bookmarkCount, isBookmarked, toggleBookmark } = useBookmarks()
+  const [activeTab, setActiveTab] = React.useState<Tab>("all");
+  const { bookmarkCount, isBookmarked, toggleBookmark } = useBookmarks();
 
   const savedTasks = React.useMemo(
     () => mockTasks.filter((task) => isBookmarked(task.id)),
     [isBookmarked, bookmarkCount],
-  )
+  );
 
   const allBookmarkedIds = React.useMemo(
     () => new Set(mockTasks.filter((t) => isBookmarked(t.id)).map((t) => t.id)),
     [isBookmarked, bookmarkCount],
-  )
+  );
+
   return (
     <>
       <Navigation />
@@ -218,12 +204,11 @@ export default function TasksPage() {
             </h1>
             <p className="text-sm sm:text-base text-muted max-w-2xl">
               Choose a task that fits your day, follow the simple health steps,
-              and complete it honestly to unlock your Stellar Lumens (XLM)
-              reward.
+              and complete it honestly to unlock your Stellar Lumens (XLM) reward.
             </p>
           </header>
 
-          {/* Issue #215 — Tab bar */}
+          {/* Tab bar */}
           <div className="flex gap-2 border-b border-[#E8D4C0]">
             <button
               type="button"
@@ -268,24 +253,13 @@ export default function TasksPage() {
                 onToggleBookmark={toggleBookmark}
               />
             ) : savedTasks.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#C05A2B]/10">
-                  <Bookmark className="h-8 w-8 text-[#C05A2B]/40" />
-                </div>
-                <h3 className="font-serif text-xl font-bold text-earth mb-2">
-                  No saved tasks yet
-                </h3>
-                <p className="text-sm text-muted max-w-xs">
-                  Tap the bookmark icon on any task to save it here for quick access.
-                </p>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("all")}
-                  className="mt-6 rounded-xl bg-[#C05A2B] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#A04A22] transition-colors"
-                >
-                  Browse Tasks
-                </button>
-              </div>
+              <EmptyState
+                icon={<Bookmark />}
+                title="No saved tasks yet"
+                description="Tap the bookmark icon on any task to save it here for quick access."
+                ctaLabel="Browse Tasks"
+                onCtaClick={() => setActiveTab("all")}
+              />
             ) : (
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
                 {savedTasks.map((task) => (
