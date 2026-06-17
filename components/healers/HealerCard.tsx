@@ -77,28 +77,121 @@ function HealerAvatar({ healer }: { healer: Healer }) {
   );
 }
 
+// export function HealerCardSkeleton() {
+//   return (
+//     <article className="flex flex-col h-full rounded-3xl border border-terra/15 bg-white p-4 shadow-sm" aria-hidden="true">
+//       <div className="flex items-start gap-3">
+//         <Skeleton className="h-11 w-11 rounded-2xl flex-shrink-0" />
+//         <div className="flex-1 space-y-2">
+//           <Skeleton className="h-4 w-28 rounded" />
+//           <Skeleton className="h-3 w-36 rounded" />
+//         </div>
+//       </div>
+//       <div className="mt-3 space-y-3 flex-1">
+//         <Skeleton className="h-3 w-32 rounded" />
+//         <div className="flex gap-1.5">
+//           <Skeleton className="h-5 w-20 rounded-full" />
+//           <Skeleton className="h-5 w-16 rounded-full" />
+//         </div>
+//         <Skeleton className="h-3 w-40 rounded" />
+//       </div>
+//       <div className="mt-4 flex items-center justify-between gap-2 pt-2">
+//         <Skeleton className="h-5 w-16 rounded-full" />
+//         <Skeleton className="h-8 w-24 rounded-full" />
+//       </div>
+//     </article>
+//   );
+// }
 export function HealerCardSkeleton() {
   return (
-    <article className="flex flex-col h-full rounded-3xl border border-terra/15 bg-white p-4 shadow-sm" aria-hidden="true">
-      <div className="flex items-start gap-3">
-        <Skeleton className="h-11 w-11 rounded-2xl flex-shrink-0" />
-        <div className="flex-1 space-y-2">
-          <Skeleton className="h-4 w-28 rounded" />
-          <Skeleton className="h-3 w-36 rounded" />
+    <article
+      className="relative flex flex-col h-full rounded-3xl border border-terra/15 bg-white p-4 shadow-sm overflow-hidden"
+      aria-hidden="true"
+    >
+      {/* Avatar — star with smiling face */}
+      <div className="relative flex items-start gap-3">
+        <div className="h-11 w-11 rounded-2xl flex-shrink-0 bg-amber-50 border border-terra/15 flex items-center justify-center">
+          <span
+            className="text-2xl animate-bounce"
+            style={{ animationDuration: "1.2s" }}
+          >
+            🌟
+          </span>
+        </div>
+
+        <div className="flex-1 space-y-2 py-0.5">
+          <div className="h-3.5 w-28 rounded-full bg-gradient-to-r from-terra/15 via-amber-100/80 to-terra/10 animate-pulse" />
+          <div className="h-3 w-36 rounded-full bg-terra/8 animate-pulse" />
         </div>
       </div>
-      <div className="mt-3 space-y-3 flex-1">
-        <Skeleton className="h-3 w-32 rounded" />
-        <div className="flex gap-1.5">
-          <Skeleton className="h-5 w-20 rounded-full" />
-          <Skeleton className="h-5 w-16 rounded-full" />
+
+      <div className="mt-4 space-y-3 flex-1">
+        {/* Animated smiling stars as rating placeholders */}
+        <div className="flex items-center gap-1.5">
+          {["😊", "⭐", "😊", "⭐", "😊"].map((emoji, i) => (
+            <span
+              key={i}
+              className="text-sm animate-bounce"
+              style={{
+                animationDelay: `${i * 120}ms`,
+                animationDuration: "1s",
+              }}
+            >
+              {emoji}
+            </span>
+          ))}
+          <div className="h-3 w-8 rounded-full bg-terra/10 animate-pulse ml-1" />
         </div>
-        <Skeleton className="h-3 w-40 rounded" />
+
+        {/* Specialty badge placeholders */}
+        <div className="flex gap-1.5 flex-wrap">
+          {["w-20", "w-16", "w-24"].map((w, i) => (
+            <div
+              key={i}
+              className={`h-5 ${w} rounded-full bg-gradient-to-r from-terra/10 to-amber-50 animate-pulse`}
+              style={{ animationDelay: `${i * 100}ms` }}
+            />
+          ))}
+        </div>
+
+        {/* Language row */}
+        <div className="flex items-center gap-1.5">
+          <span
+            className="text-sm animate-spin"
+            style={{ animationDuration: "3s", display: "inline-block" }}
+          >
+            🌍
+          </span>
+          <div className="h-3 w-40 rounded-full bg-terra/8 animate-pulse" />
+        </div>
       </div>
-      <div className="mt-4 flex items-center justify-between gap-2 pt-2">
-        <Skeleton className="h-5 w-16 rounded-full" />
-        <Skeleton className="h-8 w-24 rounded-full" />
+
+      {/* Bottom row */}
+      <div className="mt-4 flex items-center justify-between gap-2 pt-3 border-t border-terra/8">
+        <div className="flex items-center gap-1">
+          <span
+            className="text-sm animate-bounce"
+            style={{ animationDuration: "0.8s" }}
+          >
+            ✨
+          </span>
+          <div className="h-5 w-14 rounded-full bg-amber-100/80 animate-pulse" />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <div className="h-8 w-24 rounded-full bg-terra/8 animate-pulse" />
+          <div className="h-8 w-24 rounded-full bg-terra/20 animate-pulse" />
+        </div>
       </div>
+
+      {/* Travelling shimmer overlay */}
+      <div
+        className="pointer-events-none absolute inset-0 -translate-x-full animate-[shimmer_1.8s_infinite]"
+        style={{
+          background:
+            "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.45) 50%, transparent 100%)",
+        }}
+      />
     </article>
   );
 }
