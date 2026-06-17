@@ -4,6 +4,26 @@ import React, { useEffect, useRef, useState } from "react";
 import { WifiOff, Wifi, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+const SESSION_KEY = "offline-banner-dismissed";
+
+function getDismissed(): boolean {
+  try {
+    return sessionStorage.getItem(SESSION_KEY) === "true";
+  } catch {
+    return false;
+  }
+}
+
+function setDismissed(value: boolean) {
+  try {
+    if (value) {
+      sessionStorage.setItem(SESSION_KEY, "true");
+    } else {
+      sessionStorage.removeItem(SESSION_KEY);
+    }
+  } catch {}
+}
+
 export function OfflineBanner() {
   const [isOnline, setIsOnline] = useState(true);
   const [showBanner, setShowBanner] = useState(false);
@@ -12,46 +32,64 @@ export function OfflineBanner() {
   const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    const initializeOnlineState = navigator.onLine;
-    setIsOnline(initializeOnlineState);
-    setShowBanner(!initializeOnlineState);
-    setHasBeenOffline(!initializeOnlineState);
+    const initOnline = navigator.onLine;
+    setIsOnline(initOnline);
+
+    if (!initOnline) {
+      setHasBeenOffline(true);
+      setShowBanner(!getDismissed());
+    }
 
     const handleOnline = () => {
       setIsOnline(true);
+      setDismissed(false);
+      setShowBanner(true);
 
-      if (hasBeenOffline) {
-        setShowBanner(true);
-
-        if (reconnectTimeoutRef.current) {
-          clearTimeout(reconnectTimeoutRef.current);
-        }
-
-        reconnectTimeoutRef.current = setTimeout(() => {
-          setShowBanner(false);
-          setHasBeenOffline(false);
-        }, 5000);
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
       }
+
+      reconnectTimeoutRef.current = setTimeout(() => {
+        setShowBanner(false);
+        setHasBeenOffline(false);
+      }, 5000);
     };
 
     const handleOffline = () => {
       setIsOnline(false);
-      setShowBanner(true);
       setHasBeenOffline(true);
+      setDismissed(false);
+      setShowBanner(true);
+    };
+
+    const handleNavigation = () => {
+      if (!navigator.onLine) {
+        setDismissed(false);
+        setShowBanner(true);
+      }
+    };
+
+    const originalPushState = history.pushState.bind(history);
+    history.pushState = (...args) => {
+      originalPushState(...args);
+      handleNavigation();
     };
 
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
+    window.addEventListener("popstate", handleNavigation);
 
     return () => {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
+      window.removeEventListener("popstate", handleNavigation);
+      history.pushState = originalPushState;
 
       if (reconnectTimeoutRef.current) {
         clearTimeout(reconnectTimeoutRef.current);
       }
     };
-  }, [hasBeenOffline]);
+  }, []);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -89,6 +127,13 @@ export function OfflineBanner() {
       clearOffset();
     };
   }, [isOnline, showBanner]);
+
+  const handleDismiss = () => {
+    setShowBanner(false);
+    if (!isOnline) {
+      setDismissed(true);
+    }
+  };
 
   if (!showBanner && isOnline) {
     return null;
@@ -132,7 +177,7 @@ export function OfflineBanner() {
           </div>
 
           <button
-            onClick={() => setShowBanner(false)}
+            onClick={handleDismiss}
             className="flex-shrink-0 rounded p-1 transition-colors hover:bg-black/10"
             aria-label="Close banner"
           >
