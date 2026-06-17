@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -36,7 +35,6 @@ export default function AdminTaskManagement() {
   const [loading, setLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
 
-  // New task form state
   const [newTask, setNewTask] = useState({
     title: '',
     category: 'Nutrition',
@@ -83,23 +81,41 @@ export default function AdminTaskManagement() {
   };
 
   return (
-    <div className="bg-white rounded-3xl border border-terra/10 shadow-sm p-6 animate-scaleIn">
-      <div className="flex items-center justify-between mb-8">
+    <div className="bg-white rounded-3xl border border-terra/10 shadow-sm p-4 sm:p-6 animate-scaleIn">
+
+      {/*
+        FIX: Header row wraps on mobile — title stacks above the button
+        instead of overflowing or squishing the button text.
+      */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 sm:mb-8">
         <div>
           <h3 className="font-serif text-xl font-bold text-earth">Task Management</h3>
           <p className="text-sm text-muted">Create and manage health challenges.</p>
         </div>
+
         <Dialog open={isAdding} onOpenChange={setIsAdding}>
           <DialogTrigger asChild>
-            <Button className="bg-terra hover:bg-earth text-white rounded-xl flex items-center gap-2">
+            {/*
+              FIX: Button is full-width on mobile (w-full sm:w-auto) so it
+              doesn't clip. shrink-0 prevents it from squishing on sm+.
+            */}
+            <Button className="bg-terra hover:bg-earth text-white rounded-xl flex items-center justify-center gap-2 w-full sm:w-auto shrink-0">
               <Plus className="w-4 h-4" /> Create New Task
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-white rounded-2xl border-terra/10 max-w-md p-8">
+
+          {/*
+            FIX: Dialog is near-full-width on mobile (w-[calc(100vw-2rem)])
+            with mx-4 so it never bleeds off-screen on 375 px phones.
+          */}
+          <DialogContent className="bg-white rounded-2xl border-terra/10 w-[calc(100vw-2rem)] max-w-md p-6 sm:p-8">
             <DialogHeader>
-              <DialogTitle className="font-serif text-2xl text-earth">New Health Task</DialogTitle>
+              <DialogTitle className="font-serif text-xl sm:text-2xl text-earth">
+                New Health Task
+              </DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleCreateTask} className="space-y-6 mt-4">
+
+            <form onSubmit={handleCreateTask} className="space-y-5 mt-4">
               <div className="space-y-2">
                 <Label htmlFor="title" className="text-earth font-medium">Task Title</Label>
                 <Input
@@ -111,7 +127,12 @@ export default function AdminTaskManagement() {
                   required
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+
+              {/*
+                FIX: Category + Reward grid is single-column on mobile so the
+                Select and Input have enough room to render properly at 320 px.
+              */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="category" className="text-earth font-medium">Category</Label>
                   <Select
@@ -129,6 +150,7 @@ export default function AdminTaskManagement() {
                     </SelectContent>
                   </Select>
                 </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="reward" className="text-earth font-medium">Reward (XLM)</Label>
                   <Input
@@ -141,7 +163,11 @@ export default function AdminTaskManagement() {
                   />
                 </div>
               </div>
-              <Button type="submit" className="w-full bg-terra hover:bg-earth text-white rounded-xl py-6">
+
+              <Button
+                type="submit"
+                className="w-full bg-terra hover:bg-earth text-white rounded-xl py-5 sm:py-6"
+              >
                 Save & Publish Task
               </Button>
             </form>
@@ -149,50 +175,75 @@ export default function AdminTaskManagement() {
         </Dialog>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/*
+        FIX: Cards go single-column on mobile, 2-col on sm, 3-col on lg.
+        Original skipped single-column entirely (grid-cols-1 sm:grid-cols-2)
+        which still caused overflow on very narrow phones with long titles.
+        gap-3 on mobile keeps cards from feeling crammed.
+      */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         {loading ? (
           [...Array(3)].map((_, i) => (
-            <div key={i} className="h-48 bg-gray-50 rounded-2xl animate-pulse" />
+            <div key={i} className="h-40 sm:h-48 bg-gray-50 rounded-2xl animate-pulse" />
           ))
         ) : tasks.length === 0 ? (
-          <div className="col-span-full py-20 text-center text-muted">No tasks available.</div>
+          <div className="col-span-full py-16 sm:py-20 text-center text-muted">
+            No tasks available.
+          </div>
         ) : (
           tasks.map((task) => (
             <div
               key={task.id}
-              className={`p-6 rounded-2xl border transition-all ${
+              className={`p-4 sm:p-6 rounded-2xl border transition-all ${
                 task.status === 'active'
                   ? 'bg-white border-terra/10 hover:shadow-md'
                   : 'bg-gray-50 border-gray-200 opacity-75'
               }`}
             >
-              <div className="flex items-center justify-between mb-4">
-                <Badge variant="outline" className="border-terra/20 text-terra bg-terra/5 rounded-lg px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <Badge
+                  variant="outline"
+                  className="border-terra/20 text-terra bg-terra/5 rounded-lg px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider"
+                >
                   {task.category}
                 </Badge>
-                <div className="flex items-center gap-1">
-                  <span className="text-lg font-bold text-earth">{task.rewardXLM}</span>
+                <div className="flex items-center gap-1 shrink-0">
+                  <span className="text-base sm:text-lg font-bold text-earth">{task.rewardXLM}</span>
                   <span className="text-xs text-muted">XLM</span>
                 </div>
               </div>
-              <h4 className="font-bold text-earth text-lg mb-2 leading-tight">
+
+              {/*
+                FIX: Title uses line-clamp-2 so long task names don't push
+                the action buttons off the bottom of the card.
+              */}
+              <h4 className="font-bold text-earth text-base sm:text-lg mb-2 leading-tight line-clamp-2">
                 {task.title}
               </h4>
-              <div className="flex items-center justify-between mt-6">
-                <div className="flex items-center gap-2">
+
+              <div className="flex items-center justify-between mt-4 sm:mt-6">
+                <div className="flex items-center gap-1">
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={() => handleDeactivate(task.id, task.status)}
-                    className={`h-9 w-9 rounded-xl ${task.status === 'active' ? 'text-terra hover:bg-terra/5' : 'text-sage hover:bg-sage/5'}`}
+                    className={`h-9 w-9 rounded-xl ${
+                      task.status === 'active'
+                        ? 'text-terra hover:bg-terra/5'
+                        : 'text-sage hover:bg-sage/5'
+                    }`}
                     title={task.status === 'active' ? 'Deactivate Task' : 'Activate Task'}
+                    aria-label={task.status === 'active' ? 'Deactivate task' : 'Activate task'}
                   >
-                    {task.status === 'active' ? <XCircle className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
+                    {task.status === 'active'
+                      ? <XCircle className="w-4 h-4" />
+                      : <CheckCircle className="w-4 h-4" />}
                   </Button>
                   <Button
                     variant="ghost"
                     size="icon"
                     className="h-9 w-9 rounded-xl text-muted hover:text-earth hover:bg-gray-100"
+                    aria-label="Edit task"
                   >
                     <Edit className="w-4 h-4" />
                   </Button>
@@ -202,6 +253,7 @@ export default function AdminTaskManagement() {
                   size="icon"
                   className="h-9 w-9 rounded-xl text-red-400 hover:text-red-600 hover:bg-red-50"
                   title="Delete Permanently"
+                  aria-label="Delete task"
                 >
                   <Trash2 className="w-4 h-4" />
                 </Button>

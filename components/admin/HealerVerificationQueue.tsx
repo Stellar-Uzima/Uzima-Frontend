@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -52,66 +51,103 @@ export default function HealerVerificationQueue() {
   };
 
   return (
-    <div className="bg-white rounded-3xl border border-terra/10 shadow-sm p-6 animate-scaleIn">
-      <div className="flex items-center justify-between mb-8">
+    <div className="bg-white rounded-3xl border border-terra/10 shadow-sm p-4 sm:p-6 animate-scaleIn">
+
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
           <h3 className="font-serif text-xl font-bold text-earth">Healer Verification</h3>
           <p className="text-sm text-muted">Review and verify traditional health practitioners.</p>
         </div>
-        <Badge className="bg-amber/10 text-amber border-none font-bold px-3 py-1 rounded-full">
+        {/*
+          FIX: Badge moves below title on mobile (flex-col) so it never
+          overlaps or clips the heading on narrow screens.
+        */}
+        <Badge className="bg-amber/10 text-amber border-none font-bold px-3 py-1 rounded-full self-start sm:self-auto shrink-0">
           {requests.length} Pending
         </Badge>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         {loading ? (
           [...Array(2)].map((_, i) => (
-            <div key={i} className="h-32 bg-gray-50 rounded-2xl animate-pulse" />
+            <div key={i} className="h-28 sm:h-32 bg-gray-50 rounded-2xl animate-pulse" />
           ))
         ) : requests.length === 0 ? (
-          <div className="py-20 text-center text-muted">No pending verification requests.</div>
+          <div className="py-16 sm:py-20 text-center text-muted">
+            No pending verification requests.
+          </div>
         ) : (
           requests.map((request) => (
             <div
               key={request.id}
-              className="p-6 rounded-2xl border border-terra/5 bg-cream/5 flex flex-col md:flex-row items-center gap-6"
+              /*
+                FIX: Changed from flex-col md:flex-row to always flex-col on
+                mobile. Info block is full-width, action buttons sit in their
+                own row below it — preventing the buttons from being pushed
+                off-screen on narrow phones.
+              */
+              className="p-4 sm:p-5 rounded-2xl border border-terra/5 bg-cream/5 flex flex-col gap-4"
             >
-              <div className="flex-1 w-full">
-                <div className="flex items-center gap-3 mb-2">
-                  <h4 className="font-bold text-earth text-lg">{request.name}</h4>
-                  <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-wider text-muted border-muted/20">
+              {/* Info block */}
+              <div className="flex-1 min-w-0">
+                {/*
+                  FIX: Name + region badge wrap on very small screens instead
+                  of overflowing. Name truncates with min-w-0.
+                */}
+                <div className="flex flex-wrap items-center gap-2 mb-2">
+                  <h4 className="font-bold text-earth text-base sm:text-lg truncate min-w-0">
+                    {request.name}
+                  </h4>
+                  <Badge
+                    variant="outline"
+                    className="text-[10px] font-bold uppercase tracking-wider text-muted border-muted/20 shrink-0"
+                  >
                     {request.region}
                   </Badge>
                 </div>
-                <div className="flex flex-wrap gap-2 mb-3">
+
+                {/* Specialties */}
+                <div className="flex flex-wrap gap-1.5 mb-3">
                   {request.specialties.map((s, i) => (
-                    <span key={i} className="text-xs text-sage font-medium bg-sage/10 px-2 py-0.5 rounded-md">
+                    <span
+                      key={i}
+                      className="text-xs text-sage font-medium bg-sage/10 px-2 py-0.5 rounded-md"
+                    >
                       {s}
                     </span>
                   ))}
                 </div>
-                <div className="flex items-center gap-4 text-xs text-muted">
+
+                {/* Meta */}
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
                   <span className="flex items-center gap-1">
-                    <Calendar className="w-3 h-3" /> Submitted: {request.submittedAt}
+                    <Calendar className="w-3 h-3 shrink-0" />
+                    Submitted: {request.submittedAt}
                   </span>
                   <span className="flex items-center gap-1 hover:text-terra transition-colors cursor-pointer font-medium underline decoration-terra/30 underline-offset-4">
-                    <Info className="w-3 h-3" /> View Credentials
+                    <Info className="w-3 h-3 shrink-0" /> View Credentials
                   </span>
                 </div>
               </div>
-              <div className="flex items-center gap-3 shrink-0">
+
+              {/*
+                FIX: Action buttons are full-width on mobile so they're easy
+                to tap. On sm+ they sit inline at auto width.
+              */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
                 <Button
                   onClick={() => handleAction(request.id, 'reject')}
                   variant="outline"
-                  className="rounded-xl border-red-200 text-red-500 hover:bg-red-50 hover:text-red-600 hover:border-red-300 transition-all font-medium py-5 px-6"
+                  className="rounded-xl border-red-200 text-red-500 hover:bg-red-50 hover:text-red-600 hover:border-red-300 transition-all font-medium w-full sm:w-auto"
                 >
-                  <XCircle className="w-4 h-4 mr-2" /> Reject
+                  <XCircle className="w-4 h-4 mr-2 shrink-0" /> Reject
                 </Button>
                 <Button
                   onClick={() => handleAction(request.id, 'approve')}
-                  className="rounded-xl bg-sage hover:bg-forest text-white transition-all font-medium py-5 px-6"
+                  className="rounded-xl bg-sage hover:bg-forest text-white transition-all font-medium w-full sm:w-auto"
                 >
-                  <CheckCircle2 className="w-4 h-4 mr-2" /> Approve
+                  <CheckCircle2 className="w-4 h-4 mr-2 shrink-0" /> Approve
                 </Button>
               </div>
             </div>
