@@ -40,18 +40,18 @@ export function VirtualTaskList({
   const columns = useTaskColumns();
 
   const handleTaskSelect = useCallback((taskId: string) => {
-    onTaskSelect(taskId)
-  }, [onTaskSelect])
+    onTaskSelect(taskId);
+  }, [onTaskSelect]);
 
   const taskCallbacks = useMemo(() => {
-    const callbacks: Record<string, () => void> = {}
+    const callbacks: Record<string, () => void> = {};
     for (const task of tasks) {
-      callbacks[task.id] = () => handleTaskSelect(task.id)
+      callbacks[task.id] = () => handleTaskSelect(task.id);
     }
-    return callbacks
-  }, [tasks, handleTaskSelect])
+    return callbacks;
+  }, [tasks, handleTaskSelect]);
 
-  const rows = React.useMemo(() => {
+  const rows = useMemo(() => {
     const chunked: HealthTask[][] = [];
     for (let i = 0; i < tasks.length; i += columns) {
       chunked.push(tasks.slice(i, i + columns));
@@ -68,9 +68,16 @@ export function VirtualTaskList({
     measureElement: (element) => element.getBoundingClientRect().height,
   });
 
+  // Hold a stable ref to the virtualizer's measure function so the effect
+  // dependency never changes between renders, breaking the infinite loop.
+  const measureRef = React.useRef(rowVirtualizer.measure);
+  React.useLayoutEffect(() => {
+    measureRef.current = rowVirtualizer.measure;
+  });
+
   React.useEffect(() => {
-    rowVirtualizer.measure();
-  }, [columns, rowVirtualizer, tasks.length]);
+    measureRef.current();
+  }, [columns, tasks.length]);
 
   return (
     <div
