@@ -1,6 +1,7 @@
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import { AfricaMapLoader } from "@/components/community/AfricaMapLoader";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export const metadata = {
   title: "Community | Stellar Uzima",
@@ -10,7 +11,7 @@ export const metadata = {
 
 export default function CommunityPage() {
   return (
-    <>
+    <ErrorBoundary componentName="CommunityPage" variant="page">
       <Navigation />
       <main className="min-h-screen bg-cream pt-28 pb-20 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto space-y-10">
@@ -30,6 +31,6 @@ export default function CommunityPage() {
         </div>
       </main>
       <Footer />
-    </>
+    </ErrorBoundary>
   );
 }

@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { BreadcrumbNav } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { StarRating } from "@/components/ui/StarRating";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import {
   CURRENT_REVIEW_USER,
   canUserReviewHealer,
@@ -62,7 +63,7 @@ export default function HealerProfilePage() {
 
   if (!healer) {
     return (
-      <>
+      <ErrorBoundary componentName="HealerNotFound" variant="page">
         <Navigation />
         <main className="min-h-screen bg-cream pt-32">
           <div className="mx-auto max-w-3xl px-4 sm:px-6">
@@ -83,12 +84,12 @@ export default function HealerProfilePage() {
           </div>
         </main>
         <Footer />
-      </>
+      </ErrorBoundary>
     );
   }
 
   return (
-    <>
+    <ErrorBoundary componentName="HealerProfilePage" variant="page">
       <Navigation />
       <main className="min-h-screen bg-cream pt-32 pb-20">
         <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 sm:px-6">
@@ -271,6 +272,6 @@ export default function HealerProfilePage() {
         </div>
       </main>
       <Footer />
-    </>
+    </ErrorBoundary>
   );
 }
