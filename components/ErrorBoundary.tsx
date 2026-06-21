@@ -7,6 +7,7 @@ interface ErrorBoundaryProps {
   children: React.ReactNode;
   fallback?: React.ReactNode;
   componentName?: string;
+  variant?: 'section' | 'page';
 }
 
 interface ErrorBoundaryState {
@@ -41,10 +42,39 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
         return this.props.fallback;
       }
 
+      if (this.props.variant === 'page') {
+        return (
+          <div className="min-h-screen flex items-center justify-center bg-cream px-4 py-16">
+            <div className="max-w-md w-full text-center space-y-6 p-8 rounded-3xl bg-white border border-terra/10 shadow-xl">
+              <div className="text-6xl animate-bounce" aria-hidden="true">⚠️</div>
+              <div className="space-y-2">
+                <h1 className="text-2xl font-bold text-earth font-serif">
+                  Something went wrong
+                </h1>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {this.props.componentName
+                    ? `We encountered an error loading the ${this.props.componentName}.`
+                    : 'We encountered an error loading this page.'}{' '}
+                  Your progress is safe. Please try again.
+                </p>
+              </div>
+              <div className="pt-2">
+                <button
+                  onClick={this.handleRetry}
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold rounded-full bg-terra text-white hover:bg-terra/90 transition-all hover:shadow-md active:scale-95"
+                >
+                  Try again
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
       return (
-        <div className="flex flex-col items-center justify-center p-6 rounded-lg bg-destructive/10 border border-destructive/20 text-center">
+        <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-terra/5 border border-terra/10 text-center">
           <div className="mb-3 text-4xl" aria-hidden="true">⚠️</div>
-          <h3 className="text-lg font-semibold text-destructive mb-1">
+          <h3 className="text-lg font-semibold text-earth mb-1 font-serif">
             Something went wrong
           </h3>
           <p className="text-sm text-muted-foreground mb-4">
@@ -55,7 +85,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
           </p>
           <button
             onClick={this.handleRetry}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium rounded-full bg-terra text-white hover:bg-terra/90 transition-all active:scale-95"
           >
             Try again
           </button>
