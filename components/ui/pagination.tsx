@@ -11,6 +11,7 @@ interface PaginationProps {
   totalItems: number;
   itemsPerPage: number;
   onPageChange: (page: number) => void;
+  label?: string;
   className?: string;
 }
 
@@ -20,6 +21,7 @@ export function Pagination({
   totalItems,
   itemsPerPage,
   onPageChange,
+  label = "tasks",
   className,
 }: PaginationProps) {
   const startItem = (currentPage - 1) * itemsPerPage + 1;
@@ -71,7 +73,7 @@ export function Pagination({
     <div className={cn("flex flex-col items-center space-y-4", className)}>
       {/* Results counter */}
       <p className="text-sm text-terra/70">
-        Showing {startItem}–{endItem} of {totalItems} tasks
+        Showing {startItem}–{endItem} of {totalItems} {totalItems === 1 ? label.slice(0, -1) : label}
       </p>
 
       {/* Pagination controls */}
