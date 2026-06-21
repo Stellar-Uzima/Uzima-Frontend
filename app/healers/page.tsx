@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-
 import { HealersPageClient } from "@/components/healers/HealersPageClient";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export const metadata: Metadata = {
   title: "Traditional Healers Directory | Stellar Uzima",
@@ -9,5 +9,9 @@ export const metadata: Metadata = {
 };
 
 export default function HealersPage() {
-  return <HealersPageClient />;
+  return (
+    <ErrorBoundary componentName="HealersPage" variant="page">
+      <HealersPageClient />
+    </ErrorBoundary>
+  );
 }

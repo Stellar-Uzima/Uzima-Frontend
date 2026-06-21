@@ -1,14 +1,10 @@
 "use client";
 
+import { useMemo } from "react";
 import dynamic from "next/dynamic";
 
 import Navigation from "@/components/navigation";
-import {
-  healerLanguages,
-  healerRegions,
-  healerSpecialties,
-  mockHealers,
-} from "@/lib/mock/healers";
+import { mockHealers } from "@/lib/mock/healers";
 
 const HealersDirectory = dynamic(
   () =>
@@ -27,15 +23,22 @@ const HealersDirectory = dynamic(
 );
 
 export function HealersPageClient() {
+  const initialHealers = useMemo(
+    () =>
+      mockHealers.map((h) => ({
+        id: h.id,
+        name: h.name,
+        specialization: h.specialties[0] ?? "General",
+        location: h.country,
+        rating: h.rating,
+      })),
+    [],
+  );
+
   return (
     <>
       <Navigation />
-      <HealersDirectory
-        healers={mockHealers}
-        specialties={healerSpecialties}
-        regions={healerRegions}
-        languages={healerLanguages}
-      />
+      <HealersDirectory initialHealers={initialHealers} />
     </>
   );
 }

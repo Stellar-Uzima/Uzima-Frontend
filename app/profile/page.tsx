@@ -15,6 +15,7 @@ import { HealthGoals } from '@/components/profile/HealthGoals';
 import { WalletPanel } from '@/components/profile/WalletPanel';
 import { NotificationsPanel, NotificationsState } from '@/components/profile/NotificationsPanel';
 import { AvatarEmojiPicker } from '@/components/profile/AvatarEmojiPicker';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 type ProfileData = {
 	avatarEmoji: string | null;
@@ -127,77 +128,79 @@ export default function ProfilePage() {
 	}
 
 	return (
-		<div className="max-w-5xl mx-auto p-4 sm:p-6">
-			<h1 className="text-2xl font-semibold tracking-tight mb-4">Your Profile</h1>
-			<Tabs defaultValue="profile" className="w-full">
-				<TabsList className="w-full sm:w-auto">
-					<TabsTrigger value="profile" className="flex-1 sm:flex-none">Profile</TabsTrigger>
-					<TabsTrigger value="wallet" className="flex-1 sm:flex-none">Wallet</TabsTrigger>
-					<TabsTrigger value="notifications" className="flex-1 sm:flex-none">Notifications</TabsTrigger>
-				</TabsList>
+		<ErrorBoundary componentName="ProfilePage" variant="page">
+			<div className="max-w-5xl mx-auto p-4 sm:p-6">
+				<h1 className="text-2xl font-semibold tracking-tight mb-4">Your Profile</h1>
+				<Tabs defaultValue="profile" className="w-full">
+					<TabsList className="w-full sm:w-auto">
+						<TabsTrigger value="profile" className="flex-1 sm:flex-none">Profile</TabsTrigger>
+						<TabsTrigger value="wallet" className="flex-1 sm:flex-none">Wallet</TabsTrigger>
+						<TabsTrigger value="notifications" className="flex-1 sm:flex-none">Notifications</TabsTrigger>
+					</TabsList>
 
-				<TabsContent value="profile" className="mt-6">
-					<form onSubmit={onSaveProfile} className="grid grid-cols-1 gap-6">
-						<div className="flex items-start gap-4">
-							<AvatarEmojiPicker value={avatarEmoji} onChange={setAvatarEmoji} />
-							<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
-								<div className="space-y-2">
-									<Label htmlFor="name">Name</Label>
-									<Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" />
-								</div>
-								<div className="space-y-2">
-									<Label htmlFor="phone">Phone</Label>
-									<Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+254 700 000 000" />
-								</div>
-								<div className="space-y-2">
-									<Label>Country</Label>
-									<CountrySelect value={country} onChange={setCountry} />
-								</div>
-								<div className="space-y-2">
-									<Label>Languages</Label>
-									<LanguageMultiSelect value={languages} onChange={setLanguages} />
+					<TabsContent value="profile" className="mt-6">
+						<form onSubmit={onSaveProfile} className="grid grid-cols-1 gap-6">
+							<div className="flex items-start gap-4">
+								<AvatarEmojiPicker value={avatarEmoji} onChange={setAvatarEmoji} />
+								<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
+									<div className="space-y-2">
+										<Label htmlFor="name">Name</Label>
+										<Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" />
+									</div>
+									<div className="space-y-2">
+										<Label htmlFor="phone">Phone</Label>
+										<Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+254 700 000 000" />
+									</div>
+									<div className="space-y-2">
+										<Label>Country</Label>
+										<CountrySelect value={country} onChange={setCountry} />
+									</div>
+									<div className="space-y-2">
+										<Label>Languages</Label>
+										<LanguageMultiSelect value={languages} onChange={setLanguages} />
+									</div>
 								</div>
 							</div>
-						</div>
 
-						<Separator />
+							<Separator />
 
-						<div className="space-y-3">
-							<Label>Health goals</Label>
-							<HealthGoals value={healthGoals} onChange={setHealthGoals} />
-						</div>
+							<div className="space-y-3">
+								<Label>Health goals</Label>
+								<HealthGoals value={healthGoals} onChange={setHealthGoals} />
+							</div>
 
-						<div className="flex justify-end gap-3 pt-2">
-							<Button type="button" variant="outline" onClick={() => router.refresh?.()}>Cancel</Button>
-							<Button type="submit" disabled={!canSave || saving}>{saving ? 'Saving...' : 'Save Changes'}</Button>
-						</div>
-					</form>
-				</TabsContent>
+							<div className="flex justify-end gap-3 pt-2">
+								<Button type="button" variant="outline" onClick={() => router.refresh?.()}>Cancel</Button>
+								<Button type="submit" disabled={!canSave || saving}>{saving ? 'Saving...' : 'Save Changes'}</Button>
+							</div>
+						</form>
+					</TabsContent>
 
-				<TabsContent value="wallet" className="mt-6">
-					<WalletPanel
-						address={walletAddress}
-						totalXlm={totalXlmEarned}
-						onConnect={() => {
-							// Navigate to connect flow if present
-							window.location.href = '/wallet/connect';
-						}}
-						onDisconnectSuccess={() => {
-							setWalletAddress(null);
-						}}
-					/>
-				</TabsContent>
+					<TabsContent value="wallet" className="mt-6">
+						<WalletPanel
+							address={walletAddress}
+							totalXlm={totalXlmEarned}
+							onConnect={() => {
+								// Navigate to connect flow if present
+								window.location.href = '/wallet/connect';
+							}}
+							onDisconnectSuccess={() => {
+								setWalletAddress(null);
+							}}
+						/>
+					</TabsContent>
 
-				<TabsContent value="notifications" className="mt-6">
-					<NotificationsPanel
-						value={notifications}
-						onChange={(next) => setNotifications(next)}
-						onSave={onSaveProfile}
-						saving={saving}
-					/>
-				</TabsContent>
-			</Tabs>
-		</div>
+					<TabsContent value="notifications" className="mt-6">
+						<NotificationsPanel
+							value={notifications}
+							onChange={(next) => setNotifications(next)}
+							onSave={onSaveProfile}
+							saving={saving}
+						/>
+					</TabsContent>
+				</Tabs>
+			</div>
+		</ErrorBoundary>
 	);
 }
 

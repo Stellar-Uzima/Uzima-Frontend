@@ -10,6 +10,7 @@ import EarnSection from "@/components/EarnSection";
 import CouponsSection from "@/components/CouponsSection";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/footer";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
@@ -19,7 +20,7 @@ export default function Home() {
   }, []);
 
   return (
-    <>
+    <ErrorBoundary componentName="HomePage" variant="page">
       <Navigation />
       <HeroSection />
       <StatsStrip />
@@ -39,6 +40,6 @@ export default function Home() {
       )}
       <CTASection />
       <Footer />
-    </>
+    </ErrorBoundary>
   );
 }

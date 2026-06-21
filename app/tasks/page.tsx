@@ -14,6 +14,7 @@ import { HealthTaskCard } from "@/components/tasks/HealthTaskCard";
 import { TaskFilters } from "@/components/tasks/TaskFilters";
 import { VirtualTaskList } from "@/components/tasks/VirtualTaskList";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const PaginatedTaskList = dynamic(
   () => import("@/components/tasks").then((mod) => mod.PaginatedTaskList),
@@ -191,7 +192,7 @@ export default function TasksPage() {
   );
 
   return (
-    <>
+    <ErrorBoundary componentName="TasksPage" variant="page">
       <Navigation />
       <main className="pt-28 pb-20 px-4 sm:px-6 bg-cream min-h-screen">
         <div className="max-w-5xl mx-auto space-y-8">
@@ -290,6 +291,6 @@ export default function TasksPage() {
         </div>
       </main>
       <Footer />
-    </>
+    </ErrorBoundary>
   );
 }
