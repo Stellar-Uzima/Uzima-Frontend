@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import {
   Area,
   AreaChart,
@@ -20,14 +21,28 @@ const data = [
   { day: "Sun", xlm: 15 },
 ];
 
-export default function EarningsChart() {
+const AREA_CHART_MARGIN = { top: 8, right: 8, left: 0, bottom: 0 } as const;
+
+const TOOLTIP_CONTENT_STYLE = {
+  borderRadius: "12px",
+  border: "1px solid #e5e7eb",
+  fontSize: "12px",
+} as const;
+
+const TICK_STYLE = { fontSize: 11 } as const;
+
+function tooltipFormatter(value: number): [string, string] {
+  return [`${value} XLM`, "Earned"];
+}
+
+function EarningsChart() {
   return (
     <div className="w-full max-w-[390px] sm:max-w-none rounded-3xl bg-white p-6 shadow-xl shadow-gray-200/50 border border-gray-100">
       <h3 className="text-lg font-bold text-gray-900 mb-1">Earnings (XLM)</h3>
       <p className="text-sm text-gray-500 mb-4">Last 7 days</p>
       <div className="h-[220px] w-full min-w-0">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+          <AreaChart data={data} margin={AREA_CHART_MARGIN}>
             <defs>
               <linearGradient id="fillEarnings" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#10b981" stopOpacity={0.35} />
@@ -35,15 +50,11 @@ export default function EarningsChart() {
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" className="stroke-gray-100" />
-            <XAxis dataKey="day" tick={{ fontSize: 11 }} stroke="#9ca3af" />
-            <YAxis tick={{ fontSize: 11 }} stroke="#9ca3af" width={32} />
+            <XAxis dataKey="day" tick={TICK_STYLE} stroke="#9ca3af" />
+            <YAxis tick={TICK_STYLE} stroke="#9ca3af" width={32} />
             <Tooltip
-              contentStyle={{
-                borderRadius: "12px",
-                border: "1px solid #e5e7eb",
-                fontSize: "12px",
-              }}
-              formatter={(value: number) => [`${value} XLM`, "Earned"]}
+              contentStyle={TOOLTIP_CONTENT_STYLE}
+              formatter={tooltipFormatter}
             />
             <Area
               type="monotone"
@@ -58,3 +69,5 @@ export default function EarningsChart() {
     </div>
   );
 }
+
+export default memo(EarningsChart);
