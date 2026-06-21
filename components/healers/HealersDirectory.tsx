@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useCallback } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Users, X } from "lucide-react";
 
@@ -9,7 +9,17 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { HealerCard } from "@/components/healers/HealerCard";
 import { HealerFilters } from "@/components/healers/HealerFilters";
+import { Pagination } from "@/components/ui/pagination";
 import type { Healer, HealerRegion, HealerSpecialty } from "@/lib/mock/healers";
+
+/**
+ * Client-side pagination is used as a stopgap — the healers list is loaded
+ * entirely from in-memory mock data. When a real API is introduced, replace
+ * this with server-side pagination by fetching only the current page's data
+ * from the backend and passing page/limit query parameters. At that point the
+ * `paginatedHealers` slice below can be removed in favour of the API response.
+ */
+const ITEMS_PER_PAGE = 9;
 
 interface HealersDirectoryProps {
   healers: Healer[];
@@ -32,10 +42,21 @@ export function HealersDirectory({
   const specialtyFilter = searchParams.get("specialty") || "all";
   const regionFilter = searchParams.get("region") || "all";
   const languageFilter = searchParams.get("language") || "all";
+  const currentPage = Math.max(
+    1,
+    parseInt(searchParams.get("page") || "1", 10),
+  );
 
   const handleBook = useCallback((id: string) => {
     router.push(`/services/consultations?healer=${id}`)
   }, [router])
+
+  const replaceParams = useCallback(
+    (params: URLSearchParams) => {
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    },
+    [pathname, router],
+  );
 
   const handleFilterChange = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams);
@@ -44,12 +65,29 @@ export function HealersDirectory({
     } else {
       params.set(key, value);
     }
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    params.delete("page");
+    replaceParams(params);
   };
 
   const handleClearFilters = () => {
     router.replace(pathname, { scroll: false });
   };
+
+  const handlePageChange = useCallback(
+    (page: number) => {
+      const params = new URLSearchParams(searchParams);
+      if (page === 1) {
+        params.delete("page");
+      } else {
+        params.set("page", page.toString());
+      }
+      replaceParams(params);
+
+      const section = document.querySelector("[data-healers-section]");
+      section?.scrollIntoView({ behavior: "smooth", block: "start" });
+    },
+    [searchParams, replaceParams],
+  );
 
   const filteredHealers = useMemo(() => {
     return healers.filter((healer) => {
@@ -87,6 +125,14 @@ export function HealersDirectory({
       return true;
     });
   }, [healers, searchQuery, specialtyFilter, regionFilter, languageFilter]);
+
+  const totalPages = Math.ceil(filteredHealers.length / ITEMS_PER_PAGE);
+  const safePage = totalPages === 0 ? 1 : Math.min(currentPage, totalPages);
+
+  const paginatedHealers = useMemo(() => {
+    const startIndex = (safePage - 1) * ITEMS_PER_PAGE;
+    return filteredHealers.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredHealers, safePage]);
 
   const activeFilters = [];
   if (searchQuery) {
@@ -148,11 +194,23 @@ export function HealersDirectory({
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between gap-3 text-xs text-muted">
             <span>
-              Showing{" "}
-              <span className="font-semibold text-earth">
-                {filteredHealers.length}
-              </span>{" "}
-              healer{filteredHealers.length === 1 ? "" : "s"}
+              {filteredHealers.length > 0 ? (
+                <>
+                  Showing{" "}
+                  <span className="font-semibold text-earth">
+                    {paginatedHealers.length}
+                  </span>{" "}
+                  of{" "}
+                  <span className="font-semibold text-earth">
+                    {filteredHealers.length}
+                  </span>{" "}
+                  healer{filteredHealers.length === 1 ? "" : "s"}
+                </>
+              ) : (
+                <>
+                  <span className="font-semibold text-earth">0</span> healers
+                </>
+              )}
             </span>
             <span className="hidden sm:inline-flex items-center gap-1">
               <Users className="h-3.5 w-3.5 text-terra/80" />
@@ -195,15 +253,29 @@ export function HealersDirectory({
             className="bg-zinc-50 border-terra/10"
           />
         ) : (
-          <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredHealers.map((healer) => (
-              <HealerCard
-                key={healer.id}
-                healer={healer}
-                onBook={handleBook}
-              />
-            ))}
-          </section>
+          <>
+            <section
+              data-healers-section
+              className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            >
+              {paginatedHealers.map((healer) => (
+                <HealerCard
+                  key={healer.id}
+                  healer={healer}
+                  onBook={handleBook}
+                />
+              ))}
+            </section>
+
+            <Pagination
+              currentPage={safePage}
+              totalPages={totalPages}
+              totalItems={filteredHealers.length}
+              itemsPerPage={ITEMS_PER_PAGE}
+              onPageChange={handlePageChange}
+              label="healers"
+            />
+          </>
         )}
 
         <section className="mt-6 rounded-3xl bg-earth px-5 py-6 text-cream sm:px-8 sm:py-8">
