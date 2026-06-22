@@ -30,6 +30,7 @@ export function CouponCard({
 }: CouponCardProps) {
   const [copied, setCopied] = useState(false);
   const [expiringSoon, setExpiringSoon] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
   // "used" and "expired" cards should look greyed out
   const isInactive = status === "used" || status === "expired";
@@ -64,11 +65,27 @@ export function CouponCard({
     >
       {/* The card itself — dashed border = classic coupon look */}
       <div
+        onMouseEnter={() => {
+          if (!isInactive) setHovered(true);
+        }}
+        onMouseLeave={() => setHovered(false)}
+        onFocus={() => {
+          if (!isInactive) setHovered(true);
+        }}
+        onBlur={() => setHovered(false)}
         style={{
-          border: `2px dashed ${isInactive ? "#ccc" : "#10b981"}`,
+          border: `2px dashed ${
+            isInactive ? "#ccc" : hovered ? "#059669" : "#10b981"
+          }`,
           borderRadius: "16px",
           padding: "20px",
           backgroundColor: "#fff",
+          boxShadow: hovered
+            ? "0 14px 32px rgba(5, 150, 105, 0.18)"
+            : "0 4px 14px rgba(15, 23, 42, 0.06)",
+          transform: hovered ? "translateY(-4px)" : "translateY(0)",
+          transition:
+            "border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease",
         }}
       >
         {/* TOP ROW: Specialist name + Status badge */}
@@ -159,10 +176,15 @@ export function CouponCard({
               borderRadius: "8px",
               border: "none",
               cursor: isInactive ? "not-allowed" : "pointer",
-              backgroundColor: isInactive ? "#f3f4f6" : "#d1fae5",
+              backgroundColor: isInactive
+                ? "#f3f4f6"
+                : hovered
+                  ? "#a7f3d0"
+                  : "#d1fae5",
               color: isInactive ? "#9ca3af" : "#065f46",
               fontWeight: "bold",
               fontSize: "12px",
+              transition: "background-color 180ms ease, color 180ms ease",
             }}
           >
             {copied ? "✅ Copied!" : "Copy"}
