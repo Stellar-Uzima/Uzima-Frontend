@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-// --- The 5 pieces of info our coupon needs ---
 interface CouponCardProps {
   code: string;
   discount: string;
@@ -11,7 +10,6 @@ interface CouponCardProps {
   status: "active" | "used" | "expired";
 }
 
-// --- Helper: Format date nicely e.g. "Mar 1, 2026" ---
 function formatDate(expiresAt: string): string {
   return new Date(expiresAt).toLocaleDateString("en-US", {
     year: "numeric",
@@ -20,7 +18,6 @@ function formatDate(expiresAt: string): string {
   });
 }
 
-// --- The main CouponCard component ---
 export function CouponCard({
   code,
   discount,
@@ -31,10 +28,8 @@ export function CouponCard({
   const [copied, setCopied] = useState(false);
   const [expiringSoon, setExpiringSoon] = useState(false);
 
-  // "used" and "expired" cards should look greyed out
   const isInactive = status === "used" || status === "expired";
 
-  // Compute expiry warning only on the client to avoid hydration mismatch.
   useEffect(() => {
     if (status !== "active") {
       setExpiringSoon(false);
@@ -46,156 +41,146 @@ export function CouponCard({
     setExpiringSoon(daysLeft > 0 && daysLeft <= 7);
   }, [expiresAt, status]);
 
-  // What happens when someone clicks "Copy"
   const handleCopy = async () => {
     if (isInactive) return;
+
     await navigator.clipboard.writeText(code);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div
-      style={{
-        position: "relative",
-        width: "280px",
-        fontFamily: "Georgia, serif",
-      }}
-    >
-      {/* The card itself — dashed border = classic coupon look */}
+    <div className="relative w-[280px] font-serif group">
+      {/* CARD */}
       <div
-        style={{
-          border: `2px dashed ${isInactive ? "#ccc" : "#10b981"}`,
-          borderRadius: "16px",
-          padding: "20px",
-          backgroundColor: "#fff",
-        }}
+        className={`
+          relative
+          rounded-2xl
+          border-2
+          border-dashed
+          p-5
+          bg-white
+          transition-all
+          duration-300
+          ease-in-out
+          ${isInactive ? "border-gray-300 opacity-60" : "border-emerald-500"}
+          ${!isInactive ? "hover:-translate-y-1 hover:shadow-xl" : ""}
+        `}
       >
-        {/* TOP ROW: Specialist name + Status badge */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "12px",
-          }}
-        >
-          <span
-            style={{
-              fontSize: "12px",
-              color: "#888",
-              textTransform: "uppercase",
-            }}
-          >
+        {/* TOP ROW */}
+        <div className="flex justify-between mb-3">
+          <span className="text-[11px] uppercase text-gray-500 tracking-wider">
             {specialist}
           </span>
+
           <span
-            style={{
-              fontSize: "11px",
-              fontWeight: "bold",
-              padding: "2px 8px",
-              borderRadius: "999px",
-              textTransform: "capitalize",
-              backgroundColor: status === "active" ? "#d1fae5" : "#f3f4f6",
-              color: status === "active" ? "#065f46" : "#9ca3af",
-            }}
+            className={`
+              text-[10px]
+              font-bold
+              px-2 py-1
+              rounded-full
+              capitalize
+              transition-all
+              duration-300
+              ease-in-out
+              ${
+                status === "active"
+                  ? "bg-emerald-100 text-emerald-700"
+                  : "bg-gray-100 text-gray-400"
+              }
+              group-hover:scale-105
+            `}
           >
             {status}
           </span>
         </div>
 
-        {/* MIDDLE: Big discount text */}
+        {/* DISCOUNT */}
         <div
-          style={{
-            fontSize: "36px",
-            fontWeight: "900",
-            textAlign: "center",
-            margin: "16px 0",
-            color: isInactive ? "#9ca3af" : "#059669",
-          }}
+          className={`
+            text-center
+            text-4xl
+            font-black
+            my-4
+            transition-colors
+            duration-300
+            ease-in-out
+            ${isInactive ? "text-gray-400" : "text-emerald-600"}
+          `}
         >
           {discount}
         </div>
 
-        {/* EXPIRY DATE — turns orange if expiring soon */}
-        <div
-          style={{
-            textAlign: "center",
-            marginBottom: "16px",
-            fontSize: "13px",
-          }}
-        >
+        {/* EXPIRY */}
+        <div className="text-center mb-4 text-sm">
           <span
-            style={{
-              color: expiringSoon ? "#f59e0b" : "#9ca3af",
-              fontWeight: expiringSoon ? "bold" : "normal",
-            }}
+            className={`
+              transition-colors
+              duration-300
+              ease-in-out
+              ${
+                expiringSoon
+                  ? "text-amber-500 font-semibold"
+                  : "text-gray-400"
+              }
+            `}
           >
             {expiringSoon ? "⚠️ " : ""}Expires {formatDate(expiresAt)}
           </span>
         </div>
 
-        {/* BOTTOM ROW: Coupon code + Copy button */}
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        {/* CODE + COPY */}
+        <div className="flex items-center gap-2">
           <span
-            style={{
-              flex: 1,
-              textAlign: "center",
-              fontFamily: "monospace",
-              fontSize: "14px",
-              letterSpacing: "3px",
-              padding: "8px",
-              borderRadius: "8px",
-              backgroundColor: isInactive ? "#f3f4f6" : "#ecfdf5",
-              color: isInactive ? "#9ca3af" : "#065f46",
-            }}
+            className={`
+              flex-1
+              text-center
+              font-mono
+              tracking-[0.3em]
+              text-sm
+              p-2
+              rounded-md
+              transition-all
+              duration-300
+              ease-in-out
+              ${
+                isInactive
+                  ? "bg-gray-100 text-gray-400"
+                  : "bg-emerald-50 text-emerald-700"
+              }
+            `}
           >
             {code}
           </span>
+
           <button
             onClick={handleCopy}
             disabled={isInactive}
-            style={{
-              padding: "8px 12px",
-              borderRadius: "8px",
-              border: "none",
-              cursor: isInactive ? "not-allowed" : "pointer",
-              backgroundColor: isInactive ? "#f3f4f6" : "#d1fae5",
-              color: isInactive ? "#9ca3af" : "#065f46",
-              fontWeight: "bold",
-              fontSize: "12px",
-            }}
+            className={`
+              px-3 py-2
+              rounded-md
+              text-xs
+              font-bold
+              transition-all
+              duration-300
+              ease-in-out
+              active:scale-95
+              ${
+                isInactive
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  : "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
+              }
+            `}
           >
             {copied ? "✅ Copied!" : "Copy"}
           </button>
         </div>
       </div>
 
-      {/* GREY OVERLAY for used/expired cards */}
+      {/* OVERLAY */}
       {isInactive && (
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            borderRadius: "16px",
-            backgroundColor: "rgba(255,255,255,0.65)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <span
-            style={{
-              border: "2px solid #ccc",
-              color: "#aaa",
-              fontWeight: "900",
-              fontSize: "18px",
-              textTransform: "uppercase",
-              letterSpacing: "4px",
-              padding: "6px 16px",
-              borderRadius: "6px",
-              transform: "rotate(-15deg)",
-            }}
-          >
+        <div className="absolute inset-0 rounded-2xl flex items-center justify-center bg-white/60 backdrop-blur-[1px]">
+          <span className="text-gray-400 font-black text-lg tracking-[4px] rotate-[-12deg] border border-gray-300 px-4 py-1 rounded">
             {status}
           </span>
         </div>
