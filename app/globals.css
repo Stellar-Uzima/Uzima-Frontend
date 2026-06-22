@@ -42,7 +42,6 @@
   --ring: var(--terra);
   --input: #fffdf5;
   --ring: #b84e20;
-  --navbar-height: 80px;
   --offline-banner-offset: 0px;
 }
 
@@ -215,11 +214,7 @@
   }
 }
 
-@media (min-width: 768px) {
-  :root {
-    --navbar-height: 100px;
-  }
-}
+
 
 @keyframes flameFlicker {
   0%,
@@ -338,4 +333,14 @@
   to { opacity: 1; transform: none; }
 }
 .animate-fadeIn { animation: fadeIn 0.3s ease forwards; }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  15%       { transform: translateX(-6px); }
+  30%       { transform: translateX(6px); }
+  45%       { transform: translateX(-5px); }
+  60%       { transform: translateX(5px); }
+  75%       { transform: translateX(-3px); }
+  90%       { transform: translateX(3px); }
+}
 
