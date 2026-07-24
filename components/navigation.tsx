@@ -34,6 +34,7 @@ const SERVICE_LINKS: ServiceLink[] = [
   { label: "Knowledge Sharing", href: "/services/knowledge-sharing" },
   { label: "Consultations", href: "/services/consultations" },
   { label: "XLM Rewards", href: "/services/xlm-rewards" },
+  { label: "Saved Tasks", href: "/tasks/saved" },
 ];
 
 // ─── Mock wallet hook — replace with real context when available ──────────────
@@ -489,7 +490,11 @@ export default function Navbar() {
                     <Link
                       href={link.href}
                       className={`flex items-center gap-2 px-4 py-2 text-sm cursor-pointer
-                        ${pathname === link.href ? "text-terra font-medium" : "text-earth hover:bg-terra/10"}`}
+                        ${
+                          pathname === link.href
+                            ? "text-terra font-medium"
+                            : "text-earth hover:bg-terra/10"
+                        }`}
                     >
                       {link.label}
                     </Link>
