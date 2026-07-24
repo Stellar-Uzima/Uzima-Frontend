@@ -1,9 +1,12 @@
 import * as React from 'react'
 import { Slot } from '@radix-ui/react-slot'
 import { ChevronRight, MoreHorizontal } from 'lucide-react'
-
 import { cn } from '@/lib/utils'
 
+/**
+ * ORIGINAL SHADCN UI COMPONENTS
+ * DO NOT MODIFY
+ */
 function Breadcrumb({ ...props }: React.ComponentProps<'nav'>) {
   return <nav aria-label="breadcrumb" data-slot="breadcrumb" {...props} />
 }
@@ -39,7 +42,6 @@ function BreadcrumbLink({
   asChild?: boolean
 }) {
   const Comp = asChild ? Slot : 'a'
-
   return (
     <Comp
       data-slot="breadcrumb-link"
@@ -96,6 +98,53 @@ function BreadcrumbEllipsis({
       <span className="sr-only">More</span>
     </span>
   )
+}
+
+/**
+ * ISSUE #179: REUSABLE BREADCRUMB NAVIGATION
+ * Implementation for Deep Page hierarchy and Mobile Truncation
+ */
+
+interface BreadcrumbNavItem {
+  label: string;
+  href?: string;
+}
+
+export function BreadcrumbNav({ items }: { items: BreadcrumbNavItem[] }) {
+  return (
+    <Breadcrumb className="mb-6" aria-label="Breadcrumb">
+      <BreadcrumbList>
+        {items.map((item, index) => {
+          const isLast = index === items.length - 1;
+          const isParent = index === items.length - 2;
+
+          return (
+            <React.Fragment key={index}>
+              <BreadcrumbItem 
+                // Mobile Logic: Only show the immediate Parent and Current item
+                className={!isLast && !isParent ? "hidden md:inline-flex" : "inline-flex"}
+              >
+                {!isLast ? (
+                  <BreadcrumbLink href={item.href}>
+                    {item.label}
+                  </BreadcrumbLink>
+                ) : (
+                  <BreadcrumbPage aria-current="page" className="font-semibold">
+                    {item.label}
+                  </BreadcrumbPage>
+                )}
+              </BreadcrumbItem>
+              {!isLast && (
+                <BreadcrumbSeparator 
+                  className={!isLast && !isParent ? "hidden md:block" : "block"} 
+                />
+              )}
+            </React.Fragment>
+          );
+        })}
+      </BreadcrumbList>
+    </Breadcrumb>
+  );
 }
 
 export {

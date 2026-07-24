@@ -1,74 +1,91 @@
-"use client";
+/**
+ * hooks/useBookmarks.ts
+ *
+ * Issue #215 — Add Task Bookmarking
+ * Stellar-Uzima/Uzima-Frontend
+ *
+ * Manages bookmarked task IDs in localStorage.
+ * Persists across page refreshes and browser sessions.
+ */
 
-import { useState, useCallback, useEffect } from "react";
+'use client'
 
-const STORAGE_KEY = "uzima-bookmarked-tasks";
+import * as React from 'react'
 
-function getStoredBookmarks(): string[] {
-  if (typeof window === "undefined") return [];
+const STORAGE_KEY = 'uzima:bookmarked-tasks'
+
+function readFromStorage(): Set<string> {
+  if (typeof window === 'undefined') return new Set()
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter((id): id is string => typeof id === "string");
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return new Set()
+    const parsed = JSON.parse(raw) as string[]
+    return new Set(Array.isArray(parsed) ? parsed : [])
   } catch {
-    return [];
+    return new Set()
   }
 }
 
-function persistBookmarks(ids: string[]): void {
-  if (typeof window === "undefined") return;
+function writeToStorage(ids: Set<string>): void {
+  if (typeof window === 'undefined') return
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(ids)))
   } catch {
-    // localStorage full or unavailable — silently ignore
+    // Storage quota exceeded — fail silently
   }
 }
 
 export interface UseBookmarksReturn {
-  /** Array of bookmarked task IDs */
-  bookmarkedIds: string[];
-  /** Toggle bookmark for a given task ID */
-  toggleBookmark: (taskId: string) => void;
-  /** Check if a task ID is bookmarked */
-  isBookmarked: (taskId: string) => boolean;
-  /** Number of bookmarks */
-  bookmarkCount: number;
+  /** Set of bookmarked task IDs */
+  bookmarkedIds: Set<string>
+  /** Total count of bookmarked tasks */
+  bookmarkCount: number
+  /** Whether a given task ID is bookmarked */
+  isBookmarked: (taskId: string) => boolean
+  /** Toggle bookmark state for a task ID */
+  toggleBookmark: (taskId: string) => void
+  /** Clear all bookmarks */
+  clearBookmarks: () => void
 }
 
 export function useBookmarks(): UseBookmarksReturn {
-  const [bookmarkedIds, setBookmarkedIds] = useState<string[]>(() => {
-    // Initialise synchronously from localStorage on mount
-    if (typeof window !== "undefined") {
-      return getStoredBookmarks();
-    }
-    return [];
-  });
+  const [bookmarkedIds, setBookmarkedIds] = React.useState<Set<string>>(
+    () => new Set(),
+  )
 
-  // Keep localStorage in sync
-  useEffect(() => {
-    persistBookmarks(bookmarkedIds);
-  }, [bookmarkedIds]);
+  // Hydrate from localStorage on mount
+  React.useEffect(() => {
+    setBookmarkedIds(readFromStorage())
+  }, [])
 
-  const toggleBookmark = useCallback((taskId: string) => {
+  const toggleBookmark = React.useCallback((taskId: string) => {
     setBookmarkedIds((prev) => {
-      if (prev.includes(taskId)) {
-        return prev.filter((id) => id !== taskId);
+      const next = new Set(prev)
+      if (next.has(taskId)) {
+        next.delete(taskId)
+      } else {
+        next.add(taskId)
       }
-      return [...prev, taskId];
-    });
-  }, []);
+      writeToStorage(next)
+      return next
+    })
+  }, [])
 
-  const isBookmarked = useCallback(
-    (taskId: string) => bookmarkedIds.includes(taskId),
+  const isBookmarked = React.useCallback(
+    (taskId: string) => bookmarkedIds.has(taskId),
     [bookmarkedIds],
-  );
+  )
+
+  const clearBookmarks = React.useCallback(() => {
+    setBookmarkedIds(new Set())
+    writeToStorage(new Set())
+  }, [])
 
   return {
     bookmarkedIds,
-    toggleBookmark,
+    bookmarkCount: bookmarkedIds.size,
     isBookmarked,
-    bookmarkCount: bookmarkedIds.length,
-  };
+    toggleBookmark,
+    clearBookmarks,
+  }
 }

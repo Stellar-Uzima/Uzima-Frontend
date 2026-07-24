@@ -1,96 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Download, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-
-interface BeforeInstallPromptEvent extends Event {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
-}
+import { usePwaInstall } from "@/hooks/usePwaInstall";
 
 export function InstallPrompt() {
-  const [deferredPrompt, setDeferredPrompt] =
-    useState<BeforeInstallPromptEvent | null>(null);
-  const [showPrompt, setShowPrompt] = useState(false);
-  const [isInstalled, setIsInstalled] = useState(false);
-
-  useEffect(() => {
-    // Check if already installed
-    if (window.matchMedia("(display-mode: standalone)").matches) {
-      setIsInstalled(true);
-      return;
-    }
-
-    // Check if user has dismissed the prompt before
-    const hasVisited = localStorage.getItem("uzima-pwa-visits") || "0";
-    const visits = parseInt(hasVisited);
-    const hasDismissed = localStorage.getItem("uzima-pwa-dismissed");
-
-    // Increment visit count
-    localStorage.setItem("uzima-pwa-visits", (visits + 1).toString());
-
-    // Show prompt after 2+ visits and if not dismissed
-    if (visits >= 1 && !hasDismissed) {
-      // Wait a bit before showing the prompt
-      setTimeout(() => {
-        setShowPrompt(true);
-      }, 3000);
-    }
-
-    // Listen for the beforeinstallprompt event
-    const handleBeforeInstallPrompt = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-    };
-
-    // Listen for successful installation
-    const handleAppInstalled = () => {
-      setIsInstalled(true);
-      setShowPrompt(false);
-      setDeferredPrompt(null);
-      localStorage.setItem("uzima-pwa-dismissed", "true");
-    };
-
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-    window.addEventListener("appinstalled", handleAppInstalled);
-
-    return () => {
-      window.removeEventListener(
-        "beforeinstallprompt",
-        handleBeforeInstallPrompt
-      );
-      window.removeEventListener("appinstalled", handleAppInstalled);
-    };
-  }, []);
-
-  const handleInstallClick = async () => {
-    if (!deferredPrompt) {
-      return;
-    }
-
-    // Show the install prompt
-    deferredPrompt.prompt();
-
-    // Wait for the user's response
-    const { outcome } = await deferredPrompt.userChoice;
-
-    if (outcome === "accepted") {
-      console.log("User accepted the install prompt");
-    } else {
-      console.log("User dismissed the install prompt");
-    }
-
-    // Clear the deferredPrompt
-    setDeferredPrompt(null);
-    setShowPrompt(false);
-  };
-
-  const handleDismiss = () => {
-    setShowPrompt(false);
-    localStorage.setItem("uzima-pwa-dismissed", "true");
-  };
+  const { isInstalled, showPrompt, deferredPrompt, handleInstall, dismissPrompt } = usePwaInstall();
 
   // Don't show if installed or no prompt available or explicitly hidden
   if (isInstalled || !showPrompt || !deferredPrompt) {
@@ -98,39 +15,42 @@ export function InstallPrompt() {
   }
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-sm z-40 animate-in slide-in-from-bottom-5 duration-500">
-      <Card className="shadow-2xl border-2 border-[#B84E20]/20">
-        <div className="p-4 space-y-3">
+    <div className="relative z-20 mx-4 mb-4 mt-[calc(var(--update-banner-height,0px)+var(--navbar-height,80px)+0.75rem)] md:fixed md:bottom-[calc(env(safe-area-inset-bottom,0px)+1rem)] md:left-auto md:right-4 md:mt-0 md:max-w-sm motion-safe:animate-in motion-safe:slide-in-from-bottom-5 motion-safe:duration-500">
+      <Card className="border border-terra/20 bg-white shadow-lg md:shadow-2xl">
+        <div className="space-y-3 p-4">
           <div className="flex items-start justify-between gap-3">
-            <div className="flex-1">
-              <h3 className="font-bold text-base mb-1 text-[#1A1A1A]">
+            <div className="min-w-0 flex-1">
+              <h3 className="mb-1 text-base font-bold text-earth">
                 Install Stellar Uzima
               </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Add to your home screen for faster access and offline support
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                Install for offline access and faster loading.
               </p>
             </div>
             <button
-              onClick={handleDismiss}
-              className="p-1 hover:bg-black/5 rounded transition-colors flex-shrink-0"
-              aria-label="Dismiss"
+              type="button"
+              onClick={dismissPrompt}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-earth transition-colors hover:bg-earth/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-terra focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+              aria-label="Dismiss install prompt"
             >
-              <X className="w-4 h-4" />
+              <X className="h-4 w-4" aria-hidden="true" />
             </button>
           </div>
 
-          <div className="flex gap-2">
+          <div className="grid grid-cols-1 gap-2 sm:flex">
             <Button
-              onClick={handleInstallClick}
-              className="flex-1 bg-[#B84E20] hover:bg-[#A04020] text-white font-semibold rounded-xl"
+              type="button"
+              onClick={handleInstall}
+              className="h-10 w-full rounded-xl bg-terra font-semibold text-white hover:bg-terra/90 sm:flex-1"
             >
-              <Download className="w-4 h-4 mr-2" />
+              <Download className="mr-2 h-4 w-4" aria-hidden="true" />
               Install App
             </Button>
             <Button
-              onClick={handleDismiss}
+              type="button"
+              onClick={dismissPrompt}
               variant="outline"
-              className="border-[#B84E20]/20 hover:bg-[#B84E20]/5 rounded-xl"
+              className="h-10 w-full rounded-xl border-terra/20 hover:bg-terra/5 sm:w-auto"
             >
               Not Now
             </Button>
@@ -143,53 +63,7 @@ export function InstallPrompt() {
 
 // Navbar Install Button Component
 export function InstallButton() {
-  const [deferredPrompt, setDeferredPrompt] =
-    useState<BeforeInstallPromptEvent | null>(null);
-  const [isInstalled, setIsInstalled] = useState(false);
-
-  useEffect(() => {
-    // Check if already installed
-    if (window.matchMedia("(display-mode: standalone)").matches) {
-      setIsInstalled(true);
-      return;
-    }
-
-    const handleBeforeInstallPrompt = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-    };
-
-    const handleAppInstalled = () => {
-      setIsInstalled(true);
-      setDeferredPrompt(null);
-    };
-
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-    window.addEventListener("appinstalled", handleAppInstalled);
-
-    return () => {
-      window.removeEventListener(
-        "beforeinstallprompt",
-        handleBeforeInstallPrompt
-      );
-      window.removeEventListener("appinstalled", handleAppInstalled);
-    };
-  }, []);
-
-  const handleInstallClick = async () => {
-    if (!deferredPrompt) {
-      return;
-    }
-
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-
-    if (outcome === "accepted") {
-      console.log("User accepted the install prompt");
-    }
-
-    setDeferredPrompt(null);
-  };
+  const { isInstalled, deferredPrompt, handleInstall } = usePwaInstall();
 
   // Don't show if installed or no prompt available
   if (isInstalled || !deferredPrompt) {
@@ -198,7 +72,7 @@ export function InstallButton() {
 
   return (
     <Button
-      onClick={handleInstallClick}
+      onClick={handleInstall}
       variant="outline"
       size="sm"
       className="border-[#B84E20] text-[#B84E20] hover:bg-[#B84E20] hover:text-white transition-colors"

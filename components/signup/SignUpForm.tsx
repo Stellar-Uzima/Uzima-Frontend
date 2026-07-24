@@ -5,9 +5,17 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
-import { countries } from "countries-list";
+import { z } from "zod";
+import {
+  Eye,
+  EyeOff,
+  Loader2,
+  AlertCircle,
+  CheckCircle2,
+  XCircle,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { ErrorMessage } from "@/components/ui/ErrorMessage";
 
 import {
   Form,
@@ -65,15 +73,12 @@ const AFRICAN_ISO_CODES = new Set([
   "ML",
   "MR",
   "MU",
-  "YT",
   "MA",
   "MZ",
   "NA",
   "NE",
   "NG",
-  "RE",
   "RW",
-  "SH",
   "ST",
   "SN",
   "SL",
@@ -85,16 +90,126 @@ const AFRICAN_ISO_CODES = new Set([
   "TG",
   "TN",
   "UG",
-  "EH",
   "ZM",
   "ZW",
 ]);
 
-// country-list getData() → filter to Africa → sort A–Z by display name
-const AFRICAN_COUNTRIES = Object.entries(countries)
-  .filter(([code]) => AFRICAN_ISO_CODES.has(code))
-  .map(([code, data]) => ({ code, name: data.name }))
+const AFRICAN_COUNTRY_NAMES: Record<string, string> = {
+  DZ: "Algeria",
+  AO: "Angola",
+  BJ: "Benin",
+  BW: "Botswana",
+  BF: "Burkina Faso",
+  BI: "Burundi",
+  CV: "Cape Verde",
+  CM: "Cameroon",
+  CF: "Central African Republic",
+  TD: "Chad",
+  KM: "Comoros",
+  CG: "Congo",
+  CD: "Democratic Republic of the Congo",
+  CI: "Cote d'Ivoire",
+  DJ: "Djibouti",
+  EG: "Egypt",
+  GQ: "Equatorial Guinea",
+  ER: "Eritrea",
+  SZ: "Eswatini",
+  ET: "Ethiopia",
+  GA: "Gabon",
+  GM: "Gambia",
+  GH: "Ghana",
+  GN: "Guinea",
+  GW: "Guinea-Bissau",
+  KE: "Kenya",
+  LS: "Lesotho",
+  LR: "Liberia",
+  LY: "Libya",
+  MG: "Madagascar",
+  MW: "Malawi",
+  ML: "Mali",
+  MR: "Mauritania",
+  MU: "Mauritius",
+  MA: "Morocco",
+  MZ: "Mozambique",
+  NA: "Namibia",
+  NE: "Niger",
+  NG: "Nigeria",
+  RW: "Rwanda",
+  ST: "Sao Tome and Principe",
+  SN: "Senegal",
+  SC: "Seychelles",
+  SL: "Sierra Leone",
+  SO: "Somalia",
+  ZA: "South Africa",
+  SS: "South Sudan",
+  SD: "Sudan",
+  TZ: "Tanzania",
+  TG: "Togo",
+  TN: "Tunisia",
+  UG: "Uganda",
+  ZM: "Zambia",
+  ZW: "Zimbabwe",
+};
+
+const AFRICAN_COUNTRIES = Array.from(AFRICAN_ISO_CODES)
+  .map((code) => ({ code, name: AFRICAN_COUNTRY_NAMES[code] ?? code }))
   .sort((a, b) => a.name.localeCompare(b.name));
+
+const emailPattern = /^\S+@\S+\.\S+$/;
+
+function getPasswordStrength(password: string) {
+  const score = [
+    password.length >= 8,
+    /[A-Z]/.test(password),
+    /[a-z]/.test(password),
+    /\d/.test(password),
+    /[^A-Za-z0-9]/.test(password),
+    password.length >= 12,
+  ].filter(Boolean).length;
+
+  if (!password) {
+    return {
+      label: "Enter a password",
+      strength: 0,
+      color: "bg-slate-200",
+      status: "text-slate-500",
+    };
+  }
+
+  if (score <= 2) {
+    return {
+      label: "Weak",
+      strength: 25,
+      color: "bg-rose-500",
+      status: "text-rose-600",
+    };
+  }
+
+  if (score === 3) {
+    return {
+      label: "Fair",
+      strength: 50,
+      color: "bg-neutral-600",
+      status: "text-amber-600",
+    };
+  }
+
+  if (score === 4) {
+    return {
+      label: "Strong",
+      strength: 75,
+      color: "bg-emerald-500",
+      status: "text-emerald-600",
+    };
+  }
+
+  return {
+    label: "Very Strong",
+    strength: 100,
+    color: "bg-emerald-600",
+    status: "text-emerald-700",
+  };
+}
 
 const signUpSchema = z
   .object({
@@ -107,6 +222,14 @@ const signUpSchema = z
       .string()
       .min(1, "Email is required")
       .email("Please enter a valid email address"),
+
+    phone: z
+      .string()
+      .min(1, "Phone number is required")
+      .refine((value) => {
+        const normalized = value.replace(/[\s-]/g, "");
+        return /^\+\d{8,15}$/.test(normalized);
+      }, "Please enter a valid phone number including country code"),
 
     country: z.string().min(1, "Please select your country"),
 
@@ -144,15 +267,26 @@ export default function SignUpForm() {
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
     mode: "onBlur",
+    reValidateMode: "onChange",
     defaultValues: {
       fullName: "",
       email: "",
+      phone: "",
       country: "",
       password: "",
       confirmPassword: "",
       terms: false,
     },
   });
+
+  const emailValue = form.watch("email");
+  const passwordValue = form.watch("password");
+  const confirmPasswordValue = form.watch("confirmPassword");
+  const hasValidEmailFormat =
+    emailValue !== "" && emailPattern.test(emailValue);
+  const passwordStrength = getPasswordStrength(passwordValue);
+  const confirmPasswordMatches =
+    confirmPasswordValue !== "" && confirmPasswordValue === passwordValue;
 
   const onSubmit = async (data: SignUpFormValues) => {
     setIsLoading(true);
@@ -186,19 +320,11 @@ export default function SignUpForm() {
       </div>
 
       {/* ── Global error banner (server-level errors e.g. duplicate email) ── */}
-      {globalError && (
-        <div
-          role="alert"
-          aria-live="assertive"
-          className="mb-6 p-4 rounded-xl bg-red-50 text-red-600 flex items-start gap-3 text-sm border border-red-100"
-        >
-          <AlertCircle
-            className="w-5 h-5 shrink-0 mt-0.5 text-red-500"
-            aria-hidden="true"
-          />
-          <span className="font-medium">{globalError}</span>
-        </div>
-      )}
+      <ErrorMessage
+        message={globalError}
+        onDismiss={() => setGlobalError(null)}
+        className="mb-6"
+      />
 
       <Form {...form}>
         <form
@@ -210,20 +336,24 @@ export default function SignUpForm() {
           <FormField
             control={form.control}
             name="fullName"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className="text-earth font-medium text-sm">
-                  Full Name
+                <FormLabel className="text-earth font-medium text-sm" htmlFor="fullName">
+                  Full Name <span className="text-rose-500" aria-hidden="true">*</span>
                 </FormLabel>
                 <FormControl>
                   <Input
+                    id="fullName"
                     placeholder="Legend4tech"
                     autoComplete="name"
                     className="rounded-xl"
+                    disabled={isLoading}
+                    aria-required="true"
+                    aria-invalid={!!fieldState.error}
                     {...field}
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage role="alert" />
               </FormItem>
             )}
           />
@@ -232,21 +362,67 @@ export default function SignUpForm() {
           <FormField
             control={form.control}
             name="email"
-            render={({ field }) => (
+            render={({ field, fieldState }) => {
+              const showValid = hasValidEmailFormat && !fieldState.error;
+
+              return (
+                <FormItem>
+                  <FormLabel className="text-earth font-medium text-sm" htmlFor="email">
+                    Email Address <span className="text-rose-500" aria-hidden="true">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="you@example.com"
+                        autoComplete="email"
+                        className={cn(
+                          "rounded-xl pr-10",
+                          showValid && "border-emerald-500 ring-emerald-500/20",
+                        )}
+                        disabled={isLoading}
+                        aria-required="true"
+                        aria-invalid={!!fieldState.error}
+                        aria-describedby={fieldState.error ? "email-error" : undefined}
+                        {...field}
+                      />
+                      {showValid && (
+                        <CheckCircle2
+                          className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-emerald-500"
+                          aria-hidden="true"
+                        />
+                      )}
+                    </div>
+                  </FormControl>
+                  <FormMessage id="email-error" role="alert" />
+                </FormItem>
+              );
+            }}
+          />
+
+          <FormField
+            control={form.control}
+            name="phone"
+            render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className="text-earth font-medium text-sm">
-                  Email Address
+                <FormLabel className="text-earth font-medium text-sm" htmlFor="phone">
+                  Phone Number <span className="text-rose-500" aria-hidden="true">*</span>
                 </FormLabel>
                 <FormControl>
                   <Input
-                    type="email"
-                    placeholder="you@example.com"
-                    autoComplete="email"
+                    id="phone"
+                    type="tel"
+                    placeholder="+234 801 234 5678"
+                    autoComplete="tel"
                     className="rounded-xl"
+                    disabled={isLoading}
+                    aria-required="true"
+                    aria-invalid={!!fieldState.error}
                     {...field}
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage role="alert" />
               </FormItem>
             )}
           />
@@ -258,12 +434,16 @@ export default function SignUpForm() {
             name="country"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-earth font-medium text-sm">
-                  Country
+                <FormLabel className="text-earth font-medium text-sm" htmlFor="country">
+                  Country <span className="text-rose-500" aria-hidden="true">*</span>
                 </FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  disabled={isLoading}
+                >
                   <FormControl>
-                    <SelectTrigger className="rounded-xl w-full">
+                    <SelectTrigger id="country" className="rounded-xl w-full" aria-required="true">
                       <SelectValue placeholder="Select your country" />
                     </SelectTrigger>
                   </FormControl>
@@ -275,7 +455,7 @@ export default function SignUpForm() {
                     ))}
                   </SelectContent>
                 </Select>
-                <FormMessage />
+                <FormMessage role="alert" />
               </FormItem>
             )}
           />
@@ -285,18 +465,23 @@ export default function SignUpForm() {
           <FormField
             control={form.control}
             name="password"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className="text-earth font-medium text-sm">
-                  Password
+                <FormLabel className="text-earth font-medium text-sm" htmlFor="password">
+                  Password <span className="text-rose-500" aria-hidden="true">*</span>
                 </FormLabel>
                 <FormControl>
                   <div className="relative">
                     <Input
+                      id="password"
                       type={showPassword ? "text" : "password"}
                       placeholder="Min. 8 characters"
                       autoComplete="new-password"
                       className="rounded-xl pr-10"
+                      disabled={isLoading}
+                      aria-required="true"
+                      aria-describedby="password-hint password-strength"
+                      aria-invalid={!!fieldState.error}
                       {...field}
                     />
                     <button
@@ -315,7 +500,34 @@ export default function SignUpForm() {
                     </button>
                   </div>
                 </FormControl>
-                <FormMessage />
+                <div id="password-hint" className="sr-only">
+                  Password must be at least 8 characters with a mix of uppercase, lowercase, numbers, and special characters.
+                </div>
+                <div
+                  id="password-strength"
+                  className="mt-3 rounded-2xl px-3 py-3 text-sm"
+                  role="status"
+                  aria-live="polite"
+                >
+                  <div className="flex items-center justify-between gap-3 text-xs text-muted">
+                    <span>Password strength</span>
+                    <span
+                      className={cn("font-semibold", passwordStrength.status)}
+                    >
+                      {passwordStrength.label}
+                    </span>
+                  </div>
+                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200">
+                    <div
+                      className={cn(
+                        "h-full rounded-full transition-all",
+                        passwordStrength.color,
+                      )}
+                      style={{ width: `${passwordStrength.strength}%` }}
+                    />
+                  </div>
+                </div>
+                <FormMessage role="alert" />
               </FormItem>
             )}
           />
@@ -324,18 +536,27 @@ export default function SignUpForm() {
           <FormField
             control={form.control}
             name="confirmPassword"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className="text-earth font-medium text-sm">
-                  Confirm Password
+                <FormLabel className="text-earth font-medium text-sm" htmlFor="confirmPassword">
+                  Confirm Password <span className="text-rose-500" aria-hidden="true">*</span>
                 </FormLabel>
                 <FormControl>
                   <div className="relative">
                     <Input
+                      id="confirmPassword"
                       type={showConfirmPassword ? "text" : "password"}
                       placeholder="Re-enter your password"
                       autoComplete="new-password"
-                      className="rounded-xl pr-10"
+                      className={cn(
+                        "rounded-xl pr-10",
+                        confirmPasswordValue && confirmPasswordMatches
+                          ? "border-emerald-500 ring-emerald-500/20"
+                          : "",
+                      )}
+                      disabled={isLoading}
+                      aria-required="true"
+                      aria-invalid={!!fieldState.error}
                       {...field}
                     />
                     <button
@@ -354,9 +575,24 @@ export default function SignUpForm() {
                         <Eye className="w-4 h-4" aria-hidden="true" />
                       )}
                     </button>
+                    {confirmPasswordValue && (
+                      <span className="absolute right-10 top-1/2 -translate-y-1/2 text-base">
+                        {confirmPasswordMatches ? (
+                          <CheckCircle2
+                            className="h-5 w-5 text-emerald-500"
+                            aria-hidden="true"
+                          />
+                        ) : (
+                          <XCircle
+                            className="h-5 w-5 text-rose-500"
+                            aria-hidden="true"
+                          />
+                        )}
+                      </span>
+                    )}
                   </div>
                 </FormControl>
-                <FormMessage />
+                <FormMessage role="alert" />
               </FormItem>
             )}
           />
@@ -371,14 +607,21 @@ export default function SignUpForm() {
                 <div className="flex items-start gap-3">
                   <FormControl>
                     <Checkbox
+                      id="terms"
                       checked={!!field.value}
                       onCheckedChange={(checked) =>
                         field.onChange(checked === true)
                       }
+                      disabled={isLoading}
                       className="mt-0.5 data-[state=checked]:bg-terra data-[state=checked]:border-terra"
+                      aria-required="true"
+                      aria-describedby="terms-error"
                     />
                   </FormControl>
-                  <FormLabel className="text-sm text-muted leading-relaxed cursor-pointer font-normal">
+                  <FormLabel
+                    htmlFor="terms"
+                    className="text-sm text-muted leading-relaxed cursor-pointer font-normal"
+                  >
                     By signing up you agree to our{" "}
                     <Link
                       href="/terms"
@@ -396,7 +639,7 @@ export default function SignUpForm() {
                     .
                   </FormLabel>
                 </div>
-                <FormMessage />
+                <FormMessage id="terms-error" role="alert" />
               </FormItem>
             )}
           />
@@ -406,6 +649,7 @@ export default function SignUpForm() {
             type="submit"
             disabled={isLoading}
             className="w-full bg-terra hover:bg-earth text-white rounded-full py-6 mt-2 text-base font-semibold transition-all hover:shadow-lg hover:shadow-terra/30 hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+            aria-label={isLoading ? "Submitting sign up form" : "Create account"}
           >
             {isLoading ? (
               <>
@@ -413,7 +657,7 @@ export default function SignUpForm() {
                   className="mr-2 h-5 w-5 animate-spin"
                   aria-hidden="true"
                 />
-                Creating account…
+                Submitting…
               </>
             ) : (
               "Create Account →"

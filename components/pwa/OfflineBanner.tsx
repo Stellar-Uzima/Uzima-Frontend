@@ -1,55 +1,161 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { WifiOff, Wifi, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+const SESSION_KEY = "offline-banner-dismissed";
+
+function getDismissed(): boolean {
+  try {
+    return sessionStorage.getItem(SESSION_KEY) === "true";
+  } catch {
+    return false;
+  }
+}
+
+function setDismissed(value: boolean) {
+  try {
+    if (value) {
+      sessionStorage.setItem(SESSION_KEY, "true");
+    } else {
+      sessionStorage.removeItem(SESSION_KEY);
+    }
+  } catch {}
+}
 
 export function OfflineBanner() {
   const [isOnline, setIsOnline] = useState(true);
   const [showBanner, setShowBanner] = useState(false);
   const [hasBeenOffline, setHasBeenOffline] = useState(false);
+  const bannerRef = useRef<HTMLDivElement>(null);
+  const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    // Initialize with current online status
-    setIsOnline(navigator.onLine);
+    const initOnline = navigator.onLine;
+    setIsOnline(initOnline);
+
+    if (!initOnline) {
+      setHasBeenOffline(true);
+      setShowBanner(!getDismissed());
+    }
 
     const handleOnline = () => {
       setIsOnline(true);
-      // Show reconnection message briefly
-      if (hasBeenOffline) {
-        setShowBanner(true);
-        setTimeout(() => {
-          setShowBanner(false);
-          setHasBeenOffline(false);
-        }, 5000);
+      setDismissed(false);
+      setShowBanner(true);
+
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
       }
+
+      reconnectTimeoutRef.current = setTimeout(() => {
+        setShowBanner(false);
+        // Delay clearing hasBeenOffline until after the CSS transition finishes
+        // (300 ms matches the `duration-300` on the banner's transform).
+        setTimeout(() => setHasBeenOffline(false), 300);
+      }, 5000);
     };
 
     const handleOffline = () => {
       setIsOnline(false);
-      setShowBanner(true);
       setHasBeenOffline(true);
+      setDismissed(false);
+      setShowBanner(true);
+    };
+
+    const handleNavigation = () => {
+      if (!navigator.onLine) {
+        setDismissed(false);
+        setShowBanner(true);
+      }
+    };
+
+    const originalPushState = history.pushState.bind(history);
+    history.pushState = (...args) => {
+      originalPushState(...args);
+      handleNavigation();
     };
 
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
+    window.addEventListener("popstate", handleNavigation);
 
     return () => {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
-    };
-  }, [hasBeenOffline]);
+      window.removeEventListener("popstate", handleNavigation);
+      history.pushState = originalPushState;
 
-  if (!showBanner && isOnline) {
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const root = document.documentElement;
+
+    const clearOffset = () => {
+      root.style.setProperty("--offline-banner-offset", "0px");
+    };
+
+    if (!showBanner) {
+      clearOffset();
+      return;
+    }
+
+    const updateBannerOffset = () => {
+      const height = bannerRef.current?.offsetHeight ?? 0;
+      root.style.setProperty("--offline-banner-offset", `${height}px`);
+    };
+
+    updateBannerOffset();
+
+    const observer =
+      typeof ResizeObserver !== "undefined" && bannerRef.current
+        ? new ResizeObserver(updateBannerOffset)
+        : null;
+
+    if (observer && bannerRef.current) {
+      observer.observe(bannerRef.current);
+    }
+
+    window.addEventListener("resize", updateBannerOffset);
+
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", updateBannerOffset);
+      clearOffset();
+    };
+  }, [isOnline, showBanner]);
+
+  const handleDismiss = () => {
+    setShowBanner(false);
+    if (!isOnline) {
+      setDismissed(true);
+    }
+  };
+
+  // Only unmount after the slide-out transition has completed.
+  // Keeping the node in the DOM while `showBanner` is false lets the
+  // `-translate-y-full` class animate the banner off screen rather than
+  // snapping it away immediately.
+  if (!showBanner && !hasBeenOffline) {
     return null;
   }
 
   return (
     <div
+      ref={bannerRef}
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 transform",
+        "fixed left-0 right-0 z-20 transform transition-all duration-300",
         showBanner ? "translate-y-0" : "-translate-y-full"
       )}
+      style={{ top: "var(--navbar-height)" }}
     >
       <div
         className={cn(
@@ -60,31 +166,33 @@ export function OfflineBanner() {
         )}
       >
         <div className="container mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3 flex-1">
+          <div className="flex flex-1 items-center gap-3">
             {isOnline ? (
               <>
-                <Wifi className="w-5 h-5 flex-shrink-0" />
+                <Wifi className="h-5 w-5 flex-shrink-0" />
                 <span>
-                  <strong>You're back online!</strong> Syncing your data...
+                  <strong>You&apos;re back online!</strong> Syncing your
+                  data&hellip;
                 </span>
               </>
             ) : (
               <>
-                <WifiOff className="w-5 h-5 flex-shrink-0 animate-pulse" />
+                <WifiOff className="h-5 w-5 flex-shrink-0 animate-pulse" />
                 <span>
-                  <strong>You're offline</strong> — Tasks you complete will be
-                  saved and synced automatically when you reconnect
+                  <strong>You&apos;re offline</strong> &ndash; Tasks you
+                  complete will be saved and synced automatically when you
+                  reconnect.
                 </span>
               </>
             )}
           </div>
-          
+
           <button
-            onClick={() => setShowBanner(false)}
-            className="p-1 hover:bg-black/10 rounded transition-colors flex-shrink-0"
-            aria-label="Close banner"
+            onClick={handleDismiss}
+            className="flex-shrink-0 rounded p-1 transition-colors hover:bg-black/10"
+            aria-label="Dismiss network status banner"
           >
-            <X className="w-4 h-4" />
+            <X className="h-4 w-4" />
           </button>
         </div>
       </div>

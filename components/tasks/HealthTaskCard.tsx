@@ -1,43 +1,31 @@
 "use client";
 
 import * as React from "react";
-import { Bookmark, Check, Loader2, Sparkles } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, Check, Loader2, Sparkles } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
 export type HealthTaskStatus = "available" | "completed" | "claimed";
 
 export interface HealthTaskCardProps {
+  taskId: string;
   title: string;
   reward: number;
   category: string;
   status: HealthTaskStatus;
-  icon?: string;
+  icon: string;
+  isBookmarked?: boolean;
+  onToggleBookmark?: (taskId: string) => void;
   onClaim?: () => void;
   className?: string;
-  /** If true, shows the bookmark as active (filled) */
-  isBookmarked?: boolean;
-  /** Called when the bookmark toggle button is clicked */
-  onBookmarkToggle?: () => void;
 }
 
-// ---------------------------------------------------------------------------
-// Animation state machine
-// idle → loading (300ms) → animating (700ms) → done
-// ---------------------------------------------------------------------------
 type AnimState = "idle" | "loading" | "animating" | "done";
 
-// ---------------------------------------------------------------------------
-// Confetti particle config
-// ---------------------------------------------------------------------------
 const PARTICLE_COUNT = 10;
-
 const PARTICLES = Array.from({ length: PARTICLE_COUNT }, (_, i) => {
   const angle = (360 / PARTICLE_COUNT) * i;
   const rad = (angle * Math.PI) / 180;
@@ -63,10 +51,6 @@ const PARTICLES = Array.from({ length: PARTICLE_COUNT }, (_, i) => {
   };
 });
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
 const CATEGORY_COLORS: Record<string, string> = {
   Nutrition: "bg-[#5A7A4A]/10 text-[#5A7A4A]",
   Exercise: "bg-[#C05A2B]/10 text-[#C05A2B]",
@@ -77,11 +61,7 @@ function getCategoryColor(category: string): string {
   return CATEGORY_COLORS[category] ?? "bg-[#8A6040]/10 text-[#8A6040]";
 }
 
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
-
-export function HealthTaskCard({
+export const HealthTaskCard = React.memo(function HealthTaskCard({
   title,
   reward,
   category,
@@ -89,54 +69,42 @@ export function HealthTaskCard({
   icon,
   onClaim,
   className,
-  isBookmarked,
-  onBookmarkToggle,
+  taskId,
+  isBookmarked = false,
+  onToggleBookmark,
 }: HealthTaskCardProps) {
-  // Only "available" cards can run the animation
   const [animState, setAnimState] = React.useState<AnimState>("idle");
   const hasAnimated = React.useRef(false);
-
-  // Detect prefers-reduced-motion once on mount
   const prefersReduced = React.useRef(false);
+
   React.useEffect(() => {
     prefersReduced.current = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
   }, []);
 
-  // Derived display status — after animation completes, show completed UI
   const displayStatus: HealthTaskStatus =
     animState === "done" ? "completed" : status;
-
   const isAvailable = displayStatus === "available";
   const isCompleted = displayStatus === "completed";
   const isClaimed = displayStatus === "claimed";
+  const isRemoteImageIcon = icon?.startsWith("http");
+  const isImageIcon = icon?.startsWith("/") || isRemoteImageIcon;
 
-  const isImageIcon = icon
-    ? icon.startsWith("/") || icon.startsWith("http")
-    : false;
-
-  // ── Animation trigger ────────────────────────────────────────────────────
   function handleMarkComplete() {
     if (hasAnimated.current || animState !== "idle") return;
     hasAnimated.current = true;
 
-    // Reduced-motion: skip straight to done
     if (prefersReduced.current) {
       setAnimState("done");
       onClaim?.();
       return;
     }
 
-    // 1. Loading spinner (300ms)
     setAnimState("loading");
-
     setTimeout(() => {
-      // 2. Burst animations (700ms)
       setAnimState("animating");
-
       setTimeout(() => {
-        // 3. Settle into completed state
         setAnimState("done");
         onClaim?.();
       }, 700);
@@ -151,23 +119,21 @@ export function HealthTaskCard({
       data-slot="health-task-card"
       data-status={displayStatus}
       className={cn(
-        "group relative flex flex-col rounded-2xl border bg-[#FFFDF5] p-5 transition-all duration-300",
+        "group relative flex flex-col rounded-2xl border bg-[#FFFDF5] p-5 transition-all duration-200 ease-out",
 
         isAvailable && [
-          "border-[#E8D4C0] shadow-sm",
-          "hover:border-[#C05A2B]/50 hover:shadow-md hover:-translate-y-0.5",
-          "cursor-pointer",
+          "border-[#E8D4C0] shadow-sm cursor-pointer",
+          "hover:border-[#C05A2B]/40 hover:shadow-md hover:-translate-y-[3px]",
+          "active:translate-y-[1px] active:shadow-sm",
         ],
         isCompleted && "border-[#C05A2B]/40 bg-[#C05A2B]/[0.03]",
         isClaimed && "border-[#F0C050]/40 bg-[#F0C050]/[0.04]",
 
-        // Card ping on animating
+        "motion-reduce:hover:transform-none",
         isAnimating && "animate-task-ping",
-
         className,
       )}
     >
-      {/* ── Confetti particles (absolutely positioned, pointer-events-none) ── */}
       {isAnimating && (
         <span
           aria-hidden="true"
@@ -183,7 +149,6 @@ export function HealthTaskCard({
                 p.size,
               )}
               style={{
-                // CSS custom properties consumed by the keyframe
                 ["--dx" as string]: `${p.dx}px`,
                 ["--dy" as string]: `${p.dy}px`,
                 animationDelay: p.delay,
@@ -193,21 +158,23 @@ export function HealthTaskCard({
         </span>
       )}
 
-      {/* ── Top row ──────────────────────────────────────────────────────── */}
       <div className="flex items-start gap-4">
-        {/* Icon */}
         <div
           className={cn(
             "relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-2xl transition-colors",
-            isAvailable && "bg-[#C05A2B]/10",
+            isAvailable && "bg-[#C05A2B]/10 group-hover:bg-[#C05A2B]/15",
             isCompleted && "bg-[#5A7A4A]/10",
             isClaimed && "bg-[#F0C050]/15",
           )}
         >
           {isImageIcon ? (
-            <img
+            <Image
               src={icon}
-              alt=""
+              alt={`${title} task category icon`}
+              width={28}
+              height={28}
+              unoptimized={icon.startsWith("http")}
+              loading="lazy"
               className="h-7 w-7 object-contain"
               aria-hidden="true"
             />
@@ -220,7 +187,6 @@ export function HealthTaskCard({
               className={cn(
                 "absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full text-white shadow-sm",
                 isCompleted ? "bg-[#5A7A4A]" : "bg-[#F0C050]",
-                // Pop in when we just finished animating
                 animState === "done" && "animate-task-check-pop",
               )}
             >
@@ -229,7 +195,6 @@ export function HealthTaskCard({
           )}
         </div>
 
-        {/* Title & category */}
         <div className="min-w-0 flex-1">
           <h3
             className={cn(
@@ -249,51 +214,28 @@ export function HealthTaskCard({
           </span>
         </div>
 
-        {/* Reward badge */}
-        <Badge
-          className={cn(
-            "shrink-0 gap-1 rounded-full border-0 px-3 py-1 text-xs font-bold tabular-nums transition-colors duration-300",
-            isAvailable && "bg-[#C05A2B]/10 text-[#C05A2B]",
-            isCompleted && "bg-[#5A7A4A]/10 text-[#5A7A4A]",
-            isClaimed && "bg-[#F0C050]/15 text-[#B88A20]",
-            // Pulse the badge when we enter animating state
-            isAnimating && "animate-task-badge-pulse",
-          )}
-        >
-          <Sparkles className="h-3 w-3" />
-          {reward} XLM
-        </Badge>
-
-        {/* Bookmark toggle */}
-        {onBookmarkToggle && (
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onBookmarkToggle();
-            }}
-            aria-label={isBookmarked ? "Remove bookmark" : "Bookmark this task"}
+        <div className="flex flex-col items-end gap-2 shrink-0">
+          <Badge
             className={cn(
-              "shrink-0 flex items-center justify-center rounded-lg p-1.5 transition-all duration-200",
-              "hover:bg-[#C05A2B]/10 focus:outline-none focus:ring-2 focus:ring-[#C05A2B]/30",
-              isBookmarked
-                ? "text-[#C05A2B]"
-                : "text-muted hover:text-[#C05A2B]",
+              "gap-1 rounded-full border-0 px-3 py-1 text-xs font-bold tabular-nums transition-all duration-200 ease-out",
+              isAvailable &&
+                "bg-[#C05A2B]/10 text-[#C05A2B] group-hover:scale-[1.05]",
+              isCompleted && "bg-[#5A7A4A]/10 text-[#5A7A4A]",
+              isClaimed && "bg-[#F0C050]/15 text-[#B88A20]",
+              isAnimating && "animate-task-badge-pulse",
             )}
           >
-            <Bookmark
-              className={cn(
-                "h-4 w-4 transition-all duration-200",
-                isBookmarked && "fill-current",
-              )}
-            />
-          </button>
-        )}
+            <Sparkles className="h-3 w-3" />
+            {reward} XLM
+          </Badge>
+
+          {isAvailable && (
+            <ArrowRight className="h-4 w-4 text-[#C05A2B] opacity-0 -translate-x-1 transition-all duration-200 ease-out group-hover:opacity-100 group-hover:translate-x-0" />
+          )}
+        </div>
       </div>
 
-      {/* ── Button row ───────────────────────────────────────────────────── */}
       <div className="mt-4">
-        {/* Available — shows spinner during loading, then check during animating */}
         {isAvailable && (
           <Button
             size="sm"
@@ -306,15 +248,15 @@ export function HealthTaskCard({
             )}
           >
             {isLoading ? (
-              <>
+              <div className="flex items-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 <span>Verifying…</span>
-              </>
+              </div>
             ) : isAnimating ? (
-              <>
+              <div className="flex items-center gap-2">
                 <Check className="h-4 w-4" />
                 <span>Complete!</span>
-              </>
+              </div>
             ) : (
               "Mark Complete"
             )}
@@ -327,7 +269,7 @@ export function HealthTaskCard({
             disabled
             className="w-full cursor-not-allowed rounded-xl bg-[#5A7A4A]/20 text-sm font-semibold text-[#5A7A4A]"
           >
-            <Check className="h-4 w-4" />
+            <Check className="h-4 w-4 mr-2" />
             Completed
           </Button>
         )}
@@ -338,11 +280,11 @@ export function HealthTaskCard({
             disabled
             className="w-full cursor-not-allowed rounded-xl bg-[#F0C050]/20 text-sm font-semibold text-[#B88A20]"
           >
-            <Check className="h-4 w-4" />
+            <Check className="h-4 w-4 mr-2" />
             Claimed
           </Button>
         )}
       </div>
     </div>
   );
-}
+});
