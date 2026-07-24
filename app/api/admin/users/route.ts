@@ -8,6 +8,25 @@ const mockUsers = [
   // ... more users
 ];
 
+export async function PATCH(request: Request) {
+  const body = await request.json();
+  const { ids, action }: { ids: string[]; action: 'suspend' | 'reactivate' } = body;
+
+  if (!Array.isArray(ids) || !['suspend', 'reactivate'].includes(action)) {
+    return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
+  }
+
+  const newStatus = action === 'suspend' ? 'suspended' : 'active';
+  const updatedIds = new Set(ids);
+
+  mockUsers.forEach(u => {
+    if (updatedIds.has(u.id)) u.status = newStatus;
+  });
+
+  const updated = mockUsers.filter(u => updatedIds.has(u.id));
+  return NextResponse.json({ updated });
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const page = parseInt(searchParams.get('page') || '1');

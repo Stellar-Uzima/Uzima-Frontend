@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Search, MoreVertical, Shield, UserX, UserCheck } from 'lucide-react';
+import { Search, MoreVertical, Shield, UserX, UserCheck, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,6 +20,16 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from '@/components/ui/alert-dialog';
 import { useDebounce } from '@/hooks/use-debounce';
 
 interface User {
@@ -30,6 +41,8 @@ interface User {
   joined: string;
 }
 
+type BulkAction = 'suspend' | 'reactivate';
+
 export default function AdminUserTable() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,6 +50,10 @@ export default function AdminUserTable() {
   const debouncedSearch = useDebounce(search, 500);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [pendingAction, setPendingAction] = useState<BulkAction | null>(null);
 
   useEffect(() => {
     async function fetchUsers() {
@@ -55,11 +72,89 @@ export default function AdminUserTable() {
     fetchUsers();
   }, [page, debouncedSearch]);
 
+  // Clear selection on page change
+  useEffect(() => {
+    setSelectedIds(new Set());
+  }, [page]);
+
   const toggleUserStatus = async (id: string, currentStatus: string) => {
     const newStatus = currentStatus === 'active' ? 'suspended' : 'active';
-    setUsers(prev => prev.map(u => u.id === id ? { ...u, status: newStatus as any } : u));
+    setUsers(prev => prev.map(u => u.id === id ? { ...u, status: newStatus as User['status'] } : u));
     // Real API call here
   };
+
+  const allOnPageSelected = users.length > 0 && users.every(u => selectedIds.has(u.id));
+  const someOnPageSelected = users.some(u => selectedIds.has(u.id)) && !allOnPageSelected;
+
+  const toggleSelectAll = () => {
+    if (allOnPageSelected) {
+      const next = new Set(selectedIds);
+      users.forEach(u => next.delete(u.id));
+      setSelectedIds(next);
+    } else {
+      const next = new Set(selectedIds);
+      users.forEach(u => next.add(u.id));
+      setSelectedIds(next);
+    }
+  };
+
+  const toggleSelectOne = (id: string) => {
+    const next = new Set(selectedIds);
+    if (next.has(id)) {
+      next.delete(id);
+    } else {
+      next.add(id);
+    }
+    setSelectedIds(next);
+  };
+
+  const openConfirm = (action: BulkAction) => {
+    setPendingAction(action);
+    setConfirmOpen(true);
+  };
+
+  const executeBulkAction = async () => {
+    if (!pendingAction) return;
+    const ids = Array.from(selectedIds);
+    try {
+      await fetch('/api/admin/users', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids, action: pendingAction }),
+      });
+      const newStatus = pendingAction === 'suspend' ? 'suspended' : 'active';
+      setUsers(prev =>
+        prev.map(u => selectedIds.has(u.id) ? { ...u, status: newStatus } : u)
+      );
+    } catch (error) {
+      console.error('Bulk action failed:', error);
+    } finally {
+      setSelectedIds(new Set());
+      setPendingAction(null);
+      setConfirmOpen(false);
+    }
+  };
+
+  const handleBulkExport = () => {
+    const selectedUsers = users.filter(u => selectedIds.has(u.id));
+    const header = ['Name', 'Email', 'Role', 'Status', 'Joined'];
+    const rows = selectedUsers.map(u => [u.name, u.email, u.role, u.status, u.joined]);
+    const csv = [header, ...rows].map(r => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'selected-users.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    setSelectedIds(new Set());
+  };
+
+  const confirmLabel = pendingAction === 'suspend' ? 'Suspend' : 'Reactivate';
+  const confirmDescription =
+    pendingAction === 'suspend'
+      ? `This will suspend ${selectedIds.size} user${selectedIds.size > 1 ? 's' : ''}. They will lose access until reactivated.`
+      : `This will reactivate ${selectedIds.size} user${selectedIds.size > 1 ? 's' : ''}. They will regain access immediately.`;
 
   return (
     <div className="bg-white rounded-3xl border border-terra/10 shadow-sm overflow-hidden animate-scaleIn">
@@ -84,17 +179,58 @@ export default function AdminUserTable() {
         </div>
       </div>
 
+      {/* ── Bulk-action bar (visible when ≥1 row selected) ───────────────────── */}
+      {selectedIds.size > 0 && (
+        <div className="px-4 sm:px-6 py-3 border-b border-terra/5 bg-cream/40 flex flex-wrap items-center justify-center gap-3">
+          <span className="text-sm font-semibold text-earth shrink-0">
+            {selectedIds.size} user{selectedIds.size > 1 ? 's' : ''} selected
+          </span>
+          <div className="flex items-center gap-2 flex-wrap">
+            <Button
+              size="sm"
+              variant="outline"
+              className="rounded-xl text-terra border-terra/30 hover:bg-terra/5"
+              onClick={() => openConfirm('suspend')}
+            >
+              <UserX className="w-4 h-4 mr-1.5" />
+              Suspend selected
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              className="rounded-xl text-sage border-sage/30 hover:bg-sage/5"
+              onClick={() => openConfirm('reactivate')}
+            >
+              <UserCheck className="w-4 h-4 mr-1.5" />
+              Reactivate selected
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              className="rounded-xl text-earth border-terra/20 hover:bg-cream/60"
+              onClick={handleBulkExport}
+            >
+              <Download className="w-4 h-4 mr-1.5" />
+              Export selected to CSV
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* ── Desktop table (md+) ──────────────────────────────────────────────── */}
-      {/*
-        FIX 1: Wrap in a div with overflow-x-auto so the fixed-width table scrolls
-                horizontally rather than overflowing the card on any viewport.
-        FIX 2: Table gets min-w-[720px] so columns never collapse below usable width.
-        FIX 3: TableHead cells get whitespace-nowrap so headers never wrap mid-word.
-      */}
       <div className="hidden md:block w-full overflow-x-auto">
         <Table className="min-w-[720px] w-full">
           <TableHeader>
             <TableRow className="bg-cream/30 hover:bg-cream/30">
+              <TableHead className="w-[48px] py-4">
+                <Checkbox
+                  checked={allOnPageSelected}
+                  data-state={someOnPageSelected ? 'indeterminate' : undefined}
+                  onCheckedChange={toggleSelectAll}
+                  aria-label="Select all users on this page"
+                  className="translate-y-[1px]"
+                />
+              </TableHead>
               <TableHead className="w-[220px] py-4 whitespace-nowrap">User</TableHead>
               <TableHead className="whitespace-nowrap">Role</TableHead>
               <TableHead className="whitespace-nowrap">Status</TableHead>
@@ -105,10 +241,9 @@ export default function AdminUserTable() {
 
           <TableBody>
             {loading ? (
-              /* FIX 4: Skeleton rows are proper <tr>/<td> so table layout stays valid */
               [...Array(5)].map((_, i) => (
                 <TableRow key={i}>
-                  {[...Array(5)].map((_, j) => (
+                  {[...Array(6)].map((_, j) => (
                     <TableCell key={j} className="py-5">
                       <div className="h-4 bg-gray-100 rounded animate-pulse" />
                     </TableCell>
@@ -117,15 +252,25 @@ export default function AdminUserTable() {
               ))
             ) : users.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="py-12 text-center text-muted">
+                <TableCell colSpan={6} className="py-12 text-center text-muted">
                   No users found.
                 </TableCell>
               </TableRow>
             ) : (
               users.map((user) => (
-                <TableRow key={user.id} className="hover:bg-cream/10">
+                <TableRow
+                  key={user.id}
+                  className={`hover:bg-cream/10 ${selectedIds.has(user.id) ? 'bg-cream/20' : ''}`}
+                >
                   <TableCell>
-                    {/* FIX 5: Constrain name/email so long strings don't blow out the column */}
+                    <Checkbox
+                      checked={selectedIds.has(user.id)}
+                      onCheckedChange={() => toggleSelectOne(user.id)}
+                      aria-label={`Select ${user.name}`}
+                      className="translate-y-[1px]"
+                    />
+                  </TableCell>
+                  <TableCell>
                     <div className="flex flex-col min-w-0">
                       <span className="font-semibold text-earth truncate max-w-[180px]">{user.name}</span>
                       <span className="text-xs text-muted truncate max-w-[180px]">{user.email}</span>
@@ -187,12 +332,6 @@ export default function AdminUserTable() {
       </div>
 
       {/* ── Mobile card list (<md) ───────────────────────────────────────────── */}
-      {/*
-        FIX 6: Added py-4 so cards don't sit flush against the search bar border.
-        FIX 7: Skeleton card count matches desktop (5) for a consistent loading feel.
-        FIX 8: Card skeletons use consistent rounded-2xl (not rounded-3xl) to match
-                the real cards below them.
-      */}
       <div className="md:hidden space-y-3 px-4 sm:px-6 py-4">
         {loading ? (
           [...Array(5)].map((_, i) => (
@@ -222,14 +361,20 @@ export default function AdminUserTable() {
           users.map((user) => (
             <div
               key={user.id}
-              className="rounded-2xl border border-terra/10 bg-white p-4 shadow-sm"
+              className={`rounded-2xl border border-terra/10 bg-white p-4 shadow-sm ${selectedIds.has(user.id) ? 'ring-1 ring-terra/30' : ''}`}
             >
               <div className="flex items-start justify-between gap-3">
-                {/* FIX 9: min-w-0 + overflow-hidden ensure long emails/names never
-                          push the action button off-screen on narrow phones */}
-                <div className="min-w-0 overflow-hidden">
-                  <p className="font-semibold text-earth truncate">{user.name}</p>
-                  <p className="text-xs text-muted truncate">{user.email}</p>
+                <div className="flex items-start gap-3 min-w-0 overflow-hidden">
+                  <Checkbox
+                    checked={selectedIds.has(user.id)}
+                    onCheckedChange={() => toggleSelectOne(user.id)}
+                    aria-label={`Select ${user.name}`}
+                    className="mt-0.5 shrink-0"
+                  />
+                  <div className="min-w-0 overflow-hidden">
+                    <p className="font-semibold text-earth truncate">{user.name}</p>
+                    <p className="text-xs text-muted truncate">{user.email}</p>
+                  </div>
                 </div>
 
                 <DropdownMenu>
@@ -292,11 +437,6 @@ export default function AdminUserTable() {
       </div>
 
       {/* ── Pagination ───────────────────────────────────────────────────────── */}
-      {/*
-        FIX 10: Buttons get min-w-[96px] so "Previous" / "Next" labels never wrap
-                 or get clipped on very narrow viewports.
-                 Page indicator is allowed to shrink between the two buttons.
-      */}
       {totalPages > 1 && (
         <div className="p-4 border-t border-terra/5 flex items-center justify-center gap-2 flex-wrap">
           <Button
@@ -322,6 +462,20 @@ export default function AdminUserTable() {
           </Button>
         </div>
       )}
+
+      {/* ── Confirmation dialog ──────────────────────────────────────────────── */}
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{confirmLabel} {selectedIds.size} user{selectedIds.size > 1 ? 's' : ''}?</AlertDialogTitle>
+            <AlertDialogDescription>{confirmDescription}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={executeBulkAction}>{confirmLabel}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
