@@ -31,6 +31,7 @@ import {
   AlertDialogCancel,
 } from '@/components/ui/alert-dialog';
 import { useDebounce } from '@/hooks/use-debounce';
+import { useAppToast } from '@/components/ui/use-app-toast';
 
 interface User {
   id: string;
@@ -54,6 +55,8 @@ export default function AdminUserTable() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState<BulkAction | null>(null);
+
+  const { successToast, errorToast } = useAppToast();
 
   useEffect(() => {
     async function fetchUsers() {
@@ -117,17 +120,26 @@ export default function AdminUserTable() {
     if (!pendingAction) return;
     const ids = Array.from(selectedIds);
     try {
-      await fetch('/api/admin/users', {
+      const response = await fetch('/api/admin/users', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids, action: pendingAction }),
       });
+
+      if (!response.ok) {
+        throw new Error(`Bulk ${pendingAction} failed with status ${response.status}`);
+      }
+
       const newStatus = pendingAction === 'suspend' ? 'suspended' : 'active';
       setUsers(prev =>
         prev.map(u => selectedIds.has(u.id) ? { ...u, status: newStatus } : u)
       );
+      successToast('user.bulkStatusUpdated', {
+        description: `${ids.length} user${ids.length > 1 ? 's' : ''} ${pendingAction === 'suspend' ? 'suspended' : 'reactivated'}.`,
+      });
     } catch (error) {
       console.error('Bulk action failed:', error);
+      errorToast('user.bulkStatusUpdateFailed', error);
     } finally {
       setSelectedIds(new Set());
       setPendingAction(null);
