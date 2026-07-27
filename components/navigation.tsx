@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Download } from "lucide-react";
+import { Download, HelpCircle } from "lucide-react";
 
 import LanguageSelector from "@/components/ui/LanguageSelector";
 import {
@@ -71,6 +71,11 @@ const SERVICE_LINKS: NavLink[] = [
   { label: "Knowledge Sharing", href: "/services/knowledge-sharing" },
   { label: "Consultations", href: "/services/consultations" },
   { label: "XLM Rewards", href: "/services/xlm-rewards" },
+];
+
+const APP_LINKS: (NavLink & { tourId: string })[] = [
+  { label: "Tasks", href: "/tasks", tourId: "nav-tasks" },
+  { label: "Healers", href: "/healers", tourId: "nav-healers" },
 ];
 
 function useWallet() {
@@ -281,6 +286,21 @@ function MobileDrawer({
             );
           })}
 
+          {APP_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={onClose}
+              className={`flex items-center rounded-xl px-4 py-3 text-base font-medium transition-colors ${
+                pathname === link.href
+                  ? "bg-terra/10 font-semibold text-terra"
+                  : "text-foreground hover:bg-terra/5 hover:text-terra"
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
+
           <div className="mt-4">
             <p className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               Services
@@ -307,6 +327,15 @@ function MobileDrawer({
             <span className="text-sm font-medium text-foreground">Appearance</span>
             <ThemeToggle />
           </div>
+
+          <Link
+            href="/dashboard?tour=1"
+            onClick={onClose}
+            className="flex items-center gap-2 text-sm font-medium text-terra transition-opacity hover:opacity-80"
+          >
+            <HelpCircle className="h-4 w-4" />
+            Take a tour
+          </Link>
 
           {!isInstalled && deferredPrompt && (
             <button
@@ -500,6 +529,25 @@ export default function Navbar() {
             );
           })}
 
+          {APP_LINKS.map((link) => (
+            <li key={link.href}>
+              <Link
+                href={link.href}
+                data-tour={link.tourId}
+                className={`relative no-underline text-sm font-medium transition-all duration-200 ${
+                  pathname === link.href
+                    ? "text-terra"
+                    : "text-muted-foreground hover:text-terra"
+                }`}
+              >
+                {link.label}
+                {pathname === link.href && (
+                  <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-terra rounded-full" />
+                )}
+              </Link>
+            </li>
+          ))}
+
             <li>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -539,10 +587,29 @@ export default function Navbar() {
           )}
           <ThemeToggle />
           <LanguageSelector />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                aria-label="Help"
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-foreground/5 hover:text-terra focus:outline-none focus:ring-2 focus:ring-terra/30"
+              >
+                <HelpCircle className="h-5 w-5" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="rounded-xl border-terra/10">
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/dashboard?tour=1" className="block w-full">
+                  Take a tour
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <NotificationPanel />
           <InstallButton />
           <button
             type="button"
+            data-tour="connect-wallet"
             onClick={() => setWalletModalOpen(true)}
             className="text-terra font-medium text-sm hover:opacity-80 transition-opacity px-2"
           >
