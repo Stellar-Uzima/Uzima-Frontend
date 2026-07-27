@@ -14,6 +14,7 @@ import { LanguageMultiSelect } from '@/components/profile/LanguageMultiSelect';
 import { HealthGoals } from '@/components/profile/HealthGoals';
 import { WalletPanel } from '@/components/profile/WalletPanel';
 import { NotificationsPanel, NotificationsState } from '@/components/profile/NotificationsPanel';
+import { ReminderScheduler } from '@/components/profile/ReminderScheduler';
 import { AvatarEmojiPicker } from '@/components/profile/AvatarEmojiPicker';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 
@@ -190,12 +191,16 @@ export default function ProfilePage() {
 						/>
 					</TabsContent>
 
-					<TabsContent value="notifications" className="mt-6">
+					<TabsContent value="notifications" className="mt-6 space-y-6">
 						<NotificationsPanel
 							value={notifications}
 							onChange={(next) => setNotifications(next)}
 							onSave={onSaveProfile}
 							saving={saving}
+						/>
+						<ReminderScheduler
+							categoryEnabled={notifications.taskReminders}
+							onEnableCategory={() => setNotifications({ ...notifications, taskReminders: true })}
 						/>
 					</TabsContent>
 				</Tabs>
