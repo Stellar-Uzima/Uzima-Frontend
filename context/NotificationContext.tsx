@@ -5,6 +5,12 @@ import { Notification } from '../components/notifications/types';
 interface NotificationContextType {
   notifications: Notification[];
   unreadCount: number;
+  /**
+   * True once stored notifications have been read back from localStorage.
+   * Producers that add notifications on mount (e.g. the task-reminder
+   * fallback) must wait for this, otherwise hydration overwrites them.
+   */
+  hydrated: boolean;
   markAsRead: (id: string) => void;
   markAllAsRead: () => void;
   addNotification: (notification: Notification) => void;
@@ -15,17 +21,31 @@ const NotificationContext = createContext<NotificationContextType | undefined>(u
 
 export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [hydrated, setHydrated] = useState(false);
 
   // Load from localStorage
   useEffect(() => {
-    const stored = localStorage.getItem('notifications');
-    if (stored) setNotifications(JSON.parse(stored));
+    try {
+      const stored = localStorage.getItem('notifications');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) setNotifications(parsed);
+      }
+    } catch {
+      // Corrupt or unavailable storage — start from an empty list.
+    }
+    setHydrated(true);
   }, []);
 
-  // Persist to localStorage
+  // Persist to localStorage (never before hydration, which would clobber it)
   useEffect(() => {
-    localStorage.setItem('notifications', JSON.stringify(notifications.slice(0, 50)));
-  }, [notifications]);
+    if (!hydrated) return;
+    try {
+      localStorage.setItem('notifications', JSON.stringify(notifications.slice(0, 50)));
+    } catch {
+      // Storage unavailable or over quota — fail silently.
+    }
+  }, [hydrated, notifications]);
 
   const markAsRead = (id: string) => {
     setNotifications(prev =>
@@ -38,7 +58,12 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   };
 
   const addNotification = (notification: Notification) => {
-    setNotifications(prev => [notification, ...prev.slice(0, 49)]);
+    setNotifications(prev => {
+      // Ids are deterministic for scheduled reminders, so ignoring duplicates
+      // keeps a re-mount or a second tab from adding the same reminder twice.
+      if (prev.some(n => n.id === notification.id)) return prev;
+      return [notification, ...prev.slice(0, 49)];
+    });
   };
 
   const deleteNotification = (id: string) => {
@@ -49,7 +74,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
   return (
     <NotificationContext.Provider
-      value={{ notifications, unreadCount, markAsRead, markAllAsRead, addNotification, deleteNotification }}
+      value={{ notifications, unreadCount, hydrated, markAsRead, markAllAsRead, addNotification, deleteNotification }}
     >
       {children}
     </NotificationContext.Provider>
