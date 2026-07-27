@@ -2,6 +2,7 @@
 
 import { Suspense, useMemo, useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import * as React from "react";
 import { Bookmark } from "lucide-react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";

@@ -18,7 +18,7 @@ export default function SavedTasksPage() {
 
   // Cross-reference bookmarked IDs against the full task list
   const savedTasks = mockTasks.filter((task) =>
-    bookmarkedIds.includes(task.id),
+    bookmarkedIds.has(task.id),
   );
 
   return (
@@ -62,12 +62,14 @@ export default function SavedTasksPage() {
               {savedTasks.map((task) => (
                 <HealthTaskCard
                   key={task.id}
+                  taskId={task.id}
                   title={task.title}
                   reward={task.rewardXLM}
                   category={task.category}
                   status="available"
+                  icon={task.icon || ""}
                   isBookmarked={isBookmarked(task.id)}
-                  onBookmarkToggle={() => toggleBookmark(task.id)}
+                  onToggleBookmark={() => toggleBookmark(task.id)}
                   onClaim={() => router.push(`/tasks/${task.id}`)}
                 />
               ))}
