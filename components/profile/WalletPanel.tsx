@@ -96,11 +96,11 @@ export function WalletPanel({
                                 <CardDescription>Manage your connected wallet and rewards</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                                {address ? (
+                                {address || (typeof window !== 'undefined' && window.localStorage?.getItem?.('freighterAddress')) ? (
                                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                                                 <div className="space-y-1">
                                                         <div className="text-sm text-muted-foreground">Connected Address</div>
-                                                        <div className="font-mono text-base">{truncate(address)}</div>
+                                                        <div className="font-mono text-base">{truncate(address ?? (typeof window !== 'undefined' ? window.localStorage.getItem('freighterAddress') : ''))}</div>
                                                 </div>
                                                 <div className="flex gap-2">
                                                         <Button type="button" variant="outline" onClick={copy}>
