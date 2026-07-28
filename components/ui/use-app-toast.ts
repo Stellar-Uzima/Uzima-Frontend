@@ -28,6 +28,7 @@ type SuccessKey =
   | 'profile.updated'
   | 'badge.earned'
   | 'reaction.added'
+  | 'user.bulkStatusUpdated'
 
 type ErrorKey =
   | 'confession.submitFailed'
@@ -37,6 +38,7 @@ type ErrorKey =
   | 'profile.updateFailed'
   | 'badge.earnFailed'
   | 'reaction.addFailed'
+  | 'user.bulkStatusUpdateFailed'
   | 'generic'
 
 type InfoKey =
@@ -85,6 +87,10 @@ const SUCCESS_COPY: Record<SuccessKey, ToastCopy> = {
     title: 'Reaction added',
     description: '',
   },
+  'user.bulkStatusUpdated': {
+    title: 'Users updated',
+    description: 'Selected users have been updated.',
+  },
 }
 
 const ERROR_COPY: Record<ErrorKey, ToastCopy> = {
@@ -115,6 +121,10 @@ const ERROR_COPY: Record<ErrorKey, ToastCopy> = {
   'reaction.addFailed': {
     title: 'Reaction not registered',
     description: 'Try again.',
+  },
+  'user.bulkStatusUpdateFailed': {
+    title: 'Bulk action failed',
+    description: 'Selected users were not updated. Try again.',
   },
   generic: {
     title: 'Something went wrong',
@@ -189,6 +199,7 @@ export function useAppToast() {
       title: copy.title,
       description: copy.description + devDetail,
       duration: DURATION.long,
+      variant: 'error',
     })
   }
 
