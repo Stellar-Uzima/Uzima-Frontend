@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -9,6 +9,7 @@ import { z } from "zod";
 import {
   Eye,
   EyeOff,
+  Gift,
   Loader2,
   AlertCircle,
   CheckCircle2,
@@ -16,6 +17,12 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
+import {
+  clearStoredReferralCode,
+  normalizeReferralCode,
+  readStoredReferralCode,
+  storeReferralCode,
+} from "@/lib/referral";
 
 import {
   Form,
@@ -243,6 +250,15 @@ const signUpSchema = z
     terms: z
       .boolean()
       .refine((val) => val === true, "You must accept the terms to continue"),
+
+    // Optional — pre-filled from the ?ref= query param when arriving via a referral link
+    referralCode: z
+      .string()
+      .trim()
+      .refine(
+        (value) => value === "" || normalizeReferralCode(value) !== null,
+        "Referral codes are 4–16 letters or numbers",
+      ),
   })
   // Cross-field check — error is attached to the confirmPassword field
   .refine((data) => data.password === data.confirmPassword, {
@@ -252,7 +268,12 @@ const signUpSchema = z
 
 type SignUpFormValues = z.infer<typeof signUpSchema>;
 
-export default function SignUpForm() {
+interface SignUpFormProps {
+  /** Referral code read from the ?ref= query param on the sign-up page. */
+  initialReferralCode?: string | null;
+}
+
+export default function SignUpForm({ initialReferralCode = null }: SignUpFormProps) {
   const router = useRouter();
 
   // Password visibility toggles — local UI state only, not form state
@@ -262,6 +283,9 @@ export default function SignUpForm() {
   // Async submission state
   const [isLoading, setIsLoading] = useState(false);
   const [globalError, setGlobalError] = useState<string | null>(null);
+
+  // Code the visitor actually arrived with — drives the "invited by" banner
+  const [referredBy, setReferredBy] = useState<string | null>(initialReferralCode);
 
   // Initialise react-hook-form with our zod resolver
   const form = useForm<SignUpFormValues>({
@@ -276,8 +300,26 @@ export default function SignUpForm() {
       password: "",
       confirmPassword: "",
       terms: false,
+      referralCode: initialReferralCode ?? "",
     },
   });
+
+  // Attribution is persisted so it survives a refresh or a detour to /signin,
+  // and a code already stored from an earlier visit is restored here.
+  useEffect(() => {
+    if (initialReferralCode) {
+      storeReferralCode(initialReferralCode);
+      setReferredBy(initialReferralCode);
+      form.setValue("referralCode", initialReferralCode);
+      return;
+    }
+
+    const stored = readStoredReferralCode();
+    if (stored) {
+      setReferredBy(stored);
+      form.setValue("referralCode", stored);
+    }
+  }, [initialReferralCode, form]);
 
   const emailValue = form.watch("email");
   const passwordValue = form.watch("password");
@@ -292,8 +334,18 @@ export default function SignUpForm() {
     setIsLoading(true);
     setGlobalError(null);
 
+    const { referralCode, confirmPassword: _confirmPassword, ...account } = data;
+
+    // Referral attribution travels with the account payload; the backend awards
+    // the XLM once the referred user completes their first task.
+    const payload = {
+      ...account,
+      referralCode: normalizeReferralCode(referralCode) ?? undefined,
+    };
+
     // Mock network latency — replace with your real API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
+    console.debug("[signup] payload", payload);
 
     // Mock duplicate-email scenario so reviewers can see the global banner
     if (data.email === "taken@example.com") {
@@ -303,6 +355,9 @@ export default function SignUpForm() {
       setIsLoading(false);
       return;
     }
+
+    // Attribution has been handed over — don't reapply it to the next signup
+    clearStoredReferralCode();
 
     // Success → redirect to onboarding
     router.push("#");
@@ -455,6 +510,48 @@ export default function SignUpForm() {
                     ))}
                   </SelectContent>
                 </Select>
+                <FormMessage role="alert" />
+              </FormItem>
+            )}
+          />
+
+          {/* Referral code — optional, pre-filled when arriving from a referral link */}
+
+          <FormField
+            control={form.control}
+            name="referralCode"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel className="text-earth font-medium text-sm" htmlFor="referralCode">
+                  Referral Code <span className="text-muted font-normal">(optional)</span>
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    id="referralCode"
+                    placeholder="UZ4K9P2"
+                    autoComplete="off"
+                    autoCapitalize="characters"
+                    spellCheck={false}
+                    className={cn(
+                      "rounded-xl uppercase",
+                      referredBy && "border-emerald-500 ring-emerald-500/20",
+                    )}
+                    disabled={isLoading}
+                    aria-invalid={!!fieldState.error}
+                    aria-describedby={referredBy ? "referral-hint" : undefined}
+                    {...field}
+                  />
+                </FormControl>
+                {referredBy && (
+                  <p
+                    id="referral-hint"
+                    className="flex items-center gap-2 text-sm text-emerald-700"
+                  >
+                    <Gift className="h-4 w-4" aria-hidden="true" />
+                    You were invited with code{" "}
+                    <strong className="font-semibold">{referredBy}</strong> — you both earn XLM.
+                  </p>
+                )}
                 <FormMessage role="alert" />
               </FormItem>
             )}
