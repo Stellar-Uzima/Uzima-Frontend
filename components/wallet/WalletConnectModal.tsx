@@ -8,6 +8,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import useWallet from "@/hooks/useWallet";
+import { toast } from "@/components/ui/use-toast";
 
 type WalletConnectModalProps = {
   open: boolean;
@@ -18,6 +20,29 @@ export default function WalletConnectModal({
   open,
   onOpenChange,
 }: WalletConnectModalProps) {
+  const { isInstalled, isConnecting, connect } = useWallet();
+
+  async function handleFreighter() {
+    if (!isInstalled) {
+      // Link to Freighter install page
+      window.open("https://www.freighterwallet.com/", "_blank");
+      return;
+    }
+
+    try {
+      const addr = await connect();
+      if (addr) {
+        onOpenChange(false);
+        // give parent a chance to refresh profile
+        try {
+          // small delay then reload so server-backed profile can pick up persisted address
+          setTimeout(() => window.location.reload(), 400);
+        } catch {}
+      }
+    } catch (err) {
+      toast?.({ title: "Error", description: "Could not connect to Freighter", variant: "error" });
+    }
+  }
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md border-terra/15 bg-cream">
@@ -35,8 +60,10 @@ export default function WalletConnectModal({
             type="button"
             variant="outline"
             className="justify-start rounded-xl border-terra/20 h-12"
+            onClick={handleFreighter}
+            disabled={isConnecting}
           >
-            Freighter
+            {isInstalled ? (isConnecting ? 'Connecting…' : 'Freighter') : 'Install Freighter'}
           </Button>
           <Button
             type="button"
