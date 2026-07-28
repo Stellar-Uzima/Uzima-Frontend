@@ -71,6 +71,7 @@ const SERVICE_LINKS: NavLink[] = [
   { label: "Knowledge Sharing", href: "/services/knowledge-sharing" },
   { label: "Consultations", href: "/services/consultations" },
   { label: "XLM Rewards", href: "/services/xlm-rewards" },
+  { label: "Saved Tasks", href: "/tasks/saved" },
 ];
 
 function useWallet() {
