@@ -2,6 +2,7 @@
 
 import { Suspense, useMemo, useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import * as React from "react";
 import { Bookmark } from "lucide-react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
@@ -207,6 +208,15 @@ export default function TasksPage() {
               Choose a task that fits your day, follow the simple health steps,
               and complete it honestly to unlock your Stellar Lumens (XLM) reward.
             </p>
+
+            {/* Saved tasks link */}
+            <Link
+              href="/tasks/saved"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-terra hover:text-earth transition-colors"
+            >
+              <Bookmark className="h-4 w-4" />
+              <span>View saved tasks &rarr;</span>
+            </Link>
           </header>
 
           {/* Tab bar */}

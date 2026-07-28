@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { ArrowRight, Check, Loader2, Sparkles } from "lucide-react";
+import { ArrowRight, Bookmark, Check, Loader2, Sparkles } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -215,6 +215,31 @@ export const HealthTaskCard = React.memo(function HealthTaskCard({
         </div>
 
         <div className="flex flex-col items-end gap-2 shrink-0">
+          {onToggleBookmark && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleBookmark(taskId);
+              }}
+              aria-label={isBookmarked ? "Remove bookmark" : "Bookmark this task"}
+              className={cn(
+                "shrink-0 flex items-center justify-center rounded-lg p-1.5 transition-all duration-200",
+                "hover:bg-[#C05A2B]/10 focus:outline-none focus:ring-2 focus:ring-[#C05A2B]/30",
+                isBookmarked
+                  ? "text-[#C05A2B]"
+                  : "text-muted hover:text-[#C05A2B]",
+              )}
+            >
+              <Bookmark
+                className={cn(
+                  "h-4 w-4 transition-all duration-200",
+                  isBookmarked && "fill-current",
+                )}
+              />
+            </button>
+          )}
+
           <Badge
             className={cn(
               "gap-1 rounded-full border-0 px-3 py-1 text-xs font-bold tabular-nums transition-all duration-200 ease-out",

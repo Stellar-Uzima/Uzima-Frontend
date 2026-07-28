@@ -16,7 +16,11 @@ import { WalletPanel } from '@/components/profile/WalletPanel';
 import { NotificationsPanel, NotificationsState } from '@/components/profile/NotificationsPanel';
 import { ReminderScheduler } from '@/components/profile/ReminderScheduler';
 import { AvatarEmojiPicker } from '@/components/profile/AvatarEmojiPicker';
+import { ReferralPanel } from '@/components/profile/ReferralPanel';
+import { ReferralStats } from '@/components/profile/ReferralStats';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { generateReferralCode, normalizeReferralCode } from '@/lib/referral';
+import { mockReferralSummary, ReferralSummary } from '@/lib/mock/referrals';
 
 type ProfileData = {
 	avatarEmoji: string | null;
@@ -28,6 +32,7 @@ type ProfileData = {
 	walletAddress?: string | null;
 	totalXlmEarned?: number;
 	notifications?: NotificationsState;
+	referralCode?: string | null;
 };
 
 export default function ProfilePage() {
@@ -44,6 +49,11 @@ export default function ProfilePage() {
 
 	const [walletAddress, setWalletAddress] = useState<string | null>(null);
 	const [totalXlmEarned, setTotalXlmEarned] = useState<number>(0);
+
+	const [referralCode, setReferralCode] = useState<string | null>(null);
+	// Mock until the referrals endpoint lands — rewards are issued backend-side.
+	// Swap for `emptyReferralSummary` to preview the zero-referral state.
+	const referralSummary: ReferralSummary = mockReferralSummary;
 
 	const [notifications, setNotifications] = useState<NotificationsState>({
 		taskReminders: true,
@@ -72,6 +82,7 @@ export default function ProfilePage() {
 				setHealthGoals(data.healthGoals || []);
 				setWalletAddress(data.walletAddress ?? null);
 				setTotalXlmEarned(data.totalXlmEarned ?? 0);
+				setReferralCode(normalizeReferralCode(data.referralCode));
 				if (data.notifications) setNotifications(data.notifications);
 			} catch (e) {
 				// Optional: show a toast
@@ -87,6 +98,19 @@ export default function ProfilePage() {
 	const canSave = useMemo(() => {
 		return name.trim().length > 1 && country.trim().length > 0;
 	}, [name, country]);
+
+	// Fall back to a code derived from the account so the link is always shareable,
+	// even before the backend issues one.
+	const effectiveReferralCode = useMemo(
+		() => referralCode ?? generateReferralCode(walletAddress || name || 'uzima-member'),
+		[referralCode, walletAddress, name],
+	);
+
+	function focusReferralLink() {
+		const input = document.getElementById('referral-link') as HTMLInputElement | null;
+		input?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		input?.focus();
+	}
 
 	async function onSaveProfile(e?: React.FormEvent) {
 		e?.preventDefault();
@@ -136,6 +160,7 @@ export default function ProfilePage() {
 					<TabsList className="w-full sm:w-auto">
 						<TabsTrigger value="profile" className="flex-1 sm:flex-none">Profile</TabsTrigger>
 						<TabsTrigger value="wallet" className="flex-1 sm:flex-none">Wallet</TabsTrigger>
+						<TabsTrigger value="referrals" className="flex-1 sm:flex-none">Referrals</TabsTrigger>
 						<TabsTrigger value="notifications" className="flex-1 sm:flex-none">Notifications</TabsTrigger>
 					</TabsList>
 
@@ -191,7 +216,14 @@ export default function ProfilePage() {
 						/>
 					</TabsContent>
 
-					<TabsContent value="notifications" className="mt-6 space-y-6">
+					<TabsContent value="referrals" className="mt-6">
+						<div className="space-y-6">
+							<ReferralPanel code={effectiveReferralCode} />
+							<ReferralStats summary={referralSummary} onShare={focusReferralLink} />
+						</div>
+					</TabsContent>
+
+					<TabsContent value="notifications" className="mt-6">
 						<NotificationsPanel
 							value={notifications}
 							onChange={(next) => setNotifications(next)}
