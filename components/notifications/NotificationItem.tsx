@@ -24,6 +24,8 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
         return '🎁';
       case 'rank_up':
         return '⭐';
+      case 'task_reminder':
+        return '⏰';
       case 'system':
         return '🔔';
       default:

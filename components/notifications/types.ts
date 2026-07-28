@@ -5,6 +5,7 @@ export type NotificationType =
   | 'verification'
   | 'donation'
   | 'rank_up'
+  | 'task_reminder'
   | 'system';
 
 export interface Notification {
