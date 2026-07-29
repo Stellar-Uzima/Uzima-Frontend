@@ -1,6 +1,7 @@
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import { AfricaMapLoader } from "@/components/community/AfricaMapLoader";
+import { Leaderboard } from "@/components/community/Leaderboard";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export const metadata = {
@@ -28,6 +29,7 @@ export default function CommunityPage() {
             </p>
           </header>
           <AfricaMapLoader />
+          <Leaderboard />
         </div>
       </main>
       <Footer />
