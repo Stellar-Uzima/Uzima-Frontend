@@ -1,10 +1,27 @@
-import type { Metadata } from "next";
-import { Analytics } from "@vercel/analytics/next";
-import "./globals.css";
-import Footer from "../components/footer";
-import { OfflineBanner } from "@/components/pwa/OfflineBanner";
-import { InstallPrompt } from "@/components/pwa/InstallPrompt";
-import { Providers } from "@/providers/providers";
+import type { Metadata } from 'next'
+import { Analytics } from '@vercel/analytics/next'
+import { DM_Sans, Fraunces, Playfair_Display } from 'next/font/google'
+import './globals.css'
+import Footer from '../components/footer';
+import { PwaShell } from '@/components/pwa/PwaShell';
+import { UpdateBanner } from '@/components/ui/UpdateBanner';
+import { Providers } from '@/providers/providers';
+
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-playfair',
+})
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  variable: '--font-dm-sans',
+})
+
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  variable: '--font-fraunces',
+})
+
 
 export const metadata: Metadata = {
   title: "Stellar Uzima — Your Health. Your Wealth. Your Community.",
@@ -35,6 +52,8 @@ export const metadata: Metadata = {
     apple: "/apple-icon.png",
   },
 };
+
+import { PageTransition } from '@/components/layout/PageTransition';
 
 export default function RootLayout({
   children,
@@ -67,20 +86,19 @@ export default function RootLayout({
           }}
         />
       </head>
-      {/* 
-          FIX: Added 'bg-background' and 'text-foreground'. 
-          This ensures the body actually uses the colors defined in globals.css 
-      */}
-      <body className="min-h-screen bg-background text-foreground font-sans antialiased transition-colors duration-300 ease-in-out">
+      <body
+        className={`${playfair.variable} ${dmSans.variable} ${fraunces.variable} font-sans antialiased`}
+      >
+        <UpdateBanner />
         <Providers>
-          <OfflineBanner />
+          <PwaShell />
           <div className="offline-banner-offset">
-            {children}
+            <PageTransition>
+              {children}
+            </PageTransition>
             <Footer/>
           </div>
-          <InstallPrompt />
           <Analytics />
-          <Footer />
         </Providers>
       </body>
     </html>

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
+import { ErrorMessage } from "@/components/ui/ErrorMessage";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +26,12 @@ export default function SignInPage() {
   const [forgotPasswordMode, setForgotPasswordMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [globalError, setGlobalError] = useState<string | null>(null);
+  const [shakeBtn, setShakeBtn] = useState(false);
+
+  const triggerShake = useCallback(() => {
+    setShakeBtn(true);
+    setTimeout(() => setShakeBtn(false), 600);
+  }, []);
 
   const {
     register,
@@ -32,6 +39,7 @@ export default function SignInPage() {
     formState: { errors },
   } = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
+    mode: "onTouched",
   });
 
   const onSubmit = async (data: SignInFormValues) => {
@@ -41,21 +49,21 @@ export default function SignInPage() {
     // Mock network request
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    // Mock validation
-    // Simulate error state if not specific credentials, but wait,
-    // "On success (mock), redirect to /dashboard" -> any credentials succeed, except let's make it consistent.
-    // If they type a wrong credential, error out. Let's make "test@example.com" + "password" the success one?
-    // The requirement says "Error state: 'Incorrect email or password' shown as banner under heading"
-    // I will mock success for any input except if email is exactly "error@test.com" to easily show the error state.
+    // Mock: trigger a server-side auth error for this specific test email.
     if (data.email === "error@test.com") {
-      setGlobalError("Incorrect email or password");
+      setGlobalError("Incorrect email or password. Please try again.");
       setIsLoading(false);
+      triggerShake();
       return;
     }
 
     // On success, redirect
     router.push("/dashboard");
   };
+
+  const onInvalidSubmit = useCallback(() => {
+    triggerShake();
+  }, [triggerShake]);
 
   const handleForgotPasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,11 +91,12 @@ export default function SignInPage() {
         </div>
 
         {/* Global Error Banner */}
-        {globalError && !forgotPasswordMode && (
-          <div className="mb-6 p-4 rounded-xl bg-red-50 text-red-600 flex items-start gap-3 text-sm border border-red-100" role="alert" aria-live="assertive">
-            <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-red-500" />
-            <span className="font-medium">{globalError}</span>
-          </div>
+        {!forgotPasswordMode && (
+          <ErrorMessage
+            message={globalError}
+            onDismiss={() => setGlobalError(null)}
+            className="mb-6"
+          />
         )}
 
         {forgotPasswordMode ? (
@@ -128,10 +137,18 @@ export default function SignInPage() {
             </div>
           </form>
         ) : (
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+          <form onSubmit={handleSubmit(onSubmit, onInvalidSubmit)} className="space-y-5" noValidate>
             {/* Email Field */}
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-earth font-medium">Email</Label>
+              <Label
+                htmlFor="email"
+                className={`text-earth font-medium flex items-center gap-1.5 ${errors.email ? "text-[#7a2e0e]" : ""}`}
+              >
+                Email
+                {errors.email && (
+                  <AlertCircle className="w-3.5 h-3.5 text-[#b84e20]" aria-hidden="true" />
+                )}
+              </Label>
               <Input
                 id="email"
                 type="email"
@@ -140,18 +157,39 @@ export default function SignInPage() {
                 {...register("email")}
                 aria-invalid={!!errors.email}
                 aria-describedby={errors.email ? "email-error" : undefined}
-                className="w-full"
+                className={`w-full transition-shadow duration-200 ${errors.email ? "border-[#b84e20] ring-2 ring-[#b84e20]/20 focus-visible:ring-[#b84e20]/30" : ""}`}
               />
-              {errors.email && (
-                <p id="email-error" className="text-sm text-red-500 mt-1" role="alert">
-                  {errors.email.message}
-                </p>
-              )}
+              <ErrorMessage
+                id="email-error"
+                message={errors.email?.message}
+                size="sm"
+                className="mt-1"
+              />
             </div>
 
             {/* Password Field */}
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-earth font-medium">Password</Label>
+              <div className="flex items-center justify-between">
+                <Label
+                  htmlFor="password"
+                  className={`text-earth font-medium flex items-center gap-1.5 ${errors.password ? "text-[#7a2e0e]" : ""}`}
+                >
+                  Password
+                  {errors.password && (
+                    <AlertCircle className="w-3.5 h-3.5 text-[#b84e20]" aria-hidden="true" />
+                  )}
+                </Label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setGlobalError(null);
+                    setForgotPasswordMode(true);
+                  }}
+                  className="text-sm text-terra hover:text-earth font-medium transition-colors focus:outline-none focus:underline cursor-pointer"
+                >
+                  Forgot password?
+                </button>
+              </div>
               <div className="relative">
                 <Input
                   id="password"
@@ -161,7 +199,7 @@ export default function SignInPage() {
                   {...register("password")}
                   aria-invalid={!!errors.password}
                   aria-describedby={errors.password ? "password-error" : undefined}
-                  className="w-full pr-10"
+                  className={`w-full pr-10 transition-shadow duration-200 ${errors.password ? "border-[#b84e20] ring-2 ring-[#b84e20]/20 focus-visible:ring-[#b84e20]/30" : ""}`}
                 />
                 <button
                   type="button"
@@ -176,32 +214,21 @@ export default function SignInPage() {
                   )}
                 </button>
               </div>
-
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setGlobalError(null);
-                    setForgotPasswordMode(true);
-                  }}
-                  className="text-sm text-terra hover:text-earth font-medium transition-colors focus:outline-none focus:underline cursor-pointer"
-                >
-                  Forgot password?
-                </button>
-              </div>
-
-              {errors.password && (
-                <p id="password-error" className="text-sm text-red-500 mt-1" role="alert">
-                  {errors.password.message}
-                </p>
-              )}
+              <ErrorMessage
+                id="password-error"
+                message={errors.password?.message}
+                size="sm"
+                className="mt-1"
+              />
             </div>
 
             {/* Submit Button */}
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-terra hover:bg-earth text-white rounded-full py-6 mt-2 text-base font-medium transition-all"
+              className={`w-full bg-terra hover:bg-earth text-white rounded-full py-6 mt-2 text-base font-medium transition-all ${
+                shakeBtn ? "animate-[shake_0.5s_ease-in-out]" : ""
+              }`}
             >
               {isLoading ? (
                 <>

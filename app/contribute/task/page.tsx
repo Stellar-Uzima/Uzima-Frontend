@@ -27,6 +27,7 @@ import {
   Wifi,
 } from "lucide-react";
 import { useOfflineSync } from "@/hooks/useOfflineSync";
+import { ErrorMessage } from "@/components/ui/ErrorMessage";
 
 const taskSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters"),
@@ -196,11 +197,10 @@ export default function HealthTaskForm() {
                       placeholder="e.g., Post-Natal Nutrition Guide"
                       className={errors.title ? "border-destructive" : ""}
                     />
-                    {errors.title && (
-                      <p className="text-xs text-destructive font-medium">
-                        {errors.title.message}
-                      </p>
-                    )}
+                    <ErrorMessage
+                      message={errors.title?.message}
+                      size="sm"
+                    />
                   </div>
 
                   <div className="space-y-2">
@@ -213,11 +213,10 @@ export default function HealthTaskForm() {
                       className="h-48 resize-none"
                       placeholder="Provide clear, actionable health steps..."
                     />
-                    {errors.description && (
-                      <p className="text-xs text-destructive font-medium">
-                        {errors.description.message}
-                      </p>
-                    )}
+                    <ErrorMessage
+                      message={errors.description?.message}
+                      size="sm"
+                    />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
@@ -296,11 +295,10 @@ export default function HealthTaskForm() {
                         XLM
                       </span>
                     </div>
-                    {errors.xlmReward && (
-                      <p className="text-xs text-destructive font-medium">
-                        {errors.xlmReward.message}
-                      </p>
-                    )}
+                    <ErrorMessage
+                      message={errors.xlmReward?.message}
+                      size="sm"
+                    />
                   </div>
 
                   <div className="space-y-2">

@@ -1,136 +1,115 @@
 'use client';
 
-import React from 'react';
+import * as React from 'react';
+import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { useNotificationPreferences } from '@/hooks/useNotificationPreferences';
-import { usePushNotifications } from '@/hooks/usePushNotifications';
-import { Bell, Flame, Award, Calendar, CheckSquare, Radio } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-export const NotificationsPanel: React.FC = () => {
-    const { preferences, toggleCategory, toggleChannel } = useNotificationPreferences();
-    const { status, isSupported, subscribe, unsubscribe } = usePushNotifications();
-
-    const handlePushToggle = async (checked: boolean) => {
-        toggleChannel('push');
-        if (checked) {
-            await subscribe();
-        } else {
-            await unsubscribe();
-        }
-    };
-
-    return (
-        <div className="space-y-6 max-w-2xl">
-            <div>
-                <h3 className="text-lg font-semibold tracking-tight">Notification Preferences</h3>
-                <p className="text-sm text-muted-foreground">
-                    Choose which notifications you receive and how they are delivered.
-                </p>
-            </div>
-
-            {/* Category Toggles */}
-            <div className="rounded-xl border bg-card p-5 space-y-4 shadow-xs">
-                <div className="flex items-center gap-2 border-b pb-3">
-                    <Bell className="h-4 w-4 text-primary" />
-                    <h4 className="font-medium text-sm">In-App Notification Categories</h4>
-                </div>
-
-                <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                        <div className="space-y-0.5">
-                            <label htmlFor="toggle-task" className="text-sm font-medium flex items-center gap-2 cursor-pointer">
-                                <CheckSquare className="h-4 w-4 text-muted-foreground" />
-                                Task Reminders
-                            </label>
-                            <p className="text-xs text-muted-foreground">Alerts for pending tasks and deadlines</p>
-                        </div>
-                        <Switch
-                            id="toggle-task"
-                            checked={preferences.categories.task}
-                            onCheckedChange={() => toggleCategory('task')}
-                            aria-label="Toggle Task Reminders"
-                        />
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                        <div className="space-y-0.5">
-                            <label htmlFor="toggle-streak" className="text-sm font-medium flex items-center gap-2 cursor-pointer">
-                                <Flame className="h-4 w-4 text-amber-500" />
-                                Streak Alerts
-                            </label>
-                            <p className="text-xs text-muted-foreground">Updates on daily streak milestones and risk warnings</p>
-                        </div>
-                        <Switch
-                            id="toggle-streak"
-                            checked={preferences.categories.streak}
-                            onCheckedChange={() => toggleCategory('streak')}
-                            aria-label="Toggle Streak Alerts"
-                        />
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                        <div className="space-y-0.5">
-                            <label htmlFor="toggle-badge" className="text-sm font-medium flex items-center gap-2 cursor-pointer">
-                                <Award className="h-4 w-4 text-yellow-500" />
-                                Badge Awards
-                            </label>
-                            <p className="text-xs text-muted-foreground">Notifications when unlocking new profile badges</p>
-                        </div>
-                        <Switch
-                            id="toggle-badge"
-                            checked={preferences.categories.badge}
-                            onCheckedChange={() => toggleCategory('badge')}
-                            aria-label="Toggle Badge Awards"
-                        />
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                        <div className="space-y-0.5">
-                            <label htmlFor="toggle-appointment" className="text-sm font-medium flex items-center gap-2 cursor-pointer">
-                                <Calendar className="h-4 w-4 text-blue-500" />
-                                Appointment Reminders
-                            </label>
-                            <p className="text-xs text-muted-foreground">Reminders for scheduled appointments and calls</p>
-                        </div>
-                        <Switch
-                            id="toggle-appointment"
-                            checked={preferences.categories.appointment}
-                            onCheckedChange={() => toggleCategory('appointment')}
-                            aria-label="Toggle Appointment Reminders"
-                        />
-                    </div>
-                </div>
-            </div>
-
-            {/* Push Notifications Integration */}
-            <div className="rounded-xl border bg-card p-5 space-y-4 shadow-xs">
-                <div className="flex items-center gap-2 border-b pb-3">
-                    <Radio className="h-4 w-4 text-primary" />
-                    <h4 className="font-medium text-sm">Browser Push Notifications</h4>
-                </div>
-
-                <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                        <label htmlFor="toggle-push" className="text-sm font-medium cursor-pointer">
-                            Push Notifications Channel
-                        </label>
-                        <p className="text-xs text-muted-foreground">
-                            {!isSupported
-                                ? 'Push notifications are not supported by your browser.'
-                                : status === 'denied'
-                                    ? 'Push permission blocked in browser settings.'
-                                    : 'Receive direct desktop/device push alerts.'}
-                        </p>
-                    </div>
-                    <Switch
-                        id="toggle-push"
-                        checked={status === 'subscribed'}
-                        disabled={!isSupported || status === 'denied' || status === 'loading'}
-                        onCheckedChange={handlePushToggle}
-                        aria-label="Toggle Push Notifications Channel"
-                    />
-                </div>
-            </div>
-        </div>
-    );
+export type NotificationsState = {
+	taskReminders: boolean;
+	streakAlerts: boolean;
+	newCoupons: boolean;
+	consultationReminders: boolean;
+	quietStart: string; // "HH:mm"
+	quietEnd: string;   // "HH:mm"
 };
+
+export function NotificationsPanel({
+	value,
+	onChange,
+	onSave,
+	saving,
+}: {
+	value: NotificationsState;
+	onChange: (v: NotificationsState) => void;
+	onSave?: (e?: React.FormEvent) => void;
+	saving?: boolean;
+}) {
+	function set<K extends keyof NotificationsState>(key: K, v: NotificationsState[K]) {
+		onChange({ ...value, [key]: v });
+	}
+
+	return (
+		<Card>
+			<CardHeader>
+				<CardTitle>Notifications</CardTitle>
+				<CardDescription>Choose what you want to be notified about</CardDescription>
+			</CardHeader>
+			<CardContent className="space-y-6">
+				<div className="grid gap-4">
+					<Row
+						label="Task reminders"
+						checked={value.taskReminders}
+						onCheckedChange={(c) => set('taskReminders', c)}
+					/>
+					<Row
+						label="Streak alerts"
+						checked={value.streakAlerts}
+						onCheckedChange={(c) => set('streakAlerts', c)}
+					/>
+					<Row
+						label="New coupons"
+						checked={value.newCoupons}
+						onCheckedChange={(c) => set('newCoupons', c)}
+					/>
+					<Row
+						label="Consultation reminders"
+						checked={value.consultationReminders}
+						onCheckedChange={(c) => set('consultationReminders', c)}
+					/>
+				</div>
+
+				<div className="grid sm:grid-cols-2 gap-4">
+					<div className="space-y-2">
+						<Label htmlFor="quietStart">Quiet hours start</Label>
+						<input
+							id="quietStart"
+							type="time"
+							className="w-full h-10 border rounded-md px-3 bg-background"
+							value={value.quietStart}
+							onChange={(e) => set('quietStart', e.target.value)}
+						/>
+					</div>
+					<div className="space-y-2">
+						<Label htmlFor="quietEnd">Quiet hours end</Label>
+						<input
+							id="quietEnd"
+							type="time"
+							className="w-full h-10 border rounded-md px-3 bg-background"
+							value={value.quietEnd}
+							onChange={(e) => set('quietEnd', e.target.value)}
+						/>
+					</div>
+				</div>
+
+				<div className="flex justify-end">
+					<Button type="button" onClick={onSave} disabled={!!saving}>
+						{saving ? 'Saving...' : 'Save'}
+					</Button>
+				</div>
+			</CardContent>
+		</Card>
+	);
+}
+
+function Row({
+	label,
+	checked,
+	onCheckedChange,
+}: {
+	label: string;
+	checked: boolean;
+	onCheckedChange: (c: boolean) => void;
+}) {
+	return (
+		<div className="flex items-center justify-between gap-3">
+			<div className="space-y-0.5">
+				<div className="font-medium">{label}</div>
+				<div className="text-sm text-muted-foreground">Enable or disable {label.toLowerCase()}</div>
+			</div>
+			<Switch checked={checked} onCheckedChange={onCheckedChange} />
+		</div>
+	);
+}
+

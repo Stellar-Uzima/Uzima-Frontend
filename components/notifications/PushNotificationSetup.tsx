@@ -62,7 +62,7 @@ export function PushNotificationSetup() {
         </div>
       </div>
       <Button
-        onClick={subscribe}
+        onClick={() => subscribe()}
         disabled={status === 'loading'}
         className="w-full bg-[#B84E20] hover:bg-[#A04020] text-white font-semibold rounded-xl"
       >

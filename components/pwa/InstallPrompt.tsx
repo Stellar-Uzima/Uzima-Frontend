@@ -15,39 +15,42 @@ export function InstallPrompt() {
   }
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-sm z-40 animate-in slide-in-from-bottom-5 duration-500">
-      <Card className="shadow-2xl border-2 border-[#B84E20]/20 bg-white">
-        <div className="p-4 space-y-3">
+    <div className="relative z-20 mx-4 mb-4 mt-[calc(var(--update-banner-height,0px)+var(--navbar-height,80px)+0.75rem)] md:fixed md:bottom-[calc(env(safe-area-inset-bottom,0px)+1rem)] md:left-auto md:right-4 md:mt-0 md:max-w-sm motion-safe:animate-in motion-safe:slide-in-from-bottom-5 motion-safe:duration-500">
+      <Card className="border border-terra/20 bg-white shadow-lg md:shadow-2xl">
+        <div className="space-y-3 p-4">
           <div className="flex items-start justify-between gap-3">
-            <div className="flex-1">
-              <h3 className="font-bold text-base mb-1 text-[#1A1A1A]">
+            <div className="min-w-0 flex-1">
+              <h3 className="mb-1 text-base font-bold text-earth">
                 Install Stellar Uzima
               </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Install for offline access and faster loading
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                Install for offline access and faster loading.
               </p>
             </div>
             <button
+              type="button"
               onClick={dismissPrompt}
-              className="p-1 hover:bg-black/5 rounded transition-colors flex-shrink-0"
-              aria-label="Dismiss"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-earth transition-colors hover:bg-earth/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-terra focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+              aria-label="Dismiss install prompt"
             >
-              <X className="w-4 h-4" />
+              <X className="h-4 w-4" aria-hidden="true" />
             </button>
           </div>
 
-          <div className="flex gap-2">
+          <div className="grid grid-cols-1 gap-2 sm:flex">
             <Button
+              type="button"
               onClick={handleInstall}
-              className="flex-1 bg-[#B84E20] hover:bg-[#A04020] text-white font-semibold rounded-xl"
+              className="h-10 w-full rounded-xl bg-terra font-semibold text-white hover:bg-terra/90 sm:flex-1"
             >
-              <Download className="w-4 h-4 mr-2" />
+              <Download className="mr-2 h-4 w-4" aria-hidden="true" />
               Install App
             </Button>
             <Button
+              type="button"
               onClick={dismissPrompt}
               variant="outline"
-              className="border-[#B84E20]/20 hover:bg-[#B84E20]/5 rounded-xl"
+              className="h-10 w-full rounded-xl border-terra/20 hover:bg-terra/5 sm:w-auto"
             >
               Not Now
             </Button>
