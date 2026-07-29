@@ -1,6 +1,7 @@
 // /frontend-v2/context/NotificationContext.tsx
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Notification } from '../components/notifications/types';
+import { useNotificationPreferences } from '../hooks/useNotificationPreferences';
 
 interface NotificationContextType {
   notifications: Notification[];
@@ -15,6 +16,7 @@ const NotificationContext = createContext<NotificationContextType | undefined>(u
 
 export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const { isCategoryEnabled } = useNotificationPreferences();
 
   // Load from localStorage
   useEffect(() => {
@@ -38,6 +40,10 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   };
 
   const addNotification = (notification: Notification) => {
+    // Check if category is enabled in user preferences
+    if (notification.category && !isCategoryEnabled(notification.category)) {
+      return;
+    }
     setNotifications(prev => [notification, ...prev.slice(0, 49)]);
   };
 
