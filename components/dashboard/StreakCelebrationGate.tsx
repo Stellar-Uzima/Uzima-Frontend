@@ -3,6 +3,7 @@
 import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import StreakCelebrationModal from './StreakCelebrationModal';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 function StreakCelebrationGateContent() {
   const params = useSearchParams();
@@ -13,8 +14,10 @@ function StreakCelebrationGateContent() {
 
 export default function StreakCelebrationGate() {
   return (
-    <Suspense fallback={null}>
-      <StreakCelebrationGateContent />
-    </Suspense>
+    <ErrorBoundary componentName="StreakCelebration">
+      <Suspense fallback={null}>
+        <StreakCelebrationGateContent />
+      </Suspense>
+    </ErrorBoundary>
   );
 }

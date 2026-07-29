@@ -3,14 +3,11 @@
 import * as React from 'react';
 import { ThemeProvider } from 'next-themes';
 import { NotificationProvider } from '@/context/NotificationContext';
+import { Toaster } from '@/components/ui/toaster';
 
 export function Providers({ children }: { children: React.ReactNode }) {
     React.useEffect(() => {
         localStorage.setItem('uzima-last-sync', Date.now().toString());
-
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js').catch(console.error);
-        }
     }, []);
 
     return (
@@ -22,6 +19,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         >
             <NotificationProvider>
                 {children}
+                <Toaster />
             </NotificationProvider>
         </ThemeProvider>
     );

@@ -10,11 +10,47 @@ export type PushStatus =
   | 'denied'
   | 'unsupported';
 
+/**
+ * A scheduled notification the backend should deliver at a user-chosen time.
+ * Entries are addressed by `tag`, so pushing an entry with `enabled: false`
+ * stops just that kind of reminder and leaves other notification types alone.
+ */
+export interface PushScheduleMetadata {
+  tag: string;
+  topic: string;
+  enabled: boolean;
+  [key: string]: unknown;
+}
+
+/** Extra data sent alongside the raw subscription. */
+export interface PushSubscriptionMetadata {
+  schedules?: PushScheduleMetadata[];
+}
+
 export interface UsePushNotificationsReturn {
   status: PushStatus;
   isSupported: boolean;
-  subscribe: () => Promise<void>;
+  subscribe: (metadata?: PushSubscriptionMetadata) => Promise<void>;
   unsubscribe: () => Promise<void>;
+  /**
+   * Pushes updated schedule metadata for an already-registered subscription,
+   * so editing a reminder doesn't require re-subscribing. No-op when the
+   * device isn't subscribed.
+   */
+  syncMetadata: (metadata: PushSubscriptionMetadata) => Promise<void>;
+}
+
+async function postSubscription(
+  subscription: PushSubscription,
+  metadata?: PushSubscriptionMetadata,
+): Promise<void> {
+  await fetch('/api/notifications/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    // Subscription fields stay at the top level for backwards compatibility;
+    // metadata is merged in beside them.
+    body: JSON.stringify({ ...subscription.toJSON(), ...metadata }),
+  });
 }
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
@@ -41,14 +77,15 @@ export function usePushNotifications(): UsePushNotificationsReturn {
 
     const init = async () => {
       try {
-        await navigator.serviceWorker.register('/sw.js');
+        const registration =
+          (await navigator.serviceWorker.getRegistration()) ??
+          (await navigator.serviceWorker.register('/sw.js'));
 
         if (Notification.permission === 'denied') {
           setStatus('denied');
           return;
         }
 
-        const registration = await navigator.serviceWorker.ready;
         const subscription = await registration.pushManager.getSubscription();
         setStatus(subscription ? 'subscribed' : 'unsubscribed');
       } catch (err) {
@@ -60,37 +97,53 @@ export function usePushNotifications(): UsePushNotificationsReturn {
     init();
   }, [isSupported]);
 
-  const subscribe = useCallback(async () => {
-    if (!isSupported) return;
-    setStatus('loading');
+  const subscribe = useCallback(
+    async (metadata?: PushSubscriptionMetadata) => {
+      if (!isSupported) return;
+      setStatus('loading');
 
-    try {
-      const permission = await Notification.requestPermission();
-      if (permission !== 'granted') {
-        setStatus('denied');
-        return;
+      try {
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+          setStatus('denied');
+          return;
+        }
+
+        const registration = await navigator.serviceWorker.ready;
+        const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+
+        const subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          ...(vapidKey && { applicationServerKey: urlBase64ToUint8Array(vapidKey) }),
+        });
+
+        await postSubscription(subscription, metadata);
+
+        setStatus('subscribed');
+      } catch (error) {
+        console.error('Push subscription failed:', error);
+        setStatus('unsubscribed');
       }
+    },
+    [isSupported],
+  );
 
-      const registration = await navigator.serviceWorker.ready;
-      const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+  const syncMetadata = useCallback(
+    async (metadata: PushSubscriptionMetadata) => {
+      if (!isSupported || status !== 'subscribed') return;
 
-      const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        ...(vapidKey && { applicationServerKey: urlBase64ToUint8Array(vapidKey) }),
-      });
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.getSubscription();
+        if (!subscription) return;
 
-      await fetch('/api/notifications/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(subscription),
-      });
-
-      setStatus('subscribed');
-    } catch (error) {
-      console.error('Push subscription failed:', error);
-      setStatus('unsubscribed');
-    }
-  }, [isSupported]);
+        await postSubscription(subscription, metadata);
+      } catch (error) {
+        console.error('Push metadata sync failed:', error);
+      }
+    },
+    [isSupported, status],
+  );
 
   const unsubscribe = useCallback(async () => {
     if (!isSupported) return;
@@ -111,5 +164,5 @@ export function usePushNotifications(): UsePushNotificationsReturn {
     }
   }, [isSupported]);
 
-  return { status, isSupported, subscribe, unsubscribe };
+  return { status, isSupported, subscribe, unsubscribe, syncMetadata };
 }

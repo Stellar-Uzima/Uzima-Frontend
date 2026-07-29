@@ -1,4 +1,4 @@
-'use client'
+// Server-rendered to keep static marketing content out of the client bundle.
 
 export default function TraditionalMedicineSection() {
   const medicines = [

@@ -1,17 +1,11 @@
 export type NotificationType =
-  | "xlm_earned"
-  | "new_comment"
-  | "verification"
-  | "donation"
-  | "rank_up"
-  | "system";
-
-export type NotificationCategory =
-  | "task"
-  | "streak"
-  | "badge"
-  | "appointment"
-  | "system";
+  | 'xlm_earned'
+  | 'new_comment'
+  | 'verification'
+  | 'donation'
+  | 'rank_up'
+  | 'task_reminder'
+  | 'system';
 
 export interface Notification {
   id: string;
