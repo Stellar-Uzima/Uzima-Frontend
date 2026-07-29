@@ -8,6 +8,7 @@ export interface HealthTask {
   category: string;
   rewardXLM: number;
   status: HealthTaskStatus;
+  icon?: string;
   createdAt: string;
   whyItMatters: string;
   steps: {

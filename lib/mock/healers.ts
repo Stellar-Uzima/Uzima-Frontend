@@ -12,6 +12,16 @@ export type HealerRegion =
   | 'Southern Africa'
   | 'Central Africa'
 
+export type HealerAvailabilityStatus = 'available' | 'booked' | 'requested'
+
+export interface HealerAvailabilitySlot {
+  id: string
+  date: string
+  startTime: string
+  endTime: string
+  status: HealerAvailabilityStatus
+}
+
 export interface Healer {
   id: string
   name: string
@@ -24,6 +34,7 @@ export interface Healer {
   rating: number
   reviewCount: number
   isVerified: boolean
+  availability?: HealerAvailabilitySlot[]
 }
 
 export const healerSpecialties: HealerSpecialty[] = [
@@ -68,6 +79,12 @@ export const mockHealers: Healer[] = [
     rating: 4.8,
     reviewCount: 132,
     isVerified: true,
+    availability: [
+      { id: 'ama-2026-08-02-09', date: '2026-08-02', startTime: '09:00', endTime: '09:30', status: 'available' },
+      { id: 'ama-2026-08-02-11', date: '2026-08-02', startTime: '11:00', endTime: '11:30', status: 'requested' },
+      { id: 'ama-2026-08-03-13', date: '2026-08-03', startTime: '13:00', endTime: '13:30', status: 'available' },
+      { id: 'ama-2026-08-04-15', date: '2026-08-04', startTime: '15:00', endTime: '15:30', status: 'booked' },
+    ],
   },
   {
     id: 'healer-oluwaseun-balogun',
@@ -82,6 +99,12 @@ export const mockHealers: Healer[] = [
     rating: 4.9,
     reviewCount: 204,
     isVerified: true,
+    availability: [
+      { id: 'olu-2026-08-02-10', date: '2026-08-02', startTime: '10:00', endTime: '10:30', status: 'available' },
+      { id: 'olu-2026-08-03-12', date: '2026-08-03', startTime: '12:00', endTime: '12:30', status: 'available' },
+      { id: 'olu-2026-08-03-14', date: '2026-08-03', startTime: '14:00', endTime: '14:30', status: 'booked' },
+      { id: 'olu-2026-08-04-16', date: '2026-08-04', startTime: '16:00', endTime: '16:30', status: 'available' },
+    ],
   },
   {
     id: 'healer-nia-okello',

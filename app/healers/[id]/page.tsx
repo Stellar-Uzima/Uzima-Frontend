@@ -7,11 +7,14 @@ import { CalendarClock, CheckCircle2, Globe2, Languages, MessageSquare } from "l
 
 import Footer from "@/components/footer";
 import Navigation from "@/components/navigation";
+import { AvailabilityCalendar } from "@/components/healers/AvailabilityCalendar";
+import { BookingRequestModal } from "@/components/healers/BookingRequestModal";
 import { RatingForm } from "@/components/healers/RatingForm";
 import { Badge } from "@/components/ui/badge";
 import { BreadcrumbNav } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { StarRating } from "@/components/ui/StarRating";
+import { useToast } from "@/components/ui/use-toast";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import {
   CURRENT_REVIEW_USER,
@@ -19,7 +22,7 @@ import {
   getHealerReviewSnapshot,
   hasUserReviewedHealer,
 } from "@/lib/mock/healer-reviews";
-import { mockHealers } from "@/lib/mock/healers";
+import { mockHealers, type HealerAvailabilitySlot } from "@/lib/mock/healers";
 
 function formatReviewDate(value: string) {
   return new Intl.DateTimeFormat("en-US", {
@@ -32,6 +35,7 @@ function formatReviewDate(value: string) {
 export default function HealerProfilePage() {
   const params = useParams<{ id: string }>();
   const healerId = typeof params?.id === "string" ? params.id : "";
+  const { toast } = useToast();
 
   const healer = useMemo(
     () => mockHealers.find((item) => item.id === healerId),
@@ -46,6 +50,11 @@ export default function HealerProfilePage() {
       : false,
   );
   const [successMessage, setSuccessMessage] = useState("");
+  const [selectedSlot, setSelectedSlot] = useState<HealerAvailabilitySlot | null>(null);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [availabilityState, setAvailabilityState] = useState(() =>
+    healerId ? mockHealers.find((item) => item.id === healerId)?.availability ?? [] : [],
+  );
 
   const canReview = healerId
     ? canUserReviewHealer(healerId, CURRENT_REVIEW_USER.id)
@@ -56,9 +65,12 @@ export default function HealerProfilePage() {
       return;
     }
 
+    const activeHealer = mockHealers.find((item) => item.id === healerId);
+
     setReviewState(getHealerReviewSnapshot(healerId));
     setAlreadyReviewed(hasUserReviewedHealer(healerId, CURRENT_REVIEW_USER.id));
     setSuccessMessage("");
+    setAvailabilityState(activeHealer?.availability ?? []);
   }, [healerId]);
 
   if (!healer) {
@@ -87,6 +99,42 @@ export default function HealerProfilePage() {
       </ErrorBoundary>
     );
   }
+
+  const handleSelectSlot = (slot: HealerAvailabilitySlot) => {
+    setSelectedSlot(slot);
+    setIsBookingModalOpen(true);
+  };
+
+  const handleConfirmBooking = () => {
+    if (!selectedSlot || !healer) {
+      return;
+    }
+
+    setAvailabilityState((current) =>
+      current.map((slot) =>
+        slot.id === selectedSlot.id ? { ...slot, status: "requested" } : slot,
+      ),
+    );
+
+    setIsBookingModalOpen(false);
+    setSuccessMessage(
+      `Request sent for ${healer.name} on ${selectedSlot.date} at ${selectedSlot.startTime}.`,
+    );
+    toast({
+      title: "Booking requested",
+      description: `${healer.name} will review your consultation request for ${selectedSlot.startTime}.`,
+    });
+    setSelectedSlot(null);
+  };
+
+  const bookingHealer = useMemo(() => {
+    if (!healer) return null;
+
+    return {
+      ...healer,
+      availability: availabilityState,
+    };
+  }, [availabilityState, healer]);
 
   return (
     <ErrorBoundary componentName="HealerProfilePage" variant="page">
@@ -198,6 +246,24 @@ export default function HealerProfilePage() {
                 <div className="flex items-center gap-2">
                   <MessageSquare className="h-5 w-5 text-terra" />
                   <h2 className="text-xl font-semibold text-earth">
+                    Book a consultation
+                  </h2>
+                </div>
+                <p className="mt-2 text-sm text-muted">
+                  Pick a time window and submit a booking request in a few taps.
+                </p>
+
+                {bookingHealer ? (
+                  <div className="mt-6">
+                    <AvailabilityCalendar healer={bookingHealer} onSelectSlot={handleSelectSlot} />
+                  </div>
+                ) : null}
+              </section>
+
+              <section className="rounded-3xl border border-terra/15 bg-white p-6 shadow-sm">
+                <div className="flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5 text-terra" />
+                  <h2 className="text-xl font-semibold text-earth">
                     Community reviews
                   </h2>
                 </div>
@@ -271,6 +337,18 @@ export default function HealerProfilePage() {
           </section>
         </div>
       </main>
+      <BookingRequestModal
+        healer={healer}
+        slot={selectedSlot}
+        open={isBookingModalOpen}
+        onOpenChange={(open) => {
+          setIsBookingModalOpen(open);
+          if (!open) {
+            setSelectedSlot(null);
+          }
+        }}
+        onConfirm={handleConfirmBooking}
+      />
       <Footer />
     </ErrorBoundary>
   );
