@@ -8,6 +8,7 @@ const TASK_STORE = "pending-tasks";
 export interface PendingTask {
   id: string;
   data: any;
+  evidencePhoto?: string; // Extended to carry base64/blob evidence reference
   timestamp: number;
   retries: number;
   status: "pending" | "syncing" | "failed";
@@ -47,6 +48,7 @@ class OfflineTaskQueue {
     const task: PendingTask = {
       id: `task-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       data: taskData,
+      evidencePhoto: taskData.evidencePhoto,
       timestamp: Date.now(),
       retries: 0,
       status: "pending",
@@ -79,7 +81,7 @@ class OfflineTaskQueue {
 
   async updateTaskStatus(
     taskId: string,
-    status: PendingTask["status"]
+    status: PendingTask["status"],
   ): Promise<void> {
     await this.init();
     if (!this.db) throw new Error("Database not initialized");
@@ -173,10 +175,8 @@ class OfflineTaskQueue {
   }
 }
 
-// Singleton instance
 export const offlineTaskQueue = new OfflineTaskQueue();
 
-// Sync manager to handle background sync
 export class TaskSyncManager {
   private syncInProgress = false;
   private listeners: Array<(event: SyncEvent) => void> = [];
@@ -194,41 +194,27 @@ export class TaskSyncManager {
   }
 
   async syncTasks(): Promise<void> {
-    if (this.syncInProgress) {
-      console.log("Sync already in progress");
-      return;
-    }
-
-    if (!navigator.onLine) {
-      console.log("Cannot sync: offline");
-      return;
-    }
+    if (this.syncInProgress) return;
+    if (!navigator.onLine) return;
 
     this.syncInProgress = true;
     this.notifyListeners({ type: "sync-start" });
 
     try {
       const tasks = await offlineTaskQueue.getAllPendingTasks();
-
       if (tasks.length === 0) {
-        console.log("No tasks to sync");
         this.syncInProgress = false;
         return;
       }
-
-      console.log(`Syncing ${tasks.length} tasks...`);
 
       for (const task of tasks) {
         try {
           await offlineTaskQueue.updateTaskStatus(task.id, "syncing");
 
-          // Replace this with your actual API endpoint
           const response = await fetch("/api/tasks/submit", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(task.data),
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(task),
           });
 
           if (response.ok) {
@@ -238,23 +224,14 @@ export class TaskSyncManager {
               taskId: task.id,
               success: true,
             });
-            console.log(`Task ${task.id} synced successfully`);
           } else {
             await offlineTaskQueue.incrementRetries(task.id);
             await offlineTaskQueue.updateTaskStatus(task.id, "pending");
-
             if (task.retries >= 3) {
               await offlineTaskQueue.updateTaskStatus(task.id, "failed");
-              this.notifyListeners({
-                type: "task-synced",
-                taskId: task.id,
-                success: false,
-                error: "Max retries exceeded",
-              });
             }
           }
         } catch (error) {
-          console.error(`Error syncing task ${task.id}:`, error);
           await offlineTaskQueue.incrementRetries(task.id);
           await offlineTaskQueue.updateTaskStatus(task.id, "pending");
         }
@@ -262,17 +239,14 @@ export class TaskSyncManager {
 
       this.notifyListeners({ type: "sync-complete" });
     } catch (error) {
-      console.error("Sync error:", error);
       this.notifyListeners({ type: "sync-error", error });
     } finally {
       this.syncInProgress = false;
     }
   }
 
-  // Auto-sync when coming back online
   enableAutoSync() {
     window.addEventListener("online", () => {
-      console.log("Network restored, syncing tasks...");
       this.syncTasks();
     });
   }
@@ -280,24 +254,15 @@ export class TaskSyncManager {
 
 export const taskSyncManager = new TaskSyncManager();
 
-// Type definitions for sync events
 export type SyncEvent =
   | { type: "sync-start" }
   | { type: "sync-complete" }
   | { type: "sync-error"; error: any }
   | { type: "task-synced"; taskId: string; success: boolean; error?: string };
 
-// Helper hook for React components
 export function useOfflineTaskQueue() {
   const queueTask = async (taskData: any) => {
-    try {
-      const taskId = await offlineTaskQueue.addTask(taskData);
-      console.log("Task queued:", taskId);
-      return taskId;
-    } catch (error) {
-      console.error("Error queueing task:", error);
-      throw error;
-    }
+    return await offlineTaskQueue.addTask(taskData);
   };
 
   const syncTasks = async () => {

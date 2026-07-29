@@ -25,6 +25,8 @@ import {
   ChevronLeft,
   WifiOff,
   Wifi,
+  Camera,
+  X,
 } from "lucide-react";
 import { useOfflineSync } from "@/hooks/useOfflineSync";
 
@@ -33,6 +35,7 @@ const taskSchema = z.object({
   description: z.string().min(20, "Please provide a more detailed description"),
   category: z.string().min(1, "Category is required"),
   proofType: z.enum(["photo", "self-report"]),
+  evidencePhoto: z.string().optional(),
   xlmReward: z
     .number()
     .min(1, "Reward must be at least 1 XLM")
@@ -43,9 +46,10 @@ const taskSchema = z.object({
 
 type TaskFormData = z.infer<typeof taskSchema>;
 
-export default function HealthTaskForm() {
+export default function ContributeTaskPage() {
   const [step, setStep] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [compressing, setCompressing] = useState(false);
   const { isOnline, queueTask, pendingCount } = useOfflineSync();
 
   const methods = useForm<TaskFormData>({
@@ -56,6 +60,7 @@ export default function HealthTaskForm() {
       description: "",
       category: "",
       proofType: "photo",
+      evidencePhoto: "",
       xlmReward: 5,
       languages: "English",
       references: "",
@@ -63,7 +68,7 @@ export default function HealthTaskForm() {
   });
 
   const {
-    formState: { errors, isValid },
+    formState: { errors },
   } = methods;
 
   useEffect(() => {
@@ -78,22 +83,63 @@ export default function HealthTaskForm() {
     return () => subscription.unsubscribe();
   }, [methods.watch]);
 
+  // Client-side image compression handler
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setCompressing(true);
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, width, height);
+
+        // Compress to JPEG with 0.7 quality to keep IndexedDB footprint minimal
+        const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.7);
+        methods.setValue("evidencePhoto", compressedDataUrl, { shouldValidate: true });
+        setCompressing(false);
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removePhoto = () => {
+    methods.setValue("evidencePhoto", "", { shouldValidate: true });
+  };
+
   const onSubmit = async (data: TaskFormData) => {
     try {
       if (isOnline) {
-        // TODO: Replace with actual API call when backend is ready
-        // const response = await fetch('/api/tasks/submit', {
-        //   method: 'POST',
-        //   headers: { 'Content-Type': 'application/json' },
-        //   body: JSON.stringify(data),
-        // });
         console.log("Task submitted online:", data);
       } else {
-        // Queue task for offline sync
         await queueTask(data);
         console.log("Task queued for offline sync:", data);
       }
-      
+
       localStorage.removeItem("uzima_task_draft");
       setIsSubmitted(true);
     } catch (error) {
@@ -132,6 +178,8 @@ export default function HealthTaskForm() {
     { id: 3, label: "Review", icon: Eye },
   ];
 
+  const currentPhoto = methods.watch("evidencePhoto");
+
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-8">
       {/* Online/Offline Status Indicator */}
@@ -148,7 +196,7 @@ export default function HealthTaskForm() {
           </div>
         </div>
       )}
-      
+
       {pendingCount > 0 && isOnline && (
         <div className="mb-6 p-4 bg-[#5A7A4A]/20 border border-[#5A7A4A] rounded-lg flex items-center gap-3">
           <Wifi className="w-5 h-5 text-[#5A7A4A]" />
@@ -245,6 +293,53 @@ export default function HealthTaskForm() {
                       />
                     </div>
                   </div>
+
+                  {/* Evidence Photo Attachment Section */}
+                  <div className="space-y-2 pt-2">
+                    <Label>Evidence Photo / Camera Capture</Label>
+                    {!currentPhoto ? (
+                      <div className="flex items-center justify-center w-full">
+                        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-muted/30 hover:bg-muted/50 transition">
+                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            <Camera className="w-8 h-8 mb-2 text-muted-foreground" />
+                            <p className="text-sm text-muted-foreground font-medium">
+                              Click to upload or take photo
+                            </p>
+                            <p className="text-xs text-muted-foreground/70">
+                              PNG, JPG or WEBP (Compressed client-side)
+                            </p>
+                          </div>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            capture="environment"
+                            className="hidden"
+                            onChange={handlePhotoUpload}
+                          />
+                        </label>
+                      </div>
+                    ) : (
+                      <div className="relative inline-block mt-2">
+                        <img
+                          src={currentPhoto}
+                          alt="Evidence Preview"
+                          className="h-28 w-auto rounded-lg border object-cover shadow-sm"
+                        />
+                        <button
+                          type="button"
+                          onClick={removePhoto}
+                          className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 shadow hover:bg-destructive/90 transition"
+                          title="Remove photo"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )}
+                    {compressing && (
+                      <p className="text-xs text-primary animate-pulse">Compressing image...</p>
+                    )}
+                  </div>
+
                   <Button
                     type="button"
                     onClick={() => setStep(2)}
@@ -372,13 +467,23 @@ export default function HealthTaskForm() {
           </div>
           <Card className="overflow-hidden border-2 border-primary/10 shadow-2xl transition-all">
             <div className="aspect-video bg-muted relative flex items-center justify-center group">
-              <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
-              <Badge className="absolute top-4 left-4 bg-primary/90 uppercase tracking-widest">
-                {methods.watch("category") || "Category"}
-              </Badge>
-              <span className="text-white font-medium z-10 opacity-60 group-hover:opacity-100 transition-opacity underline cursor-default">
-                Upload Task Cover Image
-              </span>
+              {currentPhoto ? (
+                <img
+                  src={currentPhoto}
+                  alt="Task Cover Preview"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <>
+                  <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
+                  <Badge className="absolute top-4 left-4 bg-primary/90 uppercase tracking-widest">
+                    {methods.watch("category") || "Category"}
+                  </Badge>
+                  <span className="text-white font-medium z-10 opacity-60 group-hover:opacity-100 transition-opacity underline cursor-default">
+                    Upload Task Cover Image
+                  </span>
+                </>
+              )}
             </div>
             <CardHeader className="space-y-1">
               <div className="flex justify-between items-center">
