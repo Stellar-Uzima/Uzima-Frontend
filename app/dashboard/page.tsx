@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import Navigation from "@/components/navigation";
 import DailyProgressCard from "@/components/dashboard/DailyProgressCard";
 import { EarningsChartLoader } from "@/components/dashboard/EarningsChartLoader";
 import DashboardStatsSkeleton from "@/components/ui/skeletons/DashboardStatsSkeleton";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { ProductTour } from "@/components/onboarding/ProductTour";
 
 export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -27,7 +28,7 @@ export default function DashboardPage() {
 
         <main className="flex-1 container mx-auto px-4 py-8 md:py-12">
           <div className="max-w-4xl mx-auto space-y-8">
-            <div>
+            <div data-tour="dashboard-overview">
               <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
               <p className="text-gray-500 mt-2">
                 Welcome back! Here is your progress today.
@@ -53,6 +54,10 @@ export default function DashboardPage() {
           </div>
         </main>
       </div>
+
+      <Suspense fallback={null}>
+        <ProductTour />
+      </Suspense>
     </ErrorBoundary>
   );
 }
