@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TaskCommunity } from "@/components/tasks/TaskCommunity";
+import { TaskDiscussionThread } from "@/components/tasks/TaskDiscussionThread";
 import type { HealthTask } from "@/lib/mock/tasks";
 import { BreadcrumbNav } from "@/components/ui/breadcrumb";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
@@ -252,6 +253,8 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                   ))}
                 </ol>
               </section>
+
+              <TaskDiscussionThread taskId={task.id} />
             </div>
 
             {/* RIGHT COLUMN: 40% on Desktop, Full on Tablet */}
