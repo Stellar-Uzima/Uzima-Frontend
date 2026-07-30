@@ -1,6 +1,7 @@
 // /frontend-v2/context/NotificationContext.tsx
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Notification } from '../components/notifications/types';
+import { useNotificationPreferences } from '../hooks/useNotificationPreferences';
 
 interface NotificationContextType {
   notifications: Notification[];
