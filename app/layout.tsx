@@ -4,6 +4,7 @@ import { DM_Sans, Fraunces, Playfair_Display } from 'next/font/google'
 import './globals.css'
 import Footer from '../components/footer';
 import { PwaShell } from '@/components/pwa/PwaShell';
+import { Toaster } from '@/components/ui/sonner';
 import { UpdateBanner } from '@/components/ui/UpdateBanner';
 import { Providers } from '@/providers/providers';
 
@@ -98,6 +99,7 @@ export default function RootLayout({
             </PageTransition>
             <Footer/>
           </div>
+          <Toaster richColors position="top-right" />
           <Analytics />
         </Providers>
       </body>

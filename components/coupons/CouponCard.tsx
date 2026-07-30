@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
+
+import { RedeemCouponModal } from "@/components/coupons/RedeemCouponModal";
 
 interface CouponCardProps {
   code: string;
@@ -27,11 +30,13 @@ export function CouponCard({
 }: CouponCardProps) {
   const [copied, setCopied] = useState(false);
   const [expiringSoon, setExpiringSoon] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [couponStatus, setCouponStatus] = useState(status);
 
-  const isInactive = status === "used" || status === "expired";
+  const isInactive = couponStatus === "used" || couponStatus === "expired";
 
   useEffect(() => {
-    if (status !== "active") {
+    if (couponStatus !== "active") {
       setExpiringSoon(false);
       return;
     }
@@ -39,14 +44,31 @@ export function CouponCard({
     const expiry = new Date(expiresAt);
     const daysLeft = (expiry.getTime() - Date.now()) / 86_400_000;
     setExpiringSoon(daysLeft > 0 && daysLeft <= 7);
-  }, [expiresAt, status]);
+  }, [expiresAt, couponStatus]);
 
   const handleCopy = async () => {
     if (isInactive) return;
 
-    await navigator.clipboard.writeText(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      toast.success("Coupon code copied");
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Unable to copy coupon code");
+    }
+  };
+
+  const handleRedeem = () => {
+    if (couponStatus !== "active") return;
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmRedemption = () => {
+    if (couponStatus !== "active") return;
+    setCouponStatus("used");
+    setExpiringSoon(false);
+    toast.success("Coupon marked as used");
   };
 
   return (
@@ -84,14 +106,14 @@ export function CouponCard({
               duration-300
               ease-in-out
               ${
-                status === "active"
+                couponStatus === "active"
                   ? "bg-emerald-100 text-emerald-700"
                   : "bg-gray-100 text-gray-400"
               }
               group-hover:scale-105
             `}
           >
-            {status}
+            {couponStatus}
           </span>
         </div>
 
@@ -129,7 +151,7 @@ export function CouponCard({
           </span>
         </div>
 
-        {/* CODE + COPY */}
+        {/* CODE + ACTIONS */}
         <div className="flex items-center gap-2">
           <span
             className={`
@@ -153,27 +175,38 @@ export function CouponCard({
             {code}
           </span>
 
-          <button
-            onClick={handleCopy}
-            disabled={isInactive}
-            className={`
-              px-3 py-2
-              rounded-md
-              text-xs
-              font-bold
-              transition-all
-              duration-300
-              ease-in-out
-              active:scale-95
-              ${
-                isInactive
-                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                  : "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
-              }
-            `}
-          >
-            {copied ? "✅ Copied!" : "Copy"}
-          </button>
+          <div className="flex flex-col gap-2">
+            {couponStatus === "active" && (
+              <button
+                onClick={handleRedeem}
+                className="px-3 py-2 rounded-md text-xs font-bold transition-all duration-300 ease-in-out active:scale-95 bg-emerald-600 text-white hover:bg-emerald-700"
+              >
+                Redeem
+              </button>
+            )}
+
+            <button
+              onClick={handleCopy}
+              disabled={isInactive}
+              className={`
+                px-3 py-2
+                rounded-md
+                text-xs
+                font-bold
+                transition-all
+                duration-300
+                ease-in-out
+                active:scale-95
+                ${
+                  isInactive
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
+                }
+              `}
+            >
+              {copied ? "✅ Copied!" : "Copy"}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -181,10 +214,17 @@ export function CouponCard({
       {isInactive && (
         <div className="absolute inset-0 rounded-2xl flex items-center justify-center bg-white/60 backdrop-blur-[1px]">
           <span className="text-gray-400 font-black text-lg tracking-[4px] rotate-[-12deg] border border-gray-300 px-4 py-1 rounded">
-            {status}
+            {couponStatus}
           </span>
         </div>
       )}
+
+      <RedeemCouponModal
+        isOpen={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        code={code}
+        onConfirm={handleConfirmRedemption}
+      />
     </div>
   );
 }
