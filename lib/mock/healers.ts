@@ -236,3 +236,5 @@ export const mockHealers: Healer[] = [
   },
 ]
 
+export default mockHealers;
+

@@ -7,6 +7,13 @@ export type NotificationType =
   | 'task_reminder'
   | 'system';
 
+export type NotificationCategory =
+  | 'task'
+  | 'streak'
+  | 'badge'
+  | 'appointment'
+  | 'system';
+
 export interface Notification {
   id: string;
   type: NotificationType;

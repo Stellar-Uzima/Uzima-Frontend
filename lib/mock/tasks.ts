@@ -390,3 +390,5 @@ export const mockTasks: HealthTask[] = [
 export function getTaskById(id: string): HealthTask | undefined {
   return mockTasks.find((task) => task.id === id);
 }
+
+export default mockTasks;
