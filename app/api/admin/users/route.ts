@@ -1,12 +1,6 @@
 
 import { NextResponse } from 'next/server';
-
-const mockUsers = [
-  { id: '1', name: 'John Doe', email: 'john@example.com', role: 'user', status: 'active', joined: '2026-01-10' },
-  { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'healer', status: 'active', joined: '2026-02-15' },
-  { id: '3', name: 'Bob Johnson', email: 'bob@example.com', role: 'user', status: 'suspended', joined: '2026-03-01' },
-  // ... more users
-];
+import { getUsers, updateUserStatuses } from '@/lib/server/data/users';
 
 export async function PATCH(request: Request) {
   const body = await request.json();
@@ -17,13 +11,7 @@ export async function PATCH(request: Request) {
   }
 
   const newStatus = action === 'suspend' ? 'suspended' : 'active';
-  const updatedIds = new Set(ids);
-
-  mockUsers.forEach(u => {
-    if (updatedIds.has(u.id)) u.status = newStatus;
-  });
-
-  const updated = mockUsers.filter(u => updatedIds.has(u.id));
+  const updated = await updateUserStatuses(ids, newStatus);
   return NextResponse.json({ updated });
 }
 
@@ -32,9 +20,9 @@ export async function GET(request: Request) {
   const page = parseInt(searchParams.get('page') || '1');
   const size = 20;
 
-  // Simulate search filter
   const search = searchParams.get('search')?.toLowerCase() || '';
-  const filteredUsers = mockUsers.filter(u =>
+  const users = await getUsers();
+  const filteredUsers = users.filter(u =>
     u.name.toLowerCase().includes(search) || u.email.toLowerCase().includes(search)
   );
 

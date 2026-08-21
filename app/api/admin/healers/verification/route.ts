@@ -1,20 +1,25 @@
 
 import { NextResponse } from 'next/server';
-
-const mockVerificationRequests = [
-  { id: '1', name: 'Dr. John Doe', specialties: ['Herbal Medicine'], region: 'West Africa', status: 'pending', submittedAt: '2026-03-25' },
-  { id: '2', name: 'Dr. Jane Smith', specialties: ['Spiritual Healing'], region: 'East Africa', status: 'pending', submittedAt: '2026-03-26' },
-];
+import {
+  decideVerificationRequest,
+  getPendingVerificationRequests,
+} from '@/lib/server/data/healer-verifications';
 
 export async function GET() {
-  return NextResponse.json(mockVerificationRequests);
+  const requests = await getPendingVerificationRequests();
+  return NextResponse.json(requests);
 }
 
 export async function POST(request: Request) {
   const body = await request.json();
   const { id, action } = body;
-  if (!id || !action) return NextResponse.json({ error: 'ID and action are required' }, { status: 400 });
 
-  // Simulate approval/rejection
+  if (!id || !['approve', 'reject'].includes(action)) {
+    return NextResponse.json({ error: 'ID and a valid action are required' }, { status: 400 });
+  }
+
+  const updated = await decideVerificationRequest(id, action);
+  if (!updated) return NextResponse.json({ error: 'Verification request not found' }, { status: 404 });
+
   return NextResponse.json({ success: true, id, action });
 }
