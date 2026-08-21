@@ -1,0 +1,5 @@
+[
+  { "id": "1", "title": "Daily Meditation", "category": "Mental Health", "rewardXLM": 10, "status": "active", "createdAt": "2026-03-30", "deletedAt": null },
+  { "id": "2", "title": "Hygiene Check", "category": "Hygiene", "rewardXLM": 5, "status": "active", "createdAt": "2026-03-29", "deletedAt": null },
+  { "id": "3", "title": "Morning Exercise", "category": "Exercise", "rewardXLM": 15, "status": "inactive", "createdAt": "2026-03-28", "deletedAt": null }
+]
