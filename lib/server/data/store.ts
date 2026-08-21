@@ -1,10 +1,15 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 
-const DATA_DIR = path.join(process.cwd(), 'data', 'admin');
+const DATA_DIR = path.join(process.cwd(), 'data');
 
-async function ensureDataDir() {
-  await fs.mkdir(DATA_DIR, { recursive: true });
+/**
+ * `file` is a path relative to the `data/` directory, e.g. `admin/users.json`
+ * or `wallet/sessions.json`. This lets each domain (admin, wallet, ...) keep
+ * its own subdirectory while sharing the same read/write/lock plumbing.
+ */
+async function ensureParentDir(filePath: string) {
+  await fs.mkdir(path.dirname(filePath), { recursive: true });
 }
 
 /**
@@ -13,8 +18,8 @@ async function ensureDataDir() {
  * resetting to `seed` on every read.
  */
 export async function readCollection<T>(file: string, seed: T): Promise<T> {
-  await ensureDataDir();
   const filePath = path.join(DATA_DIR, file);
+  await ensureParentDir(filePath);
   try {
     const raw = await fs.readFile(filePath, 'utf-8');
     return JSON.parse(raw) as T;
@@ -28,8 +33,8 @@ export async function readCollection<T>(file: string, seed: T): Promise<T> {
 }
 
 export async function writeCollection<T>(file: string, data: T): Promise<void> {
-  await ensureDataDir();
   const filePath = path.join(DATA_DIR, file);
+  await ensureParentDir(filePath);
   await fs.writeFile(filePath, JSON.stringify(data, null, 2));
 }
 
