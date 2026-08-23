@@ -28,6 +28,42 @@ export function useWallet() {
     }
   }, []);
 
+  // The server is the source of truth for "is a wallet connected", keyed by
+  // the wallet_session cookie - not localStorage, which is just a client
+  // cache for a snappier first paint. This makes a connection survive a
+  // localStorage clear or opening the app in a new tab on the same session.
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const res = await fetch("/api/wallet/connect", { method: "GET" });
+        if (!res.ok || cancelled) return;
+
+        const data = await res.json();
+        if (cancelled) return;
+
+        const persistedAddress: string | null = data?.address ?? null;
+        setAddress(persistedAddress);
+
+        try {
+          if (persistedAddress) {
+            window.localStorage.setItem("freighterAddress", persistedAddress);
+          } else {
+            window.localStorage.removeItem("freighterAddress");
+          }
+        } catch {}
+      } catch {
+        // Couldn't reach the server - keep whatever we already loaded from
+        // localStorage rather than clearing a possibly-valid connection.
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const connect = useCallback(async () => {
     if (!isInstalled) {
       toast?.({ title: "Freighter not installed", description: "Install Freighter to connect your wallet", variant: "default" });
@@ -44,14 +80,28 @@ export function useWallet() {
         try {
           window.localStorage.setItem("freighterAddress", addr.address);
         } catch {}
-        // attempt to persist server-side if route exists
+        // Persist server-side so the connection survives a localStorage
+        // clear or a reload on a different device with the same session.
         try {
-          await fetch("/api/wallet/connect", {
+          const res = await fetch("/api/wallet/connect", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ address: addr.address }),
           });
-        } catch {}
+          if (!res.ok) {
+            toast?.({
+              title: "Wallet connected locally only",
+              description: "Could not save this connection to your account; it may not persist across devices.",
+              variant: "default",
+            });
+          }
+        } catch {
+          toast?.({
+            title: "Wallet connected locally only",
+            description: "Could not save this connection to your account; it may not persist across devices.",
+            variant: "default",
+          });
+        }
         toast?.({ title: "Wallet connected" });
         return addr.address;
       }
@@ -77,8 +127,16 @@ export function useWallet() {
       try {
         window.localStorage.removeItem("freighterAddress");
       } catch {}
-      await fetch("/api/wallet/disconnect", { method: "POST" });
-      toast?.({ title: "Wallet disconnected" });
+      const res = await fetch("/api/wallet/disconnect", { method: "POST" });
+      if (!res.ok) {
+        toast?.({
+          title: "Disconnected locally",
+          description: "Could not clear this connection on the server; it may reappear next time you load the app.",
+          variant: "default",
+        });
+      } else {
+        toast?.({ title: "Wallet disconnected" });
+      }
     } catch {
       toast?.({ title: "Error", description: "Could not disconnect", variant: "error" });
     }

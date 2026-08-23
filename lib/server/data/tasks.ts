@@ -11,7 +11,7 @@ export interface AdminTask {
   deletedAt: string | null;
 }
 
-const FILE = 'tasks.json';
+const FILE = 'admin/tasks.json';
 
 const SEED: AdminTask[] = [
   { id: '1', title: 'Daily Meditation', category: 'Mental Health', rewardXLM: 10, status: 'active', createdAt: '2026-03-30', deletedAt: null },

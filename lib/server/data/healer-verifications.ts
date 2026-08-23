@@ -10,7 +10,7 @@ export interface HealerVerificationRequest {
   decidedAt: string | null;
 }
 
-const FILE = 'healer-verifications.json';
+const FILE = 'admin/healer-verifications.json';
 
 const SEED: HealerVerificationRequest[] = [
   { id: '1', name: 'Dr. John Doe', specialties: ['Herbal Medicine'], region: 'West Africa', status: 'pending', submittedAt: '2026-03-25', decidedAt: null },

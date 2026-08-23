@@ -9,7 +9,7 @@ export interface AdminUser {
   joined: string;
 }
 
-const FILE = 'users.json';
+const FILE = 'admin/users.json';
 
 const SEED: AdminUser[] = [
   { id: '1', name: 'John Doe', email: 'john@example.com', role: 'user', status: 'active', joined: '2026-01-10' },
