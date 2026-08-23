@@ -254,6 +254,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                 </ol>
               </section>
 
+              <TaskCommunity taskId={task.id} taskTitle={task.title} />
               <TaskDiscussionThread taskId={task.id} />
             </div>
 
