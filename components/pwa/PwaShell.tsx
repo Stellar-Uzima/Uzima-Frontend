@@ -14,6 +14,12 @@ const InstallPrompt = dynamic(
   { loading: () => null, ssr: false }
 );
 
+const SwUpdateBanner = dynamic(
+  () =>
+    import("@/components/pwa/SwUpdateBanner").then((mod) => mod.SwUpdateBanner),
+  { loading: () => null, ssr: false }
+);
+
 export function PwaShell() {
   return (
     <>
@@ -34,13 +40,11 @@ export function PwaShell() {
       */}
       <InstallPrompt />
 
-      {/*
-        TODO — enhancement ideas for this shell:
+      {/* Prompts the user to refresh when a new service worker is waiting */}
+      <SwUpdateBanner />
 
-        1. Service-worker update prompt
-           Show a "New version available – refresh" banner when
-           the SW fires a `waiting` event. Example:
-           <SwUpdateBanner />
+      {/*
+        TODO — remaining enhancement ideas for this shell:
 
         2. Push notification opt-in
            After the user has been active for N sessions, prompt
