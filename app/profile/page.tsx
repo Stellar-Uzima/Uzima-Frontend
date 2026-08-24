@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,6 +22,11 @@ import { ReferralStats } from '@/components/profile/ReferralStats';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { generateReferralCode, normalizeReferralCode } from '@/lib/referral';
 import { mockReferralSummary, ReferralSummary } from '@/lib/mock/referrals';
+
+const WalletConnectModal = dynamic(
+	() => import('@/components/wallet/WalletConnectModal'),
+	{ ssr: false }
+);
 
 type ProfileData = {
 	avatarEmoji: string | null;
@@ -49,6 +55,7 @@ export default function ProfilePage() {
 
 	const [walletAddress, setWalletAddress] = useState<string | null>(null);
 	const [totalXlmEarned, setTotalXlmEarned] = useState<number>(0);
+	const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
 
 	const [referralCode, setReferralCode] = useState<string | null>(null);
 	// Mock until the referrals endpoint lands — rewards are issued backend-side.
@@ -207,8 +214,7 @@ export default function ProfilePage() {
 							address={walletAddress}
 							totalXlm={totalXlmEarned}
 							onConnect={() => {
-								// Navigate to connect flow if present
-								window.location.href = '/wallet/connect';
+								setIsWalletModalOpen(true);
 							}}
 							onDisconnectSuccess={() => {
 								setWalletAddress(null);
@@ -237,6 +243,12 @@ export default function ProfilePage() {
 					</TabsContent>
 				</Tabs>
 			</div>
+			{isWalletModalOpen && (
+				<WalletConnectModal
+					open={isWalletModalOpen}
+					onOpenChange={setIsWalletModalOpen}
+				/>
+			)}
 		</ErrorBoundary>
 	);
 }
