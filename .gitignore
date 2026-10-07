@@ -20,3 +20,4 @@ public/worker-*.js.map
 public/fallback-*.js
 
 issue/
+config.bat
